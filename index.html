@@ -46,90 +46,101 @@
   </style>
 </head>
 <body>
-<div class="container" id="loginPage">
-  <h2>Login</h2>
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="password" placeholder="Password" />
-  <button onclick="login()">Login</button>
-</div>
 
-<div class="container hidden" id="dashboard">
-  <h3>Welcome!</h3>
-  <p>Wallet Balance: ₹<span id="wallet">0</span></p>
-  <div id="taskList"></div>
-  <button onclick="showWithdraw()">Withdraw</button>
-</div>
+  <div class="container" id="loginPage">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+  </div>
 
-<div class="container hidden" id="qrPopup">
-  <h3>Buy Premium to Withdraw</h3>
-  <p>Scan the QR to pay:</p>
-  <img src="qr.jpg" alt="UPI QR" />
-  <button onclick="hideWithdraw()">Close</button>
-</div>
+  <div class="container hidden" id="dashboard">
+    <h3>Welcome!</h3>
+    <p>Wallet Balance: ₹<span id="wallet">0</span></p>
+    <div id="taskList"></div>
+    <button onclick="showWithdraw()">Withdraw</button>
+    <button style="margin-top:10px; background:#ef4444;" onclick="logout()">Logout</button>
+  </div>
 
-<script>
-let wallet = 0;
-const tasks = [
-  "Download App Alpha", "Play Quiz Bravo", "Install App Charlie",
-  "Answer Survey Delta", "Use App Echo", "Submit Survey Foxtrot",
-  "Complete Offer Golf", "Install and Register Hotel"
-];
+  <div class="container hidden" id="qrPopup">
+    <h3>Buy Premium to Withdraw</h3>
+    <p>Scan the QR to pay:</p>
+    <img src="qr.jpg" alt="UPI QR" />
+    <button onclick="hideWithdraw()">Close</button>
+  </div>
 
-function login() {
-  const email = document.getElementById('email').value;
-  const pass = document.getElementById('password').value;
-  if (email && pass) {
-    document.getElementById('loginPage').classList.add('hidden');
-    document.getElementById('dashboard').classList.remove('hidden');
-    loadTasks();
-  }
-}
+  <script>
+    let wallet = 0;
+    const tasks = [
+      "Download App Alpha", "Play Quiz Bravo", "Install App Charlie",
+      "Answer Survey Delta", "Use App Echo", "Submit Survey Foxtrot",
+      "Complete Offer Golf", "Install and Register Hotel"
+    ];
 
-function loadTasks() {
-  const container = document.getElementById('taskList');
-  tasks.forEach((task, i) => {
-    const div = document.createElement('div');
-    div.className = 'task';
-    div.innerHTML = `
-      <p>${task}</p>
-      <button onclick="startTask(this)">Start Task</button>
-      <p class="hidden timer">Wait 70 seconds...</p>
-      <button class="hidden completeBtn" onclick="completeTask(this)">Mark as Completed</button>
-    `;
-    container.appendChild(div);
-  });
-}
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('loggedIn') === 'true') {
+        showDashboard();
+      }
+    });
 
-function startTask(btn) {
-  btn.nextElementSibling.classList.remove('hidden');
-  btn.disabled = true;
-  const timerText = btn.nextElementSibling;
-  let sec = 70;
-  timerText.textContent = `Wait ${sec} seconds...`;
-  const interval = setInterval(() => {
-    sec--;
-    timerText.textContent = `Wait ${sec} seconds...`;
-    if (sec === 0) {
-      clearInterval(interval);
-      timerText.classList.add('hidden');
-      btn.nextElementSibling.nextElementSibling.classList.remove('hidden');
+    function login() {
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('password').value;
+      if (email && pass) {
+        localStorage.setItem('loggedIn', 'true');
+        showDashboard();
+      }
     }
-  }, 1000);
-}
 
-function completeTask(btn) {
-  btn.disabled = true;
-  wallet += 5;
-  document.getElementById('wallet').textContent = wallet;
-  btn.textContent = '✅ Completed';
-}
+    function showDashboard() {
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      if (!document.getElementById('taskList').children.length) {
+        loadTasks();
+      }
+    }
 
-function showWithdraw() {
-  document.getElementById('qrPopup').classList.remove('hidden');
-}
-function hideWithdraw() {
-  document.getElementById('qrPopup').classList.add('hidden');
-}
-</script>
+    function loadTasks() {
+      const container = document.getElementById('taskList');
+      tasks.forEach(task => {
+        const div = document.createElement('div');
+        div.className = 'task';
+        div.innerHTML = `
+          <p>${task}</p>
+          <button onclick="startTask(this)">Start Task</button>
+          <button class="hidden completeBtn" onclick="completeTask(this)">
+            Mark as Completed (Earn ₹5)
+          </button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function startTask(btn) {
+      btn.style.display = 'none';
+      btn.parentNode.querySelector('.completeBtn').classList.remove('hidden');
+    }
+
+    function completeTask(btn) {
+      btn.disabled = true;
+      wallet += 5;
+      document.getElementById('wallet').textContent = wallet;
+      btn.textContent = '✅ Completed';
+    }
+
+    function showWithdraw() {
+      document.getElementById('qrPopup').classList.remove('hidden');
+    }
+
+    function hideWithdraw() {
+      document.getElementById('qrPopup').classList.add('hidden');
+    }
+
+    function logout() {
+      localStorage.removeItem('loggedIn');
+      location.reload();
+    }
+  </script>
+
 </body>
 </html>
