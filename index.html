@@ -71,6 +71,7 @@
 
   <script>
     let wallet = 0;
+    const smartlinkBase = "https://go.zeydoo.com/smartlink?aff_id=1771342";
     const tasks = [
       "Download App Alpha", "Play Quiz Bravo", "Install App Charlie",
       "Answer Survey Delta", "Use App Echo", "Submit Survey Foxtrot",
@@ -103,11 +104,13 @@
     function loadTasks() {
       const container = document.getElementById('taskList');
       tasks.forEach(task => {
+        const subId = task.replace(/\s+/g, '_') + "_" + Math.floor(Math.random() * 10000);
+        const smartlink = `${smartlinkBase}&sub_id=${encodeURIComponent(subId)}`;
         const div = document.createElement('div');
         div.className = 'task';
         div.innerHTML = `
           <p>${task}</p>
-          <button onclick="startTask(this)">Start Task</button>
+          <button onclick="startTask(this, '${smartlink}')">Start Task</button>
           <button class="hidden completeBtn" onclick="completeTask(this)">
             Mark as Completed (Earn ₹5)
           </button>
@@ -116,7 +119,8 @@
       });
     }
 
-    function startTask(btn) {
+    function startTask(btn, url) {
+      window.open(url, '_blank');
       btn.style.display = 'none';
       btn.parentNode.querySelector('.completeBtn').classList.remove('hidden');
     }
