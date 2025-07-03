@@ -4,7 +4,6 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Casino Dashboard</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.min.js"></script>
   <style>
     :root {
       --bg: #121212;
@@ -17,6 +16,25 @@
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; }
+    .hidden { display:none !important; }
+
+    .login-page {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      height:100vh; background:var(--bg); padding:24px;
+    }
+    .login-card {
+      background:var(--card-bg); padding:24px; border-radius:12px; width:100%; max-width:360px;
+      box-shadow:0 2px 12px rgba(0,0,0,0.6); text-align:center;
+    }
+    .login-card h2 { margin-bottom:16px; }
+    .login-card input {
+      width:100%; padding:10px; margin:8px 0; border:none; border-radius:6px;
+      background:#121526; color:var(--text-primary);
+    }
+    .login-card button {
+      padding:10px 16px; background:var(--accent-gold); border:none;
+      color:var(--bg); font-weight:600; border-radius:6px; cursor:pointer; margin-top:12px;
+    }
     .dashboard { display:flex; flex-direction:column; min-height:100vh; }
     header { background:var(--card-bg); padding:16px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.8); }
     .user-info { display:flex; align-items:center; }
@@ -54,7 +72,6 @@
     .task-title { font-size:1rem; font-weight:600; }
     .task-meta { margin-top:4px; font-size:0.85rem; color:var(--text-secondary); }
     .btn-claim { padding:10px 20px; background:var(--accent-gold); color:var(--bg); border:none; border-radius:8px; font-weight:600; cursor:pointer; flex-shrink:0; }
-    .btn-claim[disabled] { background:#555555; cursor:not-allowed; }
     .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:100; }
     .modal.hidden { display:none; }
     .modal-content { background:var(--card-bg); padding:24px; border-radius:12px; width:90%; max-width:320px; text-align:center; }
@@ -67,7 +84,17 @@
 </head>
 <body>
 
-  <div class="dashboard">
+  <div class="login-page" id="loginPage">
+    <div class="login-card">
+      <h2>Login</h2>
+      <input id="loginUsername" placeholder="Username" />
+      <input id="loginEmail" placeholder="Email" />
+      <input id="loginPassword" type="password" placeholder="Password" />
+      <button id="loginBtn">Login</button>
+    </div>
+  </div>
+
+  <div class="dashboard hidden" id="dashboard">
     <header>
       <div class="user-info">
         <label class="avatar-small" id="dashAvatarLabel">
@@ -75,26 +102,23 @@
           <div id="dashPlaceholder" class="avatar-placeholder">👤</div>
         </label>
         <div class="user-text">
-          <div class="name" id="displayUsername">Priya</div>
-          <div class="meta" id="displayMeta">ID: 3038792 | priya@example.com | VIP0</div>
+          <div class="name" id="displayUsername"></div>
+          <div class="meta" id="displayMeta"></div>
         </div>
       </div>
       <button class="withdraw-btn" id="withdrawBtn">Withdraw</button>
     </header>
 
     <div class="kpi-bar">
-      <div class="kpi">
-        <h3 id="balanceDisplay">₹0</h3>
-        <p>Balance</p>
-      </div>
+      <div class="kpi"><h3 id="balanceDisplay">₹0</h3><p>Balance</p></div>
       <div class="kpi"><h3 id="tasksDoneDisplay">0</h3><p>Tasks Done</p></div>
       <div class="kpi"><h3 id="weeklyWinDisplay">₹0</h3><p>Weekly Win</p></div>
     </div>
 
     <nav class="tabs">
-      <button data-tab="daily" class="active">Daily</button>
-      <button data-tab="weekly">Weekly</button>
-      <button data-tab="monthly">Monthly</button>
+      <button data-tab="daily" class="active">Daily Tasks</button>
+      <button data-tab="weekly">Mission Bonus</button>
+      <button data-tab="monthly">Earn More</button>
     </nav>
 
     <div class="live-feed">🎉 Ravi just won ₹500!</div>
@@ -112,98 +136,113 @@
   </div>
 
   <script>
-    // Load KPI values from localStorage or default to 0
-    let currentBalance = parseInt(localStorage.getItem('currentBalance')) || 0;
-    let tasksDone = parseInt(localStorage.getItem('tasksDone')) || 0;
-    let weeklyWin = parseInt(localStorage.getItem('weeklyWin')) || 0;
+    const loginPage = document.getElementById('loginPage');
+    const dashboard = document.getElementById('dashboard');
 
-    // Save KPI values to localStorage
-    function saveKpis() {
-      localStorage.setItem('currentBalance', currentBalance);
-      localStorage.setItem('tasksDone', tasksDone);
-      localStorage.setItem('weeklyWin', weeklyWin);
-    }
+    let user = JSON.parse(localStorage.getItem('casinoUser')) || null;
 
-    // Update KPI display
-    function updateKpis() {
-      document.getElementById('balanceDisplay').textContent = `₹${currentBalance}`;
-      document.getElementById('tasksDoneDisplay').textContent = tasksDone;
-      document.getElementById('weeklyWinDisplay').textContent = `₹${weeklyWin}`;
+    if (user) {
+      loginPage.classList.add('hidden');
+      dashboard.classList.remove('hidden');
+      initDashboard(user);
     }
 
-    // Task claim timestamps stored in localStorage to prevent multiple claims within 25 hours
-    function getTaskClaimKey(tab, index) {
-      return `taskClaim_${tab}_${index}`;
+    document.getElementById('loginBtn').onclick = () => {
+      const username = document.getElementById('loginUsername').value.trim();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      if (!username || !email || !password) {
+        alert("All fields required!");
+        return;
+      }
+      user = {
+        username,
+        email,
+        vip: 'VIP0',
+        balance: 0,
+        tasksDone: 0,
+        weeklyWin: 0,
+        claimedTasks: {}
+      };
+      localStorage.setItem('casinoUser', JSON.stringify(user));
+      loginPage.classList.add('hidden');
+      dashboard.classList.remove('hidden');
+      initDashboard(user);
+    };
+
+    function initDashboard(user) {
+      document.getElementById('displayUsername').textContent = user.username;
+      document.getElementById('displayMeta').textContent = `ID: 3038792 | ${user.email} | ${user.vip}`;
+      updateKPIs();
+      renderTasks('daily');
+
+      document.querySelectorAll('nav.tabs button').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderTasks(btn.getAttribute('data-tab'));
+        };
+      });
     }
-    function setTaskClaimTime(tab, index) {
-      localStorage.setItem(getTaskClaimKey(tab, index), Date.now());
-    }
-    function canClaimTask(tab, index) {
-      const lastClaim = localStorage.getItem(getTaskClaimKey(tab, index));
-      if (!lastClaim) return true;
-      const elapsed = Date.now() - parseInt(lastClaim);
-      return elapsed > 25 * 60 * 60 * 1000; // 25 hours in ms
+
+    function updateKPIs() {
+      const u = JSON.parse(localStorage.getItem('casinoUser'));
+      document.getElementById('balanceDisplay').textContent = `₹${u.balance}`;
+      document.getElementById('tasksDoneDisplay').textContent = u.tasksDone;
+      document.getElementById('weeklyWinDisplay').textContent = `₹${u.weeklyWin}`;
     }
 
     const tasks = {
-      daily: [
-        { title: "🃏 Blackjack Bet", meta: "Live odds: 3.5x", reward: 15, color: "var(--accent-gold)" },
-        { title: "🎯 Roulette Spin", meta: "Win big now!", reward: 12, color: "var(--accent-gold)" },
-        { title: "🎰 Slot Machine", meta: "Max payout ₹1000", reward: 14, color: "var(--accent-gold)" },
-        { title: "🀄 Mahjong Challenge", meta: "Try your luck!", reward: 13, color: "var(--accent-gold)" },
-        { title: "🎲 Dice Roll", meta: "Roll to win", reward: 15, color: "var(--accent-gold)" },
-        { title: "🧩 Puzzle Bet", meta: "Solve & earn", reward: 12, color: "var(--accent-gold)" }
-      ],
-      weekly: [
-        { title: "🏆 Weekly Jackpot", meta: "Top prize ₹10,000", reward: 100, color: "var(--accent-gold)" }
-      ],
-      monthly: [
-        { title: "🎉 VIP Draw", meta: "Exclusive entries", reward: 300, color: "var(--accent-gold)" }
-      ]
+      daily: Array.from({ length: 6 }, (_, i) => ({
+        title: `🎯 Task ${i + 1}`,
+        meta: `Earn ₹${12 + i * 2}`,
+        amount: 12 + i * 2,
+        color: 'var(--accent-gold)',
+        id: `task${i + 1}`
+      })),
+      weekly: [{ title: "🏆 Weekly Jackpot", meta: "Top prize ₹10,000", color: "var(--accent-gold)" }],
+      monthly: [{ title: "🎉 VIP Draw", meta: "Exclusive entries", color: "var(--accent-gold)" }]
     };
 
     function renderTasks(tab) {
       const list = document.getElementById('task-list');
       list.innerHTML = '';
-      tasks[tab].forEach((t, i) => {
+      const u = JSON.parse(localStorage.getItem('casinoUser'));
+      tasks[tab].forEach(t => {
         const li = document.createElement('li');
         li.className = 'task-card';
+        const lastClaim = u.claimedTasks?.[t.id] || 0;
+        const now = Date.now();
+        const canClaim = (now - lastClaim) > 25 * 60 * 60 * 1000;
 
-        const claimable = canClaimTask(tab, i);
+        const claimBtn = canClaim && t.amount ? `<button class="btn-claim">Claim</button>` : `<button class="btn-claim" disabled>Claimed</button>`;
 
         li.innerHTML = `
           <div class="accent" style="background:${t.color}"></div>
           <div class="task-info">
             <div class="task-title">${t.title}</div>
-            <div class="task-meta">${t.meta} | Reward: ₹${t.reward}</div>
+            <div class="task-meta">${t.meta}</div>
           </div>
-          <button class="btn-claim" ${claimable ? '' : 'disabled'}>Claim</button>
-        `;
+          ${claimBtn}`;
 
-        li.querySelector('button').onclick = () => {
-          if (!claimable) return;
-          currentBalance += t.reward;
-          tasksDone += 1;
-          if (tab === 'weekly') weeklyWin += t.reward;
-          setTaskClaimTime(tab, i);
-          updateKpis();
-          saveKpis();
-          renderTasks(tab);
-          alert(`Claimed reward ₹${t.reward} for "${t.title}"`);
-        };
-
+        const btn = li.querySelector('button');
+        if (canClaim && t.amount) {
+          btn.onclick = () => {
+            u.balance += t.amount;
+            u.tasksDone += 1;
+            u.weeklyWin += t.amount;
+            u.claimedTasks[t.id] = Date.now();
+            localStorage.setItem('casinoUser', JSON.stringify(u));
+            updateKPIs();
+            renderTasks(tab);
+            alert(`Claimed ${t.amount}`);
+          };
+        }
         list.appendChild(li);
       });
     }
 
-    document.querySelectorAll('nav.tabs button').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderTasks(btn.getAttribute('data-tab'));
-      };
-    });
-
+    // Withdraw
     const wdBtn = document.getElementById('withdrawBtn');
     const wdModal = document.getElementById('withdrawModal');
     const wdAmt = document.getElementById('withdrawAmount');
@@ -219,24 +258,20 @@
     closeWd.onclick = () => wdModal.classList.add('hidden');
     confirmWd.onclick = () => {
       const v = parseInt(wdAmt.value);
+      const u = JSON.parse(localStorage.getItem('casinoUser'));
       if (!v || v <= 0) {
         wdErr.textContent = 'Invalid amount';
         return;
       }
-      if (v > currentBalance) {
+      if (v > u.balance) {
         wdErr.textContent = 'Insufficient balance';
         return;
       }
-      currentBalance -= v;
-      updateKpis();
-      saveKpis();
+      u.balance -= v;
+      localStorage.setItem('casinoUser', JSON.stringify(u));
       wdModal.classList.add('hidden');
+      updateKPIs();
       alert(`Withdrawal ₹${v} successful`);
-    };
-
-    window.onload = () => {
-      updateKpis();
-      renderTasks('daily');
     };
   </script>
 </body>
