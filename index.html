@@ -17,64 +17,7 @@
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; }
-    
-    /* Login page styles */
-    #loginPage {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: var(--bg);
-      color: var(--text-primary);
-      padding: 16px;
-    }
-    #loginPage.hidden {
-      display: none;
-    }
-    #loginForm {
-      background: var(--card-bg);
-      padding: 24px;
-      border-radius: 12px;
-      width: 320px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.8);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    #loginForm input {
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-      background: #121526;
-      color: var(--text-primary);
-      font-size: 1rem;
-    }
-    #loginForm button {
-      background: var(--accent-gold);
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      color: var(--bg);
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    #loginError {
-      color: #FF6B6B;
-      font-size: 0.9rem;
-      text-align: center;
-      min-height: 1.2em;
-    }
-
-    /* Hide dashboard initially */
-    #dashboard {
-      display: none;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    /* Your existing dashboard styles */
+    .dashboard { display:flex; flex-direction:column; min-height:100vh; }
     header { background:var(--card-bg); padding:16px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.8); }
     .user-info { display:flex; align-items:center; }
     .avatar-small { width:36px; height:36px; border-radius:50%; overflow:hidden; margin-right:8px; cursor:pointer; background:var(--text-secondary); }
@@ -110,7 +53,8 @@
     .task-info { flex:1; }
     .task-title { font-size:1rem; font-weight:600; }
     .task-meta { margin-top:4px; font-size:0.85rem; color:var(--text-secondary); }
-    .btn-claim { padding:10px 20px; background:var(--accent-gold); color:var(--bg); border:none; border-radius:8px; font-weight:600; cursor:pointer; flex-shrink:0; }
+    .btn-claim { padding:10px 20px; background:var(--accent-gold); color:var(--bg); border:none; border-radius:8px; font-weight:600; cursor:pointer; flex-shrink:0; white-space: nowrap; }
+    .btn-claim:disabled { background: #555; cursor: not-allowed; }
     .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:100; }
     .modal.hidden { display:none; }
     .modal-content { background:var(--card-bg); padding:24px; border-radius:12px; width:90%; max-width:320px; text-align:center; }
@@ -123,20 +67,7 @@
 </head>
 <body>
 
-  <!-- Login Page -->
-  <div id="loginPage">
-    <form id="loginForm" autocomplete="off">
-      <h2>Login</h2>
-      <input type="text" id="loginUsername" placeholder="Username" required />
-      <input type="email" id="loginEmail" placeholder="Email" required />
-      <input type="password" id="loginPassword" placeholder="Password" required minlength="6" />
-      <div id="loginError"></div>
-      <button type="submit">Login</button>
-    </form>
-  </div>
-
-  <!-- Dashboard (your existing code inside) -->
-  <div class="dashboard" id="dashboard">
+  <div class="dashboard">
     <header>
       <div class="user-info">
         <label class="avatar-small" id="dashAvatarLabel">
@@ -156,8 +87,8 @@
         <h3 id="balanceDisplay">₹0</h3>
         <p>Balance</p>
       </div>
-      <div class="kpi"><h3>12</h3><p>Tasks Done</p></div>
-      <div class="kpi"><h3>₹120</h3><p>Weekly Win</p></div>
+      <div class="kpi"><h3 id="tasksDoneDisplay">0</h3><p>Tasks Done</p></div>
+      <div class="kpi"><h3 id="weeklyWinDisplay">₹0</h3><p>Weekly Win</p></div>
     </div>
 
     <nav class="tabs">
@@ -181,162 +112,216 @@
   </div>
 
   <script>
-    // --- Login Logic ---
-    const loginPage = document.getElementById('loginPage');
-    const dashboard = document.getElementById('dashboard');
-    const loginForm = document.getElementById('loginForm');
-    const loginUsername = document.getElementById('loginUsername');
-    const loginEmail = document.getElementById('loginEmail');
-    const loginPassword = document.getElementById('loginPassword');
-    const loginError = document.getElementById('loginError');
+    // Initial user data (simulate logged in user)
+    let currentUser = {
+      id: '3038792',
+      name: 'Priya',
+      email: 'priya@example.com',
+      vip: 'VIP0'
+    };
 
-    // Check login on load
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedUser = localStorage.getItem('casinoUser');
-      if(savedUser) {
-        // If user info saved, show dashboard
-        showDashboard(JSON.parse(savedUser));
+    // Load stored user data or set defaults
+    function loadUserData() {
+      const saved = localStorage.getItem(currentUser.id + '_userdata');
+      if (saved) {
+        return JSON.parse(saved);
       } else {
-        showLogin();
-      }
-    });
-
-    function showLogin() {
-      loginPage.classList.remove('hidden');
-      dashboard.style.display = 'none';
-    }
-
-    function showDashboard(user) {
-      loginPage.classList.add('hidden');
-      dashboard.style.display = 'flex';
-
-      // Update dashboard with user info
-      document.getElementById('displayUsername').textContent = user.username;
-      document.getElementById('displayMeta').textContent = `ID: 3038792 | ${user.email} | VIP0`;
-
-      // You can also update avatar if you want, for now we keep placeholder
-
-      // Initialize dashboard features
-      initDashboard();
-    }
-
-    loginForm.addEventListener('submit', e => {
-      e.preventDefault();
-      loginError.textContent = '';
-
-      const username = loginUsername.value.trim();
-      const email = loginEmail.value.trim();
-      const password = loginPassword.value;
-
-      // Basic validation
-      if(username.length < 2) {
-        loginError.textContent = 'Username too short';
-        return;
-      }
-      if(!validateEmail(email)) {
-        loginError.textContent = 'Invalid email';
-        return;
-      }
-      if(password.length < 6) {
-        loginError.textContent = 'Password must be 6+ characters';
-        return;
-      }
-
-      // For demo: accept any credentials, "login" user
-      const user = { username, email };
-      localStorage.setItem('casinoUser', JSON.stringify(user));
-      showDashboard(user);
-    });
-
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    // --- Dashboard Logic (your existing code here) ---
-    function initDashboard() {
-      let currentBalance = 1280;
-
-      function animateBalance() {
-        new CountUp('balanceDisplay', currentBalance, {
-          duration: 2.0,
-          prefix: '₹',
-          useEasing: true,
-          separator: ','
-        }).start();
-      }
-
-      const tasks = {
-        daily: [
-          { title: "🃏 Blackjack Bet", meta: "Live odds: 3.5x", color: "var(--accent-gold)" },
-          { title: "🎯 Roulette Spin", meta: "Win big now!", color: "var(--accent-gold)" },
-          { title: "🎰 Slot Machine", meta: "Max payout ₹1000", color: "var(--accent-gold)" }
-        ],
-        weekly: [
-          { title: "🏆 Weekly Jackpot", meta: "Top prize ₹10,000", color: "var(--accent-gold)" }
-        ],
-        monthly: [
-          { title: "🎉 VIP Draw", meta: "Exclusive entries", color: "var(--accent-gold)" }
-        ]
-      };
-
-      function renderTasks(tab = 'daily') {
-        const list = document.getElementById('task-list');
-        list.innerHTML = '';
-        tasks[tab].forEach(t => {
-          const li = document.createElement('li');
-          li.className = 'task-card';
-          li.innerHTML = `
-            <div class="accent" style="background:${t.color}"></div>
-            <div class="task-info">
-              <div class="task-title">${t.title}</div>
-              <div class="task-meta">${t.meta}</div>
-            </div>
-            <button class="btn-claim">Claim</button>`;
-          li.querySelector('button').onclick = () => alert(`Claimed: ${t.title}`);
-          list.appendChild(li);
-        });
-      }
-
-      document.querySelectorAll('nav.tabs button').forEach(btn => {
-        btn.onclick = () => {
-          document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          renderTasks(btn.getAttribute('data-tab'));
+        return {
+          balance: 1280,
+          tasksDone: 12,
+          weeklyWin: 120
         };
-      });
-
-      const wdBtn = document.getElementById('withdrawBtn');
-      const wdModal = document.getElementById('withdrawModal');
-      const wdAmt = document.getElementById('withdrawAmount');
-      const wdErr = document.getElementById('withdrawError');
-      const confirmWd = document.getElementById('confirmWithdraw');
-      const closeWd = document.getElementById('closeWithdraw');
-
-      wdBtn.onclick = () => {
-        wdAmt.value = '';
-        wdErr.textContent = '';
-        wdModal.classList.remove('hidden');
-      };
-      closeWd.onclick = () => wdModal.classList.add('hidden');
-      confirmWd.onclick = () => {
-        const v = parseInt(wdAmt.value);
-        if (!v || v <= 0) {
-          wdErr.textContent = 'Invalid amount';
-          return;
-        }
-        if (v > currentBalance) {
-          wdErr.textContent = 'Insufficient balance';
-          return;
-        }
-        currentBalance -= v;
-        wdModal.classList.add('hidden');
-        animateBalance();
-        alert(`Withdrawal ₹${v} successful`);
-      };
-
-      animateBalance();
-      renderTasks();
+      }
     }
+    function saveUserData() {
+      localStorage.setItem(currentUser.id + '_userdata', JSON.stringify({balance: currentBalance, tasksDone, weeklyWin}));
+    }
+
+    let userData = loadUserData();
+    let currentBalance = userData.balance;
+    let tasksDone = userData.tasksDone;
+    let weeklyWin = userData.weeklyWin;
+
+    document.getElementById('displayUsername').textContent = currentUser.name;
+    document.getElementById('displayMeta').textContent = `ID: ${currentUser.id} | ${currentUser.email} | ${currentUser.vip}`;
+
+    function animateBalance() {
+      new CountUp('balanceDisplay', currentBalance, {
+        duration: 2.0,
+        prefix: '₹',
+        useEasing: true,
+        separator: ','
+      }).start();
+    }
+
+    function updateKpis() {
+      document.getElementById('tasksDoneDisplay').textContent = tasksDone;
+      document.getElementById('weeklyWinDisplay').textContent = '₹' + weeklyWin;
+      animateBalance();
+    }
+
+    // Tasks data with reward and id for cooldown tracking
+    const tasksData = {
+      daily: [
+        { id: 'daily1', title: "🃏 Blackjack Bet", meta: "Live odds: 3.5x", color: "var(--accent-gold)", reward: 15 },
+        { id: 'daily2', title: "🎯 Roulette Spin", meta: "Win big now!", color: "var(--accent-gold)", reward: 13 },
+        { id: 'daily3', title: "🎰 Slot Machine", meta: "Max payout ₹1000", color: "var(--accent-gold)", reward: 14 },
+        { id: 'daily4', title: "♠️ Poker Hand", meta: "Beat the dealer!", color: "var(--accent-gold)", reward: 12 },
+        { id: 'daily5', title: "🎲 Craps Roll", meta: "Roll the dice", color: "var(--accent-gold)", reward: 15 },
+        { id: 'daily6', title: "🃏 Baccarat", meta: "Try your luck", color: "var(--accent-gold)", reward: 13 }
+      ],
+      weekly: [
+        { id: 'weekly1', title: "🏆 Weekly Jackpot", meta: "Top prize ₹10,000", color: "var(--accent-gold)", reward: 120 }
+      ],
+      monthly: [
+        { id: 'monthly1', title: "🎉 VIP Draw", meta: "Exclusive entries", color: "var(--accent-gold)", reward: 300 }
+      ]
+    };
+
+    // Format remaining cooldown time in hours and minutes
+    function formatRemainingTime(ms) {
+      if (ms <= 0) return "Now";
+      const totalSeconds = Math.floor(ms / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      return `${hours}h ${minutes}m`;
+    }
+
+    // Render tasks based on tab, with 25 hour cooldown logic
+    function renderTasks(tab) {
+      const list = document.getElementById('task-list');
+      list.innerHTML = '';
+
+      tasksData[tab].forEach(task => {
+        const li = document.createElement('li');
+        li.className = 'task-card';
+
+        const accent = document.createElement('div');
+        accent.className = 'accent';
+        accent.style.background = task.color;
+
+        const info = document.createElement('div');
+        info.className = 'task-info';
+
+        const title = document.createElement('div');
+        title.className = 'task-title';
+        title.textContent = task.title;
+
+        const meta = document.createElement('div');
+        meta.className = 'task-meta';
+        meta.textContent = task.meta;
+
+        info.appendChild(title);
+        info.appendChild(meta);
+
+        const btn = document.createElement('button');
+        btn.className = 'btn-claim';
+
+        // Check cooldown in localStorage: last claim time per user & task
+        const lastClaimKey = `${currentUser.id}_taskClaim_${task.id}`;
+        const lastClaimTime = parseInt(localStorage.getItem(lastClaimKey)) || 0;
+        const now = Date.now();
+        const hoursPassed = (now - lastClaimTime) / (1000 * 60 * 60);
+
+        if (hoursPassed < 25) {
+          btn.disabled = true;
+          const msLeft = 25 * 3600 * 1000 - (now - lastClaimTime);
+          btn.innerHTML = `Available in<br><span style="font-weight:bold;">${formatRemainingTime(msLeft)}</span>`;
+
+          // Update countdown every minute for UX
+          const intervalId = setInterval(() => {
+            const now2 = Date.now();
+            const msLeft2 = 25 * 3600 * 1000 - (now2 - lastClaimTime);
+            if (msLeft2 <= 0) {
+              btn.disabled = false;
+              btn.textContent = `Claim ₹${task.reward}`;
+              clearInterval(intervalId);
+            } else {
+              btn.innerHTML = `Available in<br><span style="font-weight:bold;">${formatRemainingTime(msLeft2)}</span>`;
+            }
+          }, 60000);
+        } else {
+          btn.textContent = `Claim ₹${task.reward}`;
+          btn.disabled = false;
+        }
+
+        btn.onclick = () => {
+          if (btn.disabled) return;
+          currentBalance += task.reward;
+          tasksDone++;
+          weeklyWin += task.reward;
+          updateKpis();
+          saveUserData();
+
+          localStorage.setItem(lastClaimKey, Date.now().toString());
+
+          btn.disabled = true;
+          btn.innerHTML = `Available in<br><span style="font-weight:bold;">25h 0m</span>`;
+
+          const intervalId = setInterval(() => {
+            const now3 = Date.now();
+            const msLeft3 = 25 * 3600 * 1000 - (now3 - Date.parse(localStorage.getItem(lastClaimKey)));
+            if (msLeft3 <= 0) {
+              btn.disabled = false;
+              btn.textContent = `Claim ₹${task.reward}`;
+              clearInterval(intervalId);
+            } else {
+              btn.innerHTML = `Available in<br><span style="font-weight:bold;">${formatRemainingTime(msLeft3)}</span>`;
+            }
+          }, 60000);
+        };
+
+        li.appendChild(accent);
+        li.appendChild(info);
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+    }
+
+    // Tabs click handling
+    document.querySelectorAll('nav.tabs button').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelector('nav.tabs button.active').classList.remove('active');
+        button.classList.add('active');
+        renderTasks(button.dataset.tab);
+      });
+    });
+
+    // Withdraw modal logic
+    const withdrawModal = document.getElementById('withdrawModal');
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    const confirmWithdrawBtn = document.getElementById('confirmWithdraw');
+    const closeWithdrawBtn = document.getElementById('closeWithdraw');
+    const withdrawAmountInput = document.getElementById('withdrawAmount');
+    const withdrawError = document.getElementById('withdrawError');
+
+    withdrawBtn.onclick = () => {
+      withdrawAmountInput.value = '';
+      withdrawError.textContent = '';
+      withdrawModal.classList.remove('hidden');
+    };
+    closeWithdrawBtn.onclick = () => withdrawModal.classList.add('hidden');
+
+    confirmWithdrawBtn.onclick = () => {
+      const amount = parseFloat(withdrawAmountInput.value);
+      if (isNaN(amount) || amount <= 0) {
+        withdrawError.textContent = 'Enter a valid amount';
+        return;
+      }
+      if (amount > currentBalance) {
+        withdrawError.textContent = 'Insufficient balance';
+        return;
+      }
+      currentBalance -= amount;
+      updateKpis();
+      saveUserData();
+      withdrawModal.classList.add('hidden');
+      alert(`₹${amount} withdrawn successfully!`);
+    };
+
+    // Initial render
+    updateKpis();
+    renderTasks('daily');
   </script>
 </body>
 </html>
