@@ -14,47 +14,85 @@
       --accent-gold: #FFD700;
       --accent-green: #00E5FF;
       --accent-blue: #4B4EFF;
-
-      --light-bg: #f5f7fa;
-      --light-card-bg: #ffffff;
-      --light-text-primary: #2c3e50;
-      --light-text-secondary: #7f8c8d;
-      --light-accent-gold: #b8860b;
-      --light-accent-green: #008080;
-      --light-accent-blue: #4169e1;
     }
-
-    [data-theme="light"] {
-      --bg: var(--light-bg);
-      --card-bg: var(--light-card-bg);
-      --text-primary: var(--light-text-primary);
-      --text-secondary: var(--light-text-secondary);
-      --accent-gold: var(--light-accent-gold);
-      --accent-green: var(--light-accent-green);
-      --accent-blue: var(--light-accent-blue);
-    }
-
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; display:flex; flex-direction:column; }
-    .dashboard { display:flex; flex-direction:column; flex:1; min-height:100vh; max-width:900px; margin:auto; }
-    header { background:var(--card-bg); padding:16px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.8); position:relative; }
-    .user-info { display:flex; align-items:center; cursor:pointer; }
-    .avatar-small { width:36px; height:36px; border-radius:50%; overflow:hidden; margin-right:8px; background:var(--text-secondary); display:flex; justify-content:center; align-items:center; font-size:18px; user-select:none; }
+    body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; }
+    
+    /* Login page styles */
+    #loginPage {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: var(--bg);
+      color: var(--text-primary);
+      padding: 16px;
+    }
+    #loginPage.hidden {
+      display: none;
+    }
+    #loginForm {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    #loginForm input {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #121526;
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+    #loginForm button {
+      background: var(--accent-gold);
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      color: var(--bg);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    #loginError {
+      color: #FF6B6B;
+      font-size: 0.9rem;
+      text-align: center;
+      min-height: 1.2em;
+    }
+
+    /* Hide dashboard initially */
+    #dashboard {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Your existing dashboard styles */
+    header { background:var(--card-bg); padding:16px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.8); }
+    .user-info { display:flex; align-items:center; }
+    .avatar-small { width:36px; height:36px; border-radius:50%; overflow:hidden; margin-right:8px; cursor:pointer; background:var(--text-secondary); }
     .avatar-small img { width:100%; height:100%; object-fit:cover; }
     .user-text .name { font-weight:600; }
     .user-text .meta { font-size:0.8rem; color:var(--text-secondary); }
-    .withdraw-btn { background:var(--accent-gold); border:none; padding:8px 12px; border-radius:6px; color:var(--bg); font-weight:500; cursor:pointer; margin-left:10px; }
+    .withdraw-btn { background:var(--accent-gold); border:none; padding:8px 12px; border-radius:6px; color:var(--bg); font-weight:500; cursor:pointer; }
     .kpi-bar { display:flex; gap:12px; margin:24px 16px; }
     .kpi { flex:1; background:var(--card-bg); border:1px solid var(--text-secondary); padding:12px; border-radius:8px; text-align:center; }
     .kpi h3 { color:var(--accent-gold); font-size:1.1rem; margin-bottom:4px; }
     .kpi p { font-size:0.85rem; color:var(--text-secondary); }
-    nav.tabs { display:flex; background:var(--card-bg); margin:0 16px; border-radius:8px; overflow:hidden; }
+    nav.tabs { display:flex; background:var(--card-bg); }
     nav.tabs button {
       flex:1; padding:12px; background:none; border:none;
       color:var(--text-secondary); font-weight:600; cursor:pointer;
-      position:relative; transition: background-color 0.3s;
+      position:relative;
     }
-    nav.tabs button.active { color:var(--text-primary); background:rgba(255,215,0,0.1); }
+    nav.tabs button.active { color:var(--text-primary); }
     nav.tabs button.active::after {
       content:''; position:absolute; bottom:0; left:20%; right:20%;
       height:3px; background:var(--accent-gold); border-radius:2px;
@@ -75,268 +113,34 @@
     .btn-claim { padding:10px 20px; background:var(--accent-gold); color:var(--bg); border:none; border-radius:8px; font-weight:600; cursor:pointer; flex-shrink:0; }
     .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:100; }
     .modal.hidden { display:none; }
-    .modal-content { background:var(--card-bg); padding:24px; border-radius:12px; width:90%; max-width:320px; text-align:center; color:var(--text-primary); }
+    .modal-content { background:var(--card-bg); padding:24px; border-radius:12px; width:90%; max-width:320px; text-align:center; }
     .modal-content input { width:100%; padding:10px; margin:12px 0; background:#121526; border:none; border-radius:6px; color:var(--text-primary); }
-    [data-theme="light"] .modal-content input { background:#e7eaf1; color:var(--text-primary); }
     .modal-content button { margin:6px; padding:10px 16px; border:none; border-radius:6px; cursor:pointer; }
     #confirmWithdraw { background:var(--accent-green); color:var(--bg); }
     #closeWithdraw { background:var(--accent-blue); color:var(--bg); }
     .error-msg { margin-top:8px; color:#FF6B6B; font-size:0.9rem; }
-    .theme-toggle {
-      position: absolute;
-      top: 16px;
-      right: 100px;
-      cursor: pointer;
-      background: var(--accent-blue);
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: var(--bg);
-      font-weight: 700;
-      user-select: none;
-      transition: background-color 0.3s;
-    }
-    .profile-edit-modal .modal-content {
-      text-align:left;
-    }
-    .profile-edit-modal label {
-      display:block;
-      margin-top:10px;
-      font-weight:600;
-      color:var(--accent-gold);
-    }
-    .profile-edit-modal input {
-      margin-top:4px;
-      padding:8px;
-      width:100%;
-      background: #121526;
-      border-radius:6px;
-      border:none;
-      color: var(--text-primary);
-    }
-    [data-theme="light"] .profile-edit-modal input {
-      background:#e7eaf1;
-      color: var(--text-primary);
-    }
-    .profile-edit-modal button {
-      margin-top:12px;
-      background: var(--accent-green);
-      color: var(--bg);
-      font-weight: 700;
-      width: 100%;
-      cursor: pointer;
-    }
-    /* Transaction History Styles */
-    .transactions-container {
-      background: var(--card-bg);
-      border: 1px solid var(--text-secondary);
-      margin: 16px;
-      padding: 12px;
-      border-radius: 8px;
-      max-height: 180px;
-      overflow-y: auto;
-      font-size: 0.9rem;
-      color: var(--text-primary);
-    }
-    .transactions-container h4 {
-      margin-bottom: 8px;
-      color: var(--accent-gold);
-      text-align:center;
-    }
-    .transaction-entry {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      border-bottom: 1px solid var(--text-secondary);
-      padding-bottom: 4px;
-    }
-    .transaction-entry:last-child {
-      border-bottom: none;
-    }
-    .transaction-type {
-      font-weight: 600;
-      color: var(--accent-green);
-    }
-    .transaction-type.withdraw {
-      color: #FF6B6B;
-    }
-    /* Leaderboard */
-    .leaderboard-container {
-      background: var(--card-bg);
-      border: 1px solid var(--text-secondary);
-      margin: 16px;
-      padding: 12px;
-      border-radius: 8px;
-      max-height: 180px;
-      overflow-y: auto;
-      font-size: 0.9rem;
-      color: var(--text-primary);
-    }
-    .leaderboard-container h4 {
-      margin-bottom: 8px;
-      color: var(--accent-gold);
-      text-align:center;
-    }
-    .leaderboard-entry {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      border-bottom: 1px solid var(--text-secondary);
-      padding-bottom: 4px;
-    }
-    .leaderboard-entry:last-child {
-      border-bottom: none;
-    }
-    /* Notification Toast */
-    .notification-toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--accent-green);
-      color: var(--bg);
-      padding: 14px 22px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
-      font-weight: 600;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-      z-index: 110;
-      max-width: 280px;
-    }
-    .notification-toast.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    /* Loyalty Points */
-    .loyalty-points {
-      margin: 16px;
-      font-size: 1rem;
-      color: var(--accent-gold);
-      font-weight: 700;
-      text-align: center;
-      user-select: none;
-    }
-    /* Task progress bar */
-    .task-progress-bar {
-      height: 6px;
-      background: var(--text-secondary);
-      border-radius: 6px;
-      margin-top: 6px;
-      overflow: hidden;
-    }
-    .task-progress-bar > div {
-      height: 100%;
-      background: var(--accent-gold);
-      width: 0%;
-      transition: width 0.6s ease;
-    }
-    /* Chat box */
-    .chat-container {
-      position: fixed;
-      bottom: 0;
-      right: 0;
-      width: 320px;
-      max-height: 350px;
-      background: var(--card-bg);
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      box-shadow: -2px -2px 8px rgba(0,0,0,0.8);
-      display: flex;
-      flex-direction: column;
-      font-size: 0.85rem;
-      color: var(--text-primary);
-      user-select:none;
-      z-index: 105;
-    }
-    .chat-header {
-      background: var(--accent-gold);
-      color: var(--bg);
-      padding: 10px 14px;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      user-select:none;
-    }
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px 12px;
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--text-secondary);
-    }
-    .chat-message {
-      margin-bottom: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .chat-message.user {
-      align-items: flex-end;
-    }
-    .chat-message .msg-content {
-      background: var(--accent-blue);
-      color: var(--bg);
-      padding: 6px 10px;
-      border-radius: 12px;
-      max-width: 80%;
-      user-select:text;
-      word-wrap: break-word;
-    }
-    .chat-message.user .msg-content {
-      background: var(--accent-green);
-    }
-    .chat-input {
-      display: flex;
-      padding: 8px 12px;
-      background: var(--card-bg);
-      border-top: 1px solid var(--text-secondary);
-    }
-    .chat-input input {
-      flex: 1;
-      padding: 8px 12px;
-      border-radius: 20px;
-      border: none;
-      background: #121526;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-    }
-    [data-theme="light"] .chat-input input {
-      background: #e7eaf1;
-      color: var(--text-primary);
-    }
-    .chat-input button {
-      margin-left: 8px;
-      padding: 8px 16px;
-      border-radius: 20px;
-      border: none;
-      background: var(--accent-gold);
-      color: var(--bg);
-      font-weight: 700;
-      cursor: pointer;
-      user-select:none;
-      transition: background-color 0.3s ease;
-    }
-    .chat-input button:disabled {
-      background: var(--text-secondary);
-      cursor: not-allowed;
-    }
   </style>
 </head>
 <body>
 
-  <div class="dashboard" data-theme="dark">
+  <!-- Login Page -->
+  <div id="loginPage">
+    <form id="loginForm" autocomplete="off">
+      <h2>Login</h2>
+      <input type="text" id="loginUsername" placeholder="Username" required />
+      <input type="email" id="loginEmail" placeholder="Email" required />
+      <input type="password" id="loginPassword" placeholder="Password" required minlength="6" />
+      <div id="loginError"></div>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- Dashboard (your existing code inside) -->
+  <div class="dashboard" id="dashboard">
     <header>
-      <div class="user-info" id="profileEditTrigger" title="Click to edit profile">
+      <div class="user-info">
         <label class="avatar-small" id="dashAvatarLabel">
-          <img id="dashAvatarImg" src="" style="display:none" alt="avatar"/>
+          <img id="dashAvatarImg" src="" style="display:none"/>
           <div id="dashPlaceholder" class="avatar-placeholder">👤</div>
         </label>
         <div class="user-text">
@@ -344,10 +148,7 @@
           <div class="meta" id="displayMeta">ID: 3038792 | priya@example.com | VIP0</div>
         </div>
       </div>
-      <div style="display:flex; align-items:center;">
-        <button class="withdraw-btn" id="withdrawBtn" title="Withdraw funds">Withdraw</button>
-        <div class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Theme">☀️</div>
-      </div>
+      <button class="withdraw-btn" id="withdrawBtn">Withdraw</button>
     </header>
 
     <div class="kpi-bar">
@@ -355,11 +156,9 @@
         <h3 id="balanceDisplay">₹0</h3>
         <p>Balance</p>
       </div>
-      <div class="kpi"><h3 id="tasksDoneDisplay">12</h3><p>Tasks Done</p></div>
-      <div class="kpi"><h3 id="weeklyWinDisplay">₹120</h3><p>Weekly Win</p></div>
+      <div class="kpi"><h3>12</h3><p>Tasks Done</p></div>
+      <div class="kpi"><h3>₹120</h3><p>Weekly Win</p></div>
     </div>
-
-    <div class="loyalty-points" title="Loyalty points earned">Loyalty Points: <span id="loyaltyPoints">0</span></div>
 
     <nav class="tabs">
       <button data-tab="daily" class="active">Daily</button>
@@ -367,188 +166,177 @@
       <button data-tab="monthly">Monthly</button>
     </nav>
 
-    <div class="live-feed" id="liveFeed">🎉 Ravi just won ₹500!</div>
-
+    <div class="live-feed">🎉 Ravi just won ₹500!</div>
     <ul id="task-list" class="task-list"></ul>
-
-    <!-- Transactions -->
-    <div class="transactions-container" aria-label="Transaction History">
-      <h4>Transaction History</h4>
-      <div id="transactionList">
-        <!-- Transactions will appear here -->
-      </div>
-    </div>
-
-    <!-- Leaderboard -->
-    <div class="leaderboard-container" aria-label="Top Winners Leaderboard">
-      <h4>Leaderboard</h4>
-      <div id="leaderboardList">
-        <!-- Leaderboard entries here -->
-      </div>
-    </div>
   </div>
 
-  <!-- Withdraw Modal -->
-  <div id="withdrawModal" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="withdrawTitle">
+  <div id="withdrawModal" class="modal hidden">
     <div class="modal-content">
-      <h3 id="withdrawTitle">Withdraw Funds</h3>
-      <input id="withdrawAmount" type="number" placeholder="Enter amount" aria-label="Withdraw amount"/>
-      <div id="withdrawError" class="error-msg" role="alert"></div>
+      <h3>Withdraw Funds</h3>
+      <input id="withdrawAmount" type="number" placeholder="Enter amount"/>
+      <div id="withdrawError" class="error-msg"></div>
       <button id="confirmWithdraw">Confirm</button>
       <button id="closeWithdraw">Cancel</button>
     </div>
   </div>
 
-  <!-- Profile Edit Modal -->
-  <div id="profileEditModal" class="modal profile-edit-modal hidden" aria-modal="true" role="dialog" aria-labelledby="profileEditTitle">
-    <div class="modal-content">
-      <h3 id="profileEditTitle">Edit Profile</h3>
-      <label for="inputUsername">Username</label>
-      <input id="inputUsername" type="text" aria-label="Username" maxlength="20" placeholder="Enter username" />
-      <label for="inputAvatar">Avatar URL (optional)</label>
-      <input id="inputAvatar" type="url" aria-label="Avatar URL" placeholder="Enter avatar image URL" />
-      <button id="saveProfileBtn">Save</button>
-      <button id="closeProfileEditBtn" style="background:var(--accent-blue); margin-top:8px;">Cancel</button>
-    </div>
-  </div>
+  <script>
+    // --- Login Logic ---
+    const loginPage = document.getElementById('loginPage');
+    const dashboard = document.getElementById('dashboard');
+    const loginForm = document.getElementById('loginForm');
+    const loginUsername = document.getElementById('loginUsername');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginError = document.getElementById('loginError');
 
-  <!-- Notification Toast -->
-  <div id="notificationToast" class="notification-toast" role="alert" aria-live="assertive"></div>
+    // Check login on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedUser = localStorage.getItem('casinoUser');
+      if(savedUser) {
+        // If user info saved, show dashboard
+        showDashboard(JSON.parse(savedUser));
+      } else {
+        showLogin();
+      }
+    });
 
-  <!-- Chat Box -->
-  <div class="chat-container" aria-label="Chat Box" role="complementary" aria-live="polite" aria-atomic="false">
-    <div class="chat-header" id="chatToggle">Chat 💬</div>
-    <div class="chat-messages" id="chatMessages" tabindex="0" aria-live="polite" aria-atomic="false"></div>
-    <div class="chat-input">
-      <input type="text" id="chatInput" placeholder="Type a message" aria-label="Chat message input" />
-      <button id="chatSendBtn" disabled>Send</button>
-    </div>
-  </div>
+    function showLogin() {
+      loginPage.classList.remove('hidden');
+      dashboard.style.display = 'none';
+    }
 
-<script>
-  // Data setup
-  const tasks = {
-    daily: [
-      { id: 1, title: 'Play slot games 5 times', progress: 3, goal: 5, reward: 100, claimed: false },
-      { id: 2, title: 'Make a deposit of ₹100', progress: 100, goal: 100, reward: 150, claimed: true },
-      { id: 3, title: 'Invite a friend', progress: 0, goal: 1, reward: 200, claimed: false }
-    ],
-    weekly: [
-      { id: 4, title: 'Play 30 games', progress: 20, goal: 30, reward: 500, claimed: false },
-      { id: 5, title: 'Win ₹1000 in total', progress: 700, goal: 1000, reward: 800, claimed: false }
-    ],
-    monthly: [
-      { id: 6, title: 'Play 100 games', progress: 50, goal: 100, reward: 1200, claimed: false }
-    ]
-  };
+    function showDashboard(user) {
+      loginPage.classList.add('hidden');
+      dashboard.style.display = 'flex';
 
-  let currentTab = 'daily';
+      // Update dashboard with user info
+      document.getElementById('displayUsername').textContent = user.username;
+      document.getElementById('displayMeta').textContent = `ID: 3038792 | ${user.email} | VIP0`;
 
-  // User profile & balance state
-  let userProfile = {
-    username: 'Priya',
-    avatarUrl: '',
-    userId: '3038792',
-    email: 'priya@example.com',
-    vipLevel: 'VIP0',
-    balance: 120,
-    tasksDone: 12,
-    weeklyWin: 120,
-    loyaltyPoints: 0,
-  };
+      // You can also update avatar if you want, for now we keep placeholder
 
-  // Transaction History
-  const transactions = [
-    { type: 'deposit', amount: 500, date: new Date(Date.now() - 86400000 * 3) }, // 3 days ago
-    { type: 'withdraw', amount: 200, date: new Date(Date.now() - 86400000 * 2) },
-    { type: 'deposit', amount: 300, date: new Date(Date.now() - 86400000) }
-  ];
+      // Initialize dashboard features
+      initDashboard();
+    }
 
-  // Leaderboard entries
-  const leaderboard = [
-    { username: 'Ravi', amount: 5000 },
-    { username: 'Anita', amount: 4200 },
-    { username: 'Suresh', amount: 3500 },
-    { username: 'Priya', amount: 3200 },
-    { username: 'Kiran', amount: 3000 },
-  ];
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      loginError.textContent = '';
 
-  // Chat state
-  let chatOpen = true;
-  const chatMessages = [
-    { user: 'Ravi', message: 'Just won big! Feeling lucky 🍀' },
-    { user: 'Priya', message: 'Congrats Ravi! Hope to win next time.' },
-  ];
+      const username = loginUsername.value.trim();
+      const email = loginEmail.value.trim();
+      const password = loginPassword.value;
 
-  // DOM Elements
-  const balanceDisplay = document.getElementById('balanceDisplay');
-  const tasksDoneDisplay = document.getElementById('tasksDoneDisplay');
-  const weeklyWinDisplay = document.getElementById('weeklyWinDisplay');
-  const loyaltyPointsDisplay = document.getElementById('loyaltyPoints');
+      // Basic validation
+      if(username.length < 2) {
+        loginError.textContent = 'Username too short';
+        return;
+      }
+      if(!validateEmail(email)) {
+        loginError.textContent = 'Invalid email';
+        return;
+      }
+      if(password.length < 6) {
+        loginError.textContent = 'Password must be 6+ characters';
+        return;
+      }
 
-  const taskList = document.getElementById('task-list');
-  const liveFeed = document.getElementById('liveFeed');
+      // For demo: accept any credentials, "login" user
+      const user = { username, email };
+      localStorage.setItem('casinoUser', JSON.stringify(user));
+      showDashboard(user);
+    });
 
-  const withdrawBtn = document.getElementById('withdrawBtn');
-  const withdrawModal = document.getElementById('withdrawModal');
-  const withdrawAmountInput = document.getElementById('withdrawAmount');
-  const withdrawError = document.getElementById('withdrawError');
-  const confirmWithdrawBtn = document.getElementById('confirmWithdraw');
-  const closeWithdrawBtn = document.getElementById('closeWithdraw');
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
 
-  const profileEditTrigger = document.getElementById('profileEditTrigger');
-  const profileEditModal = document.getElementById('profileEditModal');
-  const inputUsername = document.getElementById('inputUsername');
-  const inputAvatar = document.getElementById('inputAvatar');
-  const saveProfileBtn = document.getElementById('saveProfileBtn');
-  const closeProfileEditBtn = document.getElementById('closeProfileEditBtn');
+    // --- Dashboard Logic (your existing code here) ---
+    function initDashboard() {
+      let currentBalance = 1280;
 
-  const displayUsername = document.getElementById('displayUsername');
-  const displayMeta = document.getElementById('displayMeta');
-  const dashAvatarImg = document.getElementById('dashAvatarImg');
-  const dashPlaceholder = document.getElementById('dashPlaceholder');
+      function animateBalance() {
+        new CountUp('balanceDisplay', currentBalance, {
+          duration: 2.0,
+          prefix: '₹',
+          useEasing: true,
+          separator: ','
+        }).start();
+      }
 
-  const transactionList = document.getElementById('transactionList');
-  const leaderboardList = document.getElementById('leaderboardList');
+      const tasks = {
+        daily: [
+          { title: "🃏 Blackjack Bet", meta: "Live odds: 3.5x", color: "var(--accent-gold)" },
+          { title: "🎯 Roulette Spin", meta: "Win big now!", color: "var(--accent-gold)" },
+          { title: "🎰 Slot Machine", meta: "Max payout ₹1000", color: "var(--accent-gold)" }
+        ],
+        weekly: [
+          { title: "🏆 Weekly Jackpot", meta: "Top prize ₹10,000", color: "var(--accent-gold)" }
+        ],
+        monthly: [
+          { title: "🎉 VIP Draw", meta: "Exclusive entries", color: "var(--accent-gold)" }
+        ]
+      };
 
-  const notificationToast = document.getElementById('notificationToast');
+      function renderTasks(tab = 'daily') {
+        const list = document.getElementById('task-list');
+        list.innerHTML = '';
+        tasks[tab].forEach(t => {
+          const li = document.createElement('li');
+          li.className = 'task-card';
+          li.innerHTML = `
+            <div class="accent" style="background:${t.color}"></div>
+            <div class="task-info">
+              <div class="task-title">${t.title}</div>
+              <div class="task-meta">${t.meta}</div>
+            </div>
+            <button class="btn-claim">Claim</button>`;
+          li.querySelector('button').onclick = () => alert(`Claimed: ${t.title}`);
+          list.appendChild(li);
+        });
+      }
 
-  const themeToggle = document.getElementById('themeToggle');
-  const dashboardEl = document.querySelector('.dashboard');
+      document.querySelectorAll('nav.tabs button').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderTasks(btn.getAttribute('data-tab'));
+        };
+      });
 
-  // Chat DOM
-  const chatContainer = document.querySelector('.chat-container');
-  const chatToggleBtn = document.getElementById('chatToggle');
-  const chatMessagesEl = document.getElementById('chatMessages');
-  const chatInput = document.getElementById('chatInput');
-  const chatSendBtn = document.getElementById('chatSendBtn');
+      const wdBtn = document.getElementById('withdrawBtn');
+      const wdModal = document.getElementById('withdrawModal');
+      const wdAmt = document.getElementById('withdrawAmount');
+      const wdErr = document.getElementById('withdrawError');
+      const confirmWd = document.getElementById('confirmWithdraw');
+      const closeWd = document.getElementById('closeWithdraw');
 
-  // Tasks Tabs
-  const tabButtons = document.querySelectorAll('nav.tabs button');
+      wdBtn.onclick = () => {
+        wdAmt.value = '';
+        wdErr.textContent = '';
+        wdModal.classList.remove('hidden');
+      };
+      closeWd.onclick = () => wdModal.classList.add('hidden');
+      confirmWd.onclick = () => {
+        const v = parseInt(wdAmt.value);
+        if (!v || v <= 0) {
+          wdErr.textContent = 'Invalid amount';
+          return;
+        }
+        if (v > currentBalance) {
+          wdErr.textContent = 'Insufficient balance';
+          return;
+        }
+        currentBalance -= v;
+        wdModal.classList.add('hidden');
+        animateBalance();
+        alert(`Withdrawal ₹${v} successful`);
+      };
 
-  // Util: Format currency INR
-  function formatINR(amount) {
-    return '₹' + amount.toLocaleString('en-IN');
-  }
-
-  // Util: Format date for transactions
-  function formatDate(date) {
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-  }
-
-  // Show Notification
-  function showNotification(message) {
-    notificationToast.textContent = message;
-    notificationToast.classList.add('show');
-    setTimeout(() => {
-      notificationToast.classList.remove('show');
-    }, 3500);
-  }
-
-  // Render user profile info in header
-  function renderUserProfile() {
-    displayUsername.textContent = userProfile.username;
-    displayMeta.textContent = `ID: ${userProfile.userId} | ${userProfile.email} | ${userProfile.vipLevel}`;
-    if(userProfile.avatarUrl) {
-      dashAvatarImg.src = userProfile.avatarUrl;
-      dashAvatarImg
+      animateBalance();
+      renderTasks();
+    }
+  </script>
+</body>
+</html>
