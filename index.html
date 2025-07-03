@@ -53,8 +53,8 @@
     .task-info { flex:1; }
     .task-title { font-size:1rem; font-weight:600; }
     .task-meta { margin-top:4px; font-size:0.85rem; color:var(--text-secondary); }
-    .btn-claim { padding:10px 20px; background:var(--accent-gold); color:var(--bg); border:none; border-radius:8px; font-weight:600; cursor:pointer; flex-shrink:0; white-space: nowrap; }
-    .btn-claim:disabled { background: #555; cursor: not-allowed; }
+    .btn-claim { padding:10px 20px; background:var(--accent-gold); color:var(--bg); border:none; border-radius:8px; font-weight:600; cursor:pointer; flex-shrink:0; }
+    .btn-claim[disabled] { background:#555555; cursor:not-allowed; }
     .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:100; }
     .modal.hidden { display:none; }
     .modal-content { background:var(--card-bg); padding:24px; border-radius:12px; width:90%; max-width:320px; text-align:center; }
@@ -112,216 +112,132 @@
   </div>
 
   <script>
-    // Initial user data (simulate logged in user)
-    let currentUser = {
-      id: '3038792',
-      name: 'Priya',
-      email: 'priya@example.com',
-      vip: 'VIP0'
-    };
+    // Load KPI values from localStorage or default to 0
+    let currentBalance = parseInt(localStorage.getItem('currentBalance')) || 0;
+    let tasksDone = parseInt(localStorage.getItem('tasksDone')) || 0;
+    let weeklyWin = parseInt(localStorage.getItem('weeklyWin')) || 0;
 
-    // Load stored user data or set defaults
-    function loadUserData() {
-      const saved = localStorage.getItem(currentUser.id + '_userdata');
-      if (saved) {
-        return JSON.parse(saved);
-      } else {
-        return {
-          balance: 1280,
-          tasksDone: 12,
-          weeklyWin: 120
-        };
-      }
-    }
-    function saveUserData() {
-      localStorage.setItem(currentUser.id + '_userdata', JSON.stringify({balance: currentBalance, tasksDone, weeklyWin}));
+    // Save KPI values to localStorage
+    function saveKpis() {
+      localStorage.setItem('currentBalance', currentBalance);
+      localStorage.setItem('tasksDone', tasksDone);
+      localStorage.setItem('weeklyWin', weeklyWin);
     }
 
-    let userData = loadUserData();
-    let currentBalance = userData.balance;
-    let tasksDone = userData.tasksDone;
-    let weeklyWin = userData.weeklyWin;
-
-    document.getElementById('displayUsername').textContent = currentUser.name;
-    document.getElementById('displayMeta').textContent = `ID: ${currentUser.id} | ${currentUser.email} | ${currentUser.vip}`;
-
-    function animateBalance() {
-      new CountUp('balanceDisplay', currentBalance, {
-        duration: 2.0,
-        prefix: '₹',
-        useEasing: true,
-        separator: ','
-      }).start();
-    }
-
+    // Update KPI display
     function updateKpis() {
+      document.getElementById('balanceDisplay').textContent = `₹${currentBalance}`;
       document.getElementById('tasksDoneDisplay').textContent = tasksDone;
-      document.getElementById('weeklyWinDisplay').textContent = '₹' + weeklyWin;
-      animateBalance();
+      document.getElementById('weeklyWinDisplay').textContent = `₹${weeklyWin}`;
     }
 
-    // Tasks data with reward and id for cooldown tracking
-    const tasksData = {
+    // Task claim timestamps stored in localStorage to prevent multiple claims within 25 hours
+    function getTaskClaimKey(tab, index) {
+      return `taskClaim_${tab}_${index}`;
+    }
+    function setTaskClaimTime(tab, index) {
+      localStorage.setItem(getTaskClaimKey(tab, index), Date.now());
+    }
+    function canClaimTask(tab, index) {
+      const lastClaim = localStorage.getItem(getTaskClaimKey(tab, index));
+      if (!lastClaim) return true;
+      const elapsed = Date.now() - parseInt(lastClaim);
+      return elapsed > 25 * 60 * 60 * 1000; // 25 hours in ms
+    }
+
+    const tasks = {
       daily: [
-        { id: 'daily1', title: "🃏 Blackjack Bet", meta: "Live odds: 3.5x", color: "var(--accent-gold)", reward: 15 },
-        { id: 'daily2', title: "🎯 Roulette Spin", meta: "Win big now!", color: "var(--accent-gold)", reward: 13 },
-        { id: 'daily3', title: "🎰 Slot Machine", meta: "Max payout ₹1000", color: "var(--accent-gold)", reward: 14 },
-        { id: 'daily4', title: "♠️ Poker Hand", meta: "Beat the dealer!", color: "var(--accent-gold)", reward: 12 },
-        { id: 'daily5', title: "🎲 Craps Roll", meta: "Roll the dice", color: "var(--accent-gold)", reward: 15 },
-        { id: 'daily6', title: "🃏 Baccarat", meta: "Try your luck", color: "var(--accent-gold)", reward: 13 }
+        { title: "🃏 Blackjack Bet", meta: "Live odds: 3.5x", reward: 15, color: "var(--accent-gold)" },
+        { title: "🎯 Roulette Spin", meta: "Win big now!", reward: 12, color: "var(--accent-gold)" },
+        { title: "🎰 Slot Machine", meta: "Max payout ₹1000", reward: 14, color: "var(--accent-gold)" },
+        { title: "🀄 Mahjong Challenge", meta: "Try your luck!", reward: 13, color: "var(--accent-gold)" },
+        { title: "🎲 Dice Roll", meta: "Roll to win", reward: 15, color: "var(--accent-gold)" },
+        { title: "🧩 Puzzle Bet", meta: "Solve & earn", reward: 12, color: "var(--accent-gold)" }
       ],
       weekly: [
-        { id: 'weekly1', title: "🏆 Weekly Jackpot", meta: "Top prize ₹10,000", color: "var(--accent-gold)", reward: 120 }
+        { title: "🏆 Weekly Jackpot", meta: "Top prize ₹10,000", reward: 100, color: "var(--accent-gold)" }
       ],
       monthly: [
-        { id: 'monthly1', title: "🎉 VIP Draw", meta: "Exclusive entries", color: "var(--accent-gold)", reward: 300 }
+        { title: "🎉 VIP Draw", meta: "Exclusive entries", reward: 300, color: "var(--accent-gold)" }
       ]
     };
 
-    // Format remaining cooldown time in hours and minutes
-    function formatRemainingTime(ms) {
-      if (ms <= 0) return "Now";
-      const totalSeconds = Math.floor(ms / 1000);
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      return `${hours}h ${minutes}m`;
-    }
-
-    // Render tasks based on tab, with 25 hour cooldown logic
     function renderTasks(tab) {
       const list = document.getElementById('task-list');
       list.innerHTML = '';
-
-      tasksData[tab].forEach(task => {
+      tasks[tab].forEach((t, i) => {
         const li = document.createElement('li');
         li.className = 'task-card';
 
-        const accent = document.createElement('div');
-        accent.className = 'accent';
-        accent.style.background = task.color;
+        const claimable = canClaimTask(tab, i);
 
-        const info = document.createElement('div');
-        info.className = 'task-info';
+        li.innerHTML = `
+          <div class="accent" style="background:${t.color}"></div>
+          <div class="task-info">
+            <div class="task-title">${t.title}</div>
+            <div class="task-meta">${t.meta} | Reward: ₹${t.reward}</div>
+          </div>
+          <button class="btn-claim" ${claimable ? '' : 'disabled'}>Claim</button>
+        `;
 
-        const title = document.createElement('div');
-        title.className = 'task-title';
-        title.textContent = task.title;
-
-        const meta = document.createElement('div');
-        meta.className = 'task-meta';
-        meta.textContent = task.meta;
-
-        info.appendChild(title);
-        info.appendChild(meta);
-
-        const btn = document.createElement('button');
-        btn.className = 'btn-claim';
-
-        // Check cooldown in localStorage: last claim time per user & task
-        const lastClaimKey = `${currentUser.id}_taskClaim_${task.id}`;
-        const lastClaimTime = parseInt(localStorage.getItem(lastClaimKey)) || 0;
-        const now = Date.now();
-        const hoursPassed = (now - lastClaimTime) / (1000 * 60 * 60);
-
-        if (hoursPassed < 25) {
-          btn.disabled = true;
-          const msLeft = 25 * 3600 * 1000 - (now - lastClaimTime);
-          btn.innerHTML = `Available in<br><span style="font-weight:bold;">${formatRemainingTime(msLeft)}</span>`;
-
-          // Update countdown every minute for UX
-          const intervalId = setInterval(() => {
-            const now2 = Date.now();
-            const msLeft2 = 25 * 3600 * 1000 - (now2 - lastClaimTime);
-            if (msLeft2 <= 0) {
-              btn.disabled = false;
-              btn.textContent = `Claim ₹${task.reward}`;
-              clearInterval(intervalId);
-            } else {
-              btn.innerHTML = `Available in<br><span style="font-weight:bold;">${formatRemainingTime(msLeft2)}</span>`;
-            }
-          }, 60000);
-        } else {
-          btn.textContent = `Claim ₹${task.reward}`;
-          btn.disabled = false;
-        }
-
-        btn.onclick = () => {
-          if (btn.disabled) return;
-          currentBalance += task.reward;
-          tasksDone++;
-          weeklyWin += task.reward;
+        li.querySelector('button').onclick = () => {
+          if (!claimable) return;
+          currentBalance += t.reward;
+          tasksDone += 1;
+          if (tab === 'weekly') weeklyWin += t.reward;
+          setTaskClaimTime(tab, i);
           updateKpis();
-          saveUserData();
-
-          localStorage.setItem(lastClaimKey, Date.now().toString());
-
-          btn.disabled = true;
-          btn.innerHTML = `Available in<br><span style="font-weight:bold;">25h 0m</span>`;
-
-          const intervalId = setInterval(() => {
-            const now3 = Date.now();
-            const msLeft3 = 25 * 3600 * 1000 - (now3 - Date.parse(localStorage.getItem(lastClaimKey)));
-            if (msLeft3 <= 0) {
-              btn.disabled = false;
-              btn.textContent = `Claim ₹${task.reward}`;
-              clearInterval(intervalId);
-            } else {
-              btn.innerHTML = `Available in<br><span style="font-weight:bold;">${formatRemainingTime(msLeft3)}</span>`;
-            }
-          }, 60000);
+          saveKpis();
+          renderTasks(tab);
+          alert(`Claimed reward ₹${t.reward} for "${t.title}"`);
         };
 
-        li.appendChild(accent);
-        li.appendChild(info);
-        li.appendChild(btn);
         list.appendChild(li);
       });
     }
 
-    // Tabs click handling
-    document.querySelectorAll('nav.tabs button').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelector('nav.tabs button.active').classList.remove('active');
-        button.classList.add('active');
-        renderTasks(button.dataset.tab);
-      });
+    document.querySelectorAll('nav.tabs button').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTasks(btn.getAttribute('data-tab'));
+      };
     });
 
-    // Withdraw modal logic
-    const withdrawModal = document.getElementById('withdrawModal');
-    const withdrawBtn = document.getElementById('withdrawBtn');
-    const confirmWithdrawBtn = document.getElementById('confirmWithdraw');
-    const closeWithdrawBtn = document.getElementById('closeWithdraw');
-    const withdrawAmountInput = document.getElementById('withdrawAmount');
-    const withdrawError = document.getElementById('withdrawError');
+    const wdBtn = document.getElementById('withdrawBtn');
+    const wdModal = document.getElementById('withdrawModal');
+    const wdAmt = document.getElementById('withdrawAmount');
+    const wdErr = document.getElementById('withdrawError');
+    const confirmWd = document.getElementById('confirmWithdraw');
+    const closeWd = document.getElementById('closeWithdraw');
 
-    withdrawBtn.onclick = () => {
-      withdrawAmountInput.value = '';
-      withdrawError.textContent = '';
-      withdrawModal.classList.remove('hidden');
+    wdBtn.onclick = () => {
+      wdAmt.value = '';
+      wdErr.textContent = '';
+      wdModal.classList.remove('hidden');
     };
-    closeWithdrawBtn.onclick = () => withdrawModal.classList.add('hidden');
-
-    confirmWithdrawBtn.onclick = () => {
-      const amount = parseFloat(withdrawAmountInput.value);
-      if (isNaN(amount) || amount <= 0) {
-        withdrawError.textContent = 'Enter a valid amount';
+    closeWd.onclick = () => wdModal.classList.add('hidden');
+    confirmWd.onclick = () => {
+      const v = parseInt(wdAmt.value);
+      if (!v || v <= 0) {
+        wdErr.textContent = 'Invalid amount';
         return;
       }
-      if (amount > currentBalance) {
-        withdrawError.textContent = 'Insufficient balance';
+      if (v > currentBalance) {
+        wdErr.textContent = 'Insufficient balance';
         return;
       }
-      currentBalance -= amount;
+      currentBalance -= v;
       updateKpis();
-      saveUserData();
-      withdrawModal.classList.add('hidden');
-      alert(`₹${amount} withdrawn successfully!`);
+      saveKpis();
+      wdModal.classList.add('hidden');
+      alert(`Withdrawal ₹${v} successful`);
     };
 
-    // Initial render
-    updateKpis();
-    renderTasks('daily');
+    window.onload = () => {
+      updateKpis();
+      renderTasks('daily');
+    };
   </script>
 </body>
 </html>
