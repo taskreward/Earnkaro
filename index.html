@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Casino Dashboard</title>
   <style>
     :root {
@@ -16,35 +16,30 @@
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; }
-    .dashboard, .login-page { display:none; }
-    .visible { display:block; }
-    .login-page {
-      display:flex; flex-direction:column; justify-content:center; align-items:center;
-      height:100vh; padding:20px;
-    }
-    .login-box {
-      background:var(--card-bg); padding:24px; border-radius:12px; width:100%; max-width:320px;
-    }
+    .hidden { display:none; }
+    .login-page, .dashboard { display:flex; flex-direction:column; min-height:100vh; }
+    .login-page { align-items:center; justify-content:center; padding:20px; }
+    .login-box { background:var(--card-bg); padding:24px; border-radius:12px; width:100%; max-width:360px; }
     .login-box h2 { margin-bottom:16px; text-align:center; }
     .login-box input {
-      width:100%; padding:10px; margin:8px 0; border:none; border-radius:6px;
+      width:100%; padding:10px; margin-bottom:12px; border:none; border-radius:6px;
       background:#121526; color:var(--text-primary);
     }
     .login-box button {
-      width:100%; padding:10px; background:var(--accent-gold); border:none;
-      color:var(--bg); font-weight:bold; border-radius:6px; cursor:pointer;
+      width:100%; padding:12px; background:var(--accent-gold); border:none; border-radius:6px;
+      font-weight:600; color:var(--bg); cursor:pointer;
     }
-    .kpi-bar, .task-list { margin:24px 16px; }
-    .kpi-bar { display:flex; gap:12px; }
-    .kpi { flex:1; background:var(--card-bg); border:1px solid var(--text-secondary); padding:12px; border-radius:8px; text-align:center; }
-    .kpi h3 { color:var(--accent-gold); font-size:1.1rem; margin-bottom:4px; }
-    .kpi p { font-size:0.85rem; color:var(--text-secondary); }
     header { background:var(--card-bg); padding:16px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.8); }
     .user-info { display:flex; align-items:center; }
     .avatar-small { width:36px; height:36px; border-radius:50%; overflow:hidden; margin-right:8px; cursor:pointer; background:var(--text-secondary); }
+    .avatar-small img { width:100%; height:100%; object-fit:cover; }
     .user-text .name { font-weight:600; }
     .user-text .meta { font-size:0.8rem; color:var(--text-secondary); }
     .withdraw-btn { background:var(--accent-gold); border:none; padding:8px 12px; border-radius:6px; color:var(--bg); font-weight:500; cursor:pointer; }
+    .kpi-bar { display:flex; gap:12px; margin:24px 16px; }
+    .kpi { flex:1; background:var(--card-bg); border:1px solid var(--text-secondary); padding:12px; border-radius:8px; text-align:center; }
+    .kpi h3 { color:var(--accent-gold); font-size:1.1rem; margin-bottom:4px; }
+    .kpi p { font-size:0.85rem; color:var(--text-secondary); }
     nav.tabs { display:flex; background:var(--card-bg); }
     nav.tabs button {
       flex:1; padding:12px; background:none; border:none;
@@ -56,136 +51,170 @@
       content:''; position:absolute; bottom:0; left:20%; right:20%;
       height:3px; background:var(--accent-gold); border-radius:2px;
     }
+    .live-feed { margin:8px 16px; font-size:0.85rem; color:var(--accent-green); text-align:center; }
+    .task-list { flex:1; overflow-y:auto; padding:16px; }
     .task-card {
-      background:var(--card-bg); padding:16px; margin-bottom:12px;
+      display:flex; align-items:center; justify-content:space-between;
+      background:var(--card-bg); margin-bottom:12px; padding:16px;
       border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.8);
-      display:flex; justify-content:space-between; align-items:center;
+      transition:transform 0.1s;
     }
-    .task-info { flex:1; margin-left:12px; }
-    .btn-claim { padding:8px 16px; background:var(--accent-gold); color:var(--bg); border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
+    .task-card:active { transform:scale(0.97); }
+    .accent { width:6px; height:100%; border-radius:4px; margin-right:12px; }
+    .task-info { flex:1; }
+    .task-title { font-size:1rem; font-weight:600; }
+    .task-meta { margin-top:4px; font-size:0.85rem; color:var(--text-secondary); }
+    .btn-claim { padding:10px 20px; background:var(--accent-gold); color:var(--bg); border:none; border-radius:8px; font-weight:600; cursor:pointer; flex-shrink:0; }
   </style>
 </head>
 <body>
-
-  <div class="login-page visible" id="loginPage">
-    <div class="login-box">
-      <h2>Login</h2>
-      <input id="username" type="text" placeholder="Username" />
-      <input id="email" type="email" placeholder="Email" />
-      <input id="password" type="password" placeholder="Password" />
-      <button id="loginBtn">Login</button>
-    </div>
+<div class="login-page" id="loginPage">
+  <div class="login-box">
+    <h2>Login</h2>
+    <input type="text" id="loginUsername" placeholder="Username" required />
+    <input type="email" id="loginEmail" placeholder="Email" required />
+    <input type="password" id="loginPassword" placeholder="Password" required />
+    <button id="loginBtn">Login</button>
   </div>
+</div>
 
-  <div class="dashboard" id="dashboard">
-    <header>
-      <div class="user-info">
-        <div class="avatar-small"></div>
-        <div class="user-text">
-          <div class="name" id="displayUsername"></div>
-          <div class="meta" id="displayMeta"></div>
-        </div>
+<div class="dashboard hidden" id="dashboard">
+  <header>
+    <div class="user-info">
+      <label class="avatar-small" id="dashAvatarLabel">
+        <div id="dashPlaceholder" class="avatar-placeholder">👤</div>
+      </label>
+      <div class="user-text">
+        <div class="name" id="displayUsername">User</div>
+        <div class="meta" id="displayMeta"></div>
       </div>
-      <button class="withdraw-btn">Withdraw</button>
-    </header>
-    <div class="kpi-bar">
-      <div class="kpi"><h3 id="balanceDisplay">₹0</h3><p>Balance</p></div>
-      <div class="kpi"><h3 id="tasksDone">0</h3><p>Tasks Done</p></div>
-      <div class="kpi"><h3 id="weeklyWin">₹0</h3><p>Weekly Win</p></div>
     </div>
-    <nav class="tabs">
-      <button class="active" data-tab="daily">Daily Tasks</button>
-      <button data-tab="weekly">Mission Bonus</button>
-      <button data-tab="monthly">Earn More</button>
-    </nav>
-    <ul id="task-list" class="task-list"></ul>
+    <button class="withdraw-btn" id="withdrawBtn">Withdraw</button>
+  </header>
+
+  <div class="kpi-bar">
+    <div class="kpi">
+      <h3 id="balanceDisplay">₹0</h3>
+      <p>Balance</p>
+    </div>
+    <div class="kpi">
+      <h3 id="tasksDoneDisplay">0</h3>
+      <p>Tasks Done</p>
+    </div>
+    <div class="kpi">
+      <h3 id="weeklyWinDisplay">₹0</h3>
+      <p>Weekly Win</p>
+    </div>
   </div>
 
-  <script>
-    const loginPage = document.getElementById('loginPage');
-    const dashboard = document.getElementById('dashboard');
-    const loginBtn = document.getElementById('loginBtn');
+  <nav class="tabs">
+    <button data-tab="daily" class="active">Daily Tasks</button>
+    <button data-tab="weekly">Mission Bonus</button>
+    <button data-tab="monthly">Earn More</button>
+  </nav>
 
-    let userData = JSON.parse(localStorage.getItem('casinoUser')) || null;
+  <div class="live-feed">🎉 Ravi just won ₹500!</div>
+  <ul id="task-list" class="task-list"></ul>
+</div>
 
-    if (userData) showDashboard();
+<script>
+  const loginPage = document.getElementById('loginPage');
+  const dashboard = document.getElementById('dashboard');
+  const balanceDisplay = document.getElementById('balanceDisplay');
+  const tasksDoneDisplay = document.getElementById('tasksDoneDisplay');
+  const weeklyWinDisplay = document.getElementById('weeklyWinDisplay');
 
-    loginBtn.onclick = () => {
-      const name = document.getElementById('username').value;
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      if (!name || !email || !password) return alert('All fields required');
-      userData = { name, email, balance: 0, tasksDone: 0, weeklyWin: 0, claimedTasks: {} };
-      localStorage.setItem('casinoUser', JSON.stringify(userData));
+  let user = JSON.parse(localStorage.getItem('casinoUser')) || null;
+  let state = JSON.parse(localStorage.getItem('casinoState')) || {
+    balance: 0,
+    tasksDone: 0,
+    weeklyWin: 0,
+    taskTimestamps: {}
+  };
+
+  function updateKPI() {
+    balanceDisplay.textContent = `₹${state.balance}`;
+    tasksDoneDisplay.textContent = state.tasksDone;
+    weeklyWinDisplay.textContent = `₹${state.weeklyWin}`;
+  }
+
+  function saveState() {
+    localStorage.setItem('casinoState', JSON.stringify(state));
+  }
+
+  function showDashboard() {
+    document.getElementById('displayUsername').textContent = user.username;
+    document.getElementById('displayMeta').textContent = `ID: 3038792 | ${user.email} | VIP0`;
+    loginPage.classList.add('hidden');
+    dashboard.classList.remove('hidden');
+    updateKPI();
+    renderTasks('daily');
+  }
+
+  document.getElementById('loginBtn').onclick = () => {
+    const username = document.getElementById('loginUsername').value;
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    if (username && email && password) {
+      user = { username, email };
+      localStorage.setItem('casinoUser', JSON.stringify(user));
       showDashboard();
-    };
-
-    function showDashboard() {
-      loginPage.classList.remove('visible');
-      dashboard.classList.add('visible');
-      document.getElementById('displayUsername').textContent = userData.name;
-      document.getElementById('displayMeta').textContent = `ID: 3038792 | ${userData.email} | VIP0`;
-      updateKPI();
-      renderTasks('daily');
     }
+  };
 
-    function updateKPI() {
-      document.getElementById('balanceDisplay').textContent = '₹' + userData.balance;
-      document.getElementById('tasksDone').textContent = userData.tasksDone;
-      document.getElementById('weeklyWin').textContent = '₹' + userData.weeklyWin;
-    }
+  if (user) showDashboard();
 
-    const taskDefinitions = {
-      daily: [
-        { id: 'd1', title: 'Spin Roulette', amount: 12 },
-        { id: 'd2', title: 'Play Blackjack', amount: 14 },
-        { id: 'd3', title: 'Claim Daily', amount: 15 },
-        { id: 'd4', title: 'Lucky Draw', amount: 13 },
-        { id: 'd5', title: 'Quick Bet', amount: 12 },
-        { id: 'd6', title: 'Win Booster', amount: 15 }
-      ],
-      weekly: [],
-      monthly: []
-    };
+  const tasks = {
+    daily: [
+      { id: 't1', title: "🃏 Blackjack Bet", meta: "Earn ₹12", reward: 12 },
+      { id: 't2', title: "🎯 Roulette Spin", meta: "Earn ₹15", reward: 15 },
+      { id: 't3', title: "🎰 Slot Machine", meta: "Earn ₹18", reward: 18 },
+      { id: 't4', title: "🎮 Spin Game", meta: "Earn ₹10", reward: 10 },
+      { id: 't5', title: "🪙 Coin Flip", meta: "Earn ₹14", reward: 14 },
+      { id: 't6', title: "💰 Treasure Hunt", meta: "Earn ₹20", reward: 20 }
+    ],
+    weekly: [],
+    monthly: []
+  };
 
-    function renderTasks(tab) {
-      const list = document.getElementById('task-list');
-      list.innerHTML = '';
-      taskDefinitions[tab].forEach(task => {
-        const li = document.createElement('li');
-        li.className = 'task-card';
-        const lastClaim = userData.claimedTasks[task.id] || 0;
-        const now = Date.now();
-        const claimable = now - lastClaim > 25 * 60 * 60 * 1000;
+  function renderTasks(tab) {
+    const list = document.getElementById('task-list');
+    list.innerHTML = '';
+    tasks[tab].forEach(t => {
+      const lastClaim = state.taskTimestamps[t.id] || 0;
+      const canClaim = Date.now() - lastClaim >= 25 * 3600 * 1000;
 
-        li.innerHTML = `
-          <div class="task-info">
-            <div class="task-title">${task.title}</div>
-            <div class="task-meta">Reward: ₹${task.amount}</div>
-          </div>
-          <button class="btn-claim" ${!claimable ? 'disabled' : ''}>Claim</button>
-        `;
+      const li = document.createElement('li');
+      li.className = 'task-card';
+      li.innerHTML = `
+        <div class="accent" style="background:var(--accent-gold)"></div>
+        <div class="task-info">
+          <div class="task-title">${t.title}</div>
+          <div class="task-meta">${t.meta}</div>
+        </div>
+        <button class="btn-claim" ${canClaim ? '' : 'disabled'}>Claim</button>
+      `;
 
-        li.querySelector('button').onclick = () => {
-          userData.balance += task.amount;
-          userData.tasksDone++;
-          userData.weeklyWin += task.amount;
-          userData.claimedTasks[task.id] = now;
-          localStorage.setItem('casinoUser', JSON.stringify(userData));
-          updateKPI();
-          renderTasks(tab);
-        };
-        list.appendChild(li);
-      });
-    }
-
-    document.querySelectorAll('nav.tabs button').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderTasks(btn.getAttribute('data-tab'));
+      li.querySelector('button').onclick = () => {
+        state.balance += t.reward;
+        state.tasksDone++;
+        state.weeklyWin += t.reward;
+        state.taskTimestamps[t.id] = Date.now();
+        saveState();
+        updateKPI();
+        renderTasks(tab);
       };
+      list.appendChild(li);
     });
-  </script>
+  }
+
+  document.querySelectorAll('nav.tabs button').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTasks(btn.getAttribute('data-tab'));
+    };
+  });
+</script>
 </body>
 </html>
