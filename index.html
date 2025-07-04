@@ -92,179 +92,74 @@
       border: none; border-radius: 8px; font-weight: 600; cursor: pointer; flex-shrink: 0;
     }
     .btn-disabled {
-      background: gray !important; color: var(--text-secondary) !important; cursor: not-allowed;
+      background: gray !important;
+      color: var(--text-secondary) !important;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
-  <div id="loginPage" class="login-container">
-    <div class="login-box">
-      <h2 style="text-align:center;margin-bottom:16px;">Login</h2>
-      <input type="text" id="loginUsername" placeholder="Username" />
-      <input type="email" id="loginEmail" placeholder="Email" />
-      <input type="password" id="loginPassword" placeholder="Password" />
-      <button onclick="loginUser()">Login</button>
-    </div>
-  </div>
+<!-- ... Unchanged content before script ... -->
+<script>
+// ... Unchanged functions before renderTasks ...
 
-  <div id="dashboardPage" class="dashboard hidden">
-    <header>
-      <div class="user-info">
-        <label class="avatar-small">
-          <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="saveAvatar(event)" />
-          <img id="avatarImg" src="" alt="avatar" onclick="document.getElementById('avatarInput').click()" />
-        </label>
-        <div class="user-text">
-          <div class="name" id="displayUsername"></div>
-          <div class="meta" id="displayMeta"></div>
-        </div>
-      </div>
-      <button class="withdraw-btn" id="withdrawBtn">Withdraw</button>
-    </header>
+function renderTasks(tab){
+  const list = document.getElementById('task-list');
+  list.innerHTML = '';
+  const saved = JSON.parse(localStorage.getItem('casinoUser'));
+  tasks[tab].forEach(t => {
+    const li = document.createElement('li');
+    li.className = 'task-card';
+    const last = saved.claimed[t.key] || 0;
+    const proc = saved.processing[t.key] || 0;
+    const now = Date.now();
+    const done = (now - last) < 25 * 3600 * 1000;
+    const processing = (now - proc) < 3 * 60 * 1000;
 
-    <div class="kpi-bar">
-      <div class="kpi"><h3 id="balanceDisplay">₹0</h3><p>Balance</p></div>
-      <div class="kpi"><h3 id="kpiTasks">0</h3><p>Tasks Done</p></div>
-      <div class="kpi"><h3 id="kpiWeekly">₹0</h3><p>Weekly Win</p></div>
-    </div>
+    const btn = document.createElement('button');
+    btn.className = 'btn-claim';
 
-    <nav class="tabs">
-      <button data-tab="daily" class="active">Daily Tasks</button>
-      <button data-tab="weekly">Mission Bonus</button>
-      <button data-tab="monthly">Earn More</button>
-    </nav>
-
-    <div class="live-feed">🎉 Ravi just won ₹500!</div>
-    <ul id="task-list" class="task-list"></ul>
-  </div>
-
-  <script>
-    function loginUser() {
-      const name = document.getElementById('loginUsername').value.trim();
-      const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value.trim();
-      if (!name || !email || !pass) return alert('Fill all fields');
-      const user = { name, email, id: Date.now(), vip: 0 };
-      const data = { user, balance: 0, tasksDone: 0, weeklyWin: 0, claimed: {}, processing: {}, avatar: '' };
-      localStorage.setItem('casinoUser', JSON.stringify(data));
-      showDashboard();
-    }
-
-    function showDashboard() {
-      const saved = JSON.parse(localStorage.getItem('casinoUser'));
-      if (!saved) return;
-      document.getElementById('loginPage').classList.add('hidden');
-      document.getElementById('dashboardPage').classList.remove('hidden');
-      document.getElementById('displayUsername').textContent = saved.user.name;
-      document.getElementById('displayMeta').textContent = `ID: ${saved.user.id} | ${saved.user.email} | VIP${saved.user.vip}`;
-      if (saved.avatar) document.getElementById('avatarImg').src = saved.avatar;
-      updateKPI();
-      renderTasks('daily');
-    }
-
-    function saveAvatar(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const saved = JSON.parse(localStorage.getItem('casinoUser'));
-        saved.avatar = evt.target.result;
+    if (processing) {
+      btn.textContent = 'Processing';
+      btn.disabled = true;
+      btn.classList.add('btn-disabled');
+    } else if (done) {
+      btn.textContent = 'Claimed';
+      btn.disabled = true;
+      btn.classList.add('btn-disabled');
+    } else {
+      btn.textContent = 'Claim';
+      btn.onclick = () => {
+        window.open('https://example.com', '_blank');
+        saved.processing[t.key] = now;
         localStorage.setItem('casinoUser', JSON.stringify(saved));
-        showDashboard();
+        renderTasks(tab);
+
+        setTimeout(() => {
+          const refreshed = JSON.parse(localStorage.getItem('casinoUser'));
+          refreshed.claimed[t.key] = Date.now();
+          refreshed.processing[t.key] = 0;
+          refreshed.balance += t.reward;
+          refreshed.tasksDone++;
+          refreshed.weeklyWin += t.reward;
+          localStorage.setItem('casinoUser', JSON.stringify(refreshed));
+          updateKPI();
+          renderTasks(tab);
+        }, 180000);
       };
-      reader.readAsDataURL(file);
     }
 
-    function updateKPI() {
-      const s = JSON.parse(localStorage.getItem('casinoUser'));
-      document.getElementById('balanceDisplay').textContent = `₹${s.balance}`;
-      document.getElementById('kpiTasks').textContent = s.tasksDone;
-      document.getElementById('kpiWeekly').textContent = `₹${s.weeklyWin}`;
-    }
-
-    const tasks = {
-      daily: Array.from({length:6}, (_,i) => ({
-        title: `🎲 Task ${i+1}`,
-        meta: `Earn ₹${12+i}`,
-        reward: 12+i,
-        color: 'var(--accent-gold)',
-        key: `daily_task_${i}`
-      })),
-      weekly: Array.from({length:4}, (_,i) => ({
-        title: `🔥 Mission ${i+1}`,
-        meta: 'Earn ₹15',
-        reward: 15,
-        color: 'var(--accent-blue)',
-        key: `weekly_task_${i}`
-      })),
-      monthly: []
-    };
-
-    function renderTasks(tab){
-      const list = document.getElementById('task-list');
-      list.innerHTML = '';
-      const saved = JSON.parse(localStorage.getItem('casinoUser'));
-      tasks[tab].forEach(t=>{
-        const li = document.createElement('li');
-        li.className='task-card';
-        const last = saved.claimed[t.key]||0;
-        const proc = saved.processing[t.key]||0;
-        const now = Date.now();
-        const done = (now - last) < 25*3600*1000;
-        const processing = (now - proc) < 3*60*1000;
-
-        let btn = document.createElement('button');
-        btn.className = 'btn-claim';
-        if (processing) {
-          btn.textContent = 'Processing';
-          btn.disabled = true;
-          btn.classList.add('btn-disabled');
-        } else if (done) {
-          btn.textContent = 'Claimed';
-          btn.disabled = true;
-          btn.classList.add('btn-disabled');
-        } else {
-          btn.textContent = 'Claim';
-          btn.onclick = () => {
-            window.open('https://example.com', '_blank');
-            saved.processing[t.key] = now;
-            localStorage.setItem('casinoUser', JSON.stringify(saved));
-            setTimeout(()=>{
-              const refreshed = JSON.parse(localStorage.getItem('casinoUser'));
-              refreshed.claimed[t.key] = Date.now();
-              refreshed.processing[t.key] = 0;
-              refreshed.balance += t.reward;
-              refreshed.tasksDone++;
-              refreshed.weeklyWin += t.reward;
-              localStorage.setItem('casinoUser', JSON.stringify(refreshed));
-              updateKPI();
-              renderTasks(tab);
-            }, 180000);
-            renderTasks(tab);
-          };
-        }
-
-        li.innerHTML = `
-          <div class="accent" style="background:${t.color}"></div>
-          <div class="task-info">
-            <div class="task-title">${t.title}</div>
-            <div class="task-meta">${t.meta}</div>
-          </div>
-        `;
-        li.appendChild(btn);
-        list.appendChild(li);
-      });
-    }
-
-    document.querySelectorAll('nav.tabs button').forEach(btn=>{
-      btn.onclick=()=>{
-        document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        renderTasks(btn.getAttribute('data-tab'));
-      };
-    });
-
-    window.onload = showDashboard;
-  </script>
+    li.innerHTML = `
+      <div class="accent" style="background:${t.color}"></div>
+      <div class="task-info">
+        <div class="task-title">${t.title}</div>
+        <div class="task-meta">${t.meta}</div>
+      </div>
+    `;
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+}
+</script>
 </body>
 </html>
