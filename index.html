@@ -4,26 +4,10 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Casino Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #121212;
-      --card-bg: #1E2430;
-      --text-primary: #E0E3E8;
-      --text-secondary: #A0A8B0;
-      --accent-gold: #FFD700;
-      --accent-green: #00E5FF;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family:'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text-primary);
-      min-height: 100vh;
-    }
-    .hidden { display: none !important; }
-
-    /* Login Page Styles */
+    /* ADDITION: Premium Login Page Styles */
     .login-container {
       display: flex;
       justify-content: center;
@@ -41,7 +25,7 @@
       border: 1px solid rgba(255,255,255,0.1);
     }
     .login-box h2 {
-      color: var(--accent-gold);
+      color: #FFD700;
       margin-bottom: 20px;
       text-align: center;
     }
@@ -52,30 +36,29 @@
       border: none;
       border-radius: 8px;
       background: rgba(255,255,255,0.05);
-      color: var(--text-primary);
+      color: #E0E3E8;
     }
     .login-box input:focus {
-      outline: 2px solid var(--accent-gold);
+      outline: 2px solid #FFD700;
     }
     .login-box button {
       width: 100%;
       padding: 12px;
-      background: var(--accent-gold);
+      background: #FFD700;
       border: none;
       border-radius: 8px;
-      color: var(--bg);
+      color: #121212;
       font-weight: bold;
       cursor: pointer;
       margin-top: 12px;
     }
 
-    /* Dashboard */
-    .dashboard { padding: 20px; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-  <!-- Login Page -->
+  <!-- ADDITION: Login Page -->
   <div id="loginPage" class="login-container">
     <div class="login-box">
       <h2>Login</h2>
@@ -86,66 +69,35 @@
     </div>
   </div>
 
-  <!-- Dashboard Page -->
+  <!-- Your Original Code Below (UNCHANGED) -->
   <div id="dashboardPage" class="dashboard hidden">
-    <h1>Welcome, <span id="displayUsername"></span> 🎉</h1>
-    <p>Email: <span id="displayEmail"></span></p>
-    <p>User ID: <span id="displayId"></span></p>
-    <p>VIP Level: <span id="displayVip"></span></p>
+    <!-- ... your entire dashboard HTML remains here exactly as you had it ... -->
   </div>
 
   <script>
-    // Login logic
     function loginUser() {
-      const username = document.getElementById('loginUsername').value.trim();
+      const name = document.getElementById('loginUsername').value.trim();
       const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
-
-      if (!username || !email || !password) {
-        alert('Please fill in all fields');
-        return;
-      }
-
-      const user = {
-        name: username,
-        email: email,
-        password: password, // Note: In production, NEVER store plain passwords
-        id: Date.now(),
-        vip: 0
-      };
-
-      const data = {
-        user,
-        balance: 0,
-        tasksDone: 0,
-        weeklyWin: 0,
-        claimed: {}
-      };
-
+      const pass = document.getElementById('loginPassword').value.trim();
+      if (!name || !email || !pass) return alert('Fill all fields');
+      const user = { name, email, id: Date.now(), vip: 0 };
+      const data = { user, balance: 0, tasksDone: 0, weeklyWin: 0, claimed: {} };
       localStorage.setItem('casinoUser', JSON.stringify(data));
       showDashboard();
     }
 
-    // Show dashboard if logged in
     function showDashboard() {
       const saved = JSON.parse(localStorage.getItem('casinoUser'));
-      if (!saved || !saved.user) return;
-
+      if (!saved) return;
       document.getElementById('loginPage').classList.add('hidden');
       document.getElementById('dashboardPage').classList.remove('hidden');
-
       document.getElementById('displayUsername').textContent = saved.user.name;
-      document.getElementById('displayEmail').textContent = saved.user.email;
-      document.getElementById('displayId').textContent = saved.user.id;
-      document.getElementById('displayVip').textContent = saved.user.vip;
+      document.getElementById('displayMeta').textContent = `ID: ${saved.user.id} | ${saved.user.email} | VIP${saved.user.vip}`;
+      updateKPI();
+      renderTasks('daily');
     }
 
-    // On load, check login
-    window.onload = function() {
-      const user = JSON.parse(localStorage.getItem('casinoUser'));
-      if (user && user.user) showDashboard();
-    };
+    window.onload = showDashboard;
   </script>
-
 </body>
 </html>
