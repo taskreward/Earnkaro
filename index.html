@@ -1,253 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Casino Dashboard</title>
-  <style>
-    :root {
-      --bg: #121212;
-      --card-bg: #1E2430;
-      --text-primary: #E0E3E8;
-      --text-secondary: #A0A8B0;
-      --accent-gold: #FFD700;
-      --accent-green: #00E5FF;
-      --accent-blue: #4B4EFF;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; }
-    .hidden { display: none !important; }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Casino Dashboard</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --card-bg: #1E2430;
+      --text-primary: #E0E3E8;
+      --text-secondary: #A0A8B0;
+      --accent-gold: #FFD700;
+      --accent-green: #00E5FF;
+      --accent-blue: #4B4EFF;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; }
+    .hidden { display: none !important; }
 
-    .login-container {
-      display: flex; justify-content: center; align-items: center;
-      height: 100vh; flex-direction: column;
-    }
-    .login-box {
-      background: var(--card-bg); padding: 24px; border-radius: 12px;
-      width: 90%; max-width: 320px; box-shadow: 0 4px 10px rgba(0,0,0,0.7);
-    }
-    .login-box input {
-      width: 100%; margin: 10px 0; padding: 10px;
-      border: none; border-radius: 6px;
-      background: #121526; color: var(--text-primary);
-    }
-    .login-box button {
-      width: 100%; padding: 12px; background: var(--accent-gold);
-      border: none; border-radius: 6px; font-weight: bold;
-      color: var(--bg); cursor: pointer;
-    }
+    .login-container {
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; flex-direction: column;
+    }
+    .login-box {
+      background: var(--card-bg); padding: 24px; border-radius: 12px;
+      width: 90%; max-width: 320px; box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+    }
+    .login-box input {
+      width: 100%; margin: 10px 0; padding: 10px;
+      border: none; border-radius: 6px;
+      background: #121526; color: var(--text-primary);
+    }
+    .login-box button {
+      width: 100%; padding: 12px; background: var(--accent-gold);
+      border: none; border-radius: 6px; font-weight: bold;
+      color: var(--bg); cursor: pointer;
+    }
 
-    .dashboard { display: flex; flex-direction: column; min-height: 100vh; }
-    header {
-      background: var(--card-bg); padding: 16px;
-      display: flex; justify-content: space-between; align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.8);
-    }
-    .user-info { display: flex; align-items: center; }
-    .avatar-small {
-      width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
-      margin-right: 8px; cursor: pointer; background: var(--text-secondary);
-    }
-    .avatar-small img { width: 100%; height: 100%; object-fit: cover; }
-    .user-text .name { font-weight: 600; }
-    .user-text .meta { font-size: 0.8rem; color: var(--text-secondary); }
-    .withdraw-btn {
-      background: var(--accent-gold); border: none;
-      padding: 8px 12px; border-radius: 6px;
-      color: var(--bg); font-weight: 500; cursor: pointer;
-    }
+    .dashboard { display: flex; flex-direction: column; min-height: 100vh; }
+    header {
+      background: var(--card-bg); padding: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    .user-info { display: flex; align-items: center; }
+    .avatar-small {
+      width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
+      margin-right: 8px; cursor: pointer; background: var(--text-secondary);
+    }
+    .avatar-small img { width: 100%; height: 100%; object-fit: cover; }
+    .user-text .name { font-weight: 600; }
+    .user-text .meta { font-size: 0.8rem; color: var(--text-secondary); }
+    .withdraw-btn {
+      background: var(--accent-gold); border: none;
+      padding: 8px 12px; border-radius: 6px;
+      color: var(--bg); font-weight: 500; cursor: pointer;
+    }
 
-    .kpi-bar {
-      display: flex; gap: 12px; margin: 24px 16px;
-    }
-    .kpi {
-      flex: 1; background: var(--card-bg);
-      border: 1px solid var(--text-secondary);
-      padding: 12px; border-radius: 8px; text-align: center;
-    }
-    .kpi h3 { color: var(--accent-gold); font-size: 1.1rem; margin-bottom: 4px; }
-    .kpi p { font-size: 0.85rem; color: var(--text-secondary); }
+    .kpi-bar {
+      display: flex; gap: 12px; margin: 24px 16px;
+    }
+    .kpi {
+      flex: 1; background: var(--card-bg);
+      border: 1px solid var(--text-secondary);
+      padding: 12px; border-radius: 8px; text-align: center;
+    }
+    .kpi h3 { color: var(--accent-gold); font-size: 1.1rem; margin-bottom: 4px; }
+    .kpi p { font-size: 0.85rem; color: var(--text-secondary); }
 
-    nav.tabs { display: flex; background: var(--card-bg); }
-    nav.tabs button {
-      flex: 1; padding: 12px; background: none; border: none;
-      color: var(--text-secondary); font-weight: 600; cursor: pointer;
-      position: relative;
-    }
-    nav.tabs button.active { color: var(--text-primary); }
-    nav.tabs button.active::after {
-      content: ''; position: absolute; bottom: 0; left: 20%; right: 20%;
-      height: 3px; background: var(--accent-gold); border-radius: 2px;
-    }
+    nav.tabs { display: flex; background: var(--card-bg); }
+    nav.tabs button {
+      flex: 1; padding: 12px; background: none; border: none;
+      color: var(--text-secondary); font-weight: 600; cursor: pointer;
+      position: relative;
+    }
+    nav.tabs button.active { color: var(--text-primary); }
+    nav.tabs button.active::after {
+      content: ''; position: absolute; bottom: 0; left: 20%; right: 20%;
+      height: 3px; background: var(--accent-gold); border-radius: 2px;
+    }
 
-    .live-feed {
-      margin: 8px 16px; font-size: 0.85rem;
-      color: var(--accent-green); text-align: center;
-    }
+    .live-feed {
+      margin: 8px 16px; font-size: 0.85rem;
+      color: var(--accent-green); text-align: center;
+    }
 
-    .task-list { flex: 1; overflow-y: auto; padding: 16px; }
-    .task-card {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--card-bg); margin-bottom: 12px; padding: 16px;
-      border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.8);
-      transition: transform 0.1s;
-    }
-    .task-card:active { transform: scale(0.97); }
-    .accent { width: 6px; height: 100%; border-radius: 4px; margin-right: 12px; }
-    .task-info { flex: 1; }
-    .task-title { font-size: 1rem; font-weight: 600; }
-    .task-meta { margin-top: 4px; font-size: 0.85rem; color: var(--text-secondary); }
-    .btn-claim {
-      padding: 10px 20px; background: var(--accent-gold);
-      color: var(--bg); border: none; border-radius: 8px;
-      font-weight: 600; cursor: pointer; flex-shrink: 0;
-    }
-  </style>
+    .task-list { flex: 1; overflow-y: auto; padding: 16px; }
+    .task-card {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--card-bg); margin-bottom: 12px; padding: 16px;
+      border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      transition: transform 0.1s;
+    }
+    .task-card:active { transform: scale(0.97); }
+    .accent { width: 6px; height: 100%; border-radius: 4px; margin-right: 12px; }
+    .task-info { flex: 1; }
+    .task-title { font-size: 1rem; font-weight: 600; }
+    .task-meta { margin-top: 4px; font-size: 0.85rem; color: var(--text-secondary); }
+    .btn-claim {
+      padding: 10px 20px; background: var(--accent-gold);
+      color: var(--bg); border: none; border-radius: 8px;
+      font-weight: 600; cursor: pointer; flex-shrink: 0;
+    }
+    .btn-claim:disabled {
+      background: #666; color: #ccc; cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
-  <div id="loginPage" class="login-container">
-    <div class="login-box">
-      <h2 style="text-align:center;margin-bottom:16px;">Login</h2>
-      <input type="text" id="loginUsername" placeholder="Username" />
-      <input type="email" id="loginEmail" placeholder="Email" />
-      <input type="password" id="loginPassword" placeholder="Password" />
-      <button onclick="loginUser()">Login</button>
-    </div>
-  </div>
+  <div id="loginPage" class="login-container">
+    <div class="login-box">
+      <h2 style="text-align:center;margin-bottom:16px;">Login</h2>
+      <input type="text" id="loginUsername" placeholder="Username" />
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <button onclick="loginUser()">Login</button>
+    </div>
+  </div>
 
-  <div id="dashboardPage" class="dashboard hidden">
-    <header>
-      <div class="user-info">
-        <label class="avatar-small">
-          <input type="file" id="avatarUpload" accept="image/*" style="display:none" />
-          <img id="userAvatar" src="" alt="avatar" />
-        </label>
-        <div class="user-text">
-          <div class="name" id="displayUsername"></div>
-          <div class="meta" id="displayMeta"></div>
-        </div>
-      </div>
-      <button class="withdraw-btn">Withdraw</button>
-    </header>
+  <div id="dashboardPage" class="dashboard hidden">
+    <header>
+      <div class="user-info">
+        <label class="avatar-small">
+          <input type="file" id="avatarUpload" accept="image/*" style="display:none" />
+          <img id="userAvatar" src="" alt="avatar" />
+        </label>
+        <div class="user-text">
+          <div class="name" id="displayUsername"></div>
+          <div class="meta" id="displayMeta"></div>
+        </div>
+      </div>
+      <button class="withdraw-btn">Withdraw</button>
+    </header>
 
-    <div class="kpi-bar">
-      <div class="kpi"><h3 id="balanceDisplay">₹0</h3><p>Balance</p></div>
-      <div class="kpi"><h3 id="kpiTasks">0</h3><p>Tasks Done</p></div>
-      <div class="kpi"><h3 id="kpiWeekly">₹0</h3><p>Weekly Win</p></div>
-    </div>
+    <div class="kpi-bar">
+      <div class="kpi"><h3 id="balanceDisplay">₹0</h3><p>Balance</p></div>
+      <div class="kpi"><h3 id="kpiTasks">0</h3><p>Tasks Done</p></div>
+      <div class="kpi"><h3 id="kpiWeekly">₹0</h3><p>Weekly Win</p></div>
+    </div>
 
-    <nav class="tabs">
-      <button data-tab="daily" class="active">Daily Tasks</button>
-      <button data-tab="weekly">Mission Bonus</button>
-      <button data-tab="monthly">Earn More</button>
-    </nav>
+    <nav class="tabs">
+      <button data-tab="daily" class="active">Daily Tasks</button>
+      <button data-tab="weekly">Mission Bonus</button>
+      <button data-tab="monthly">Earn More</button>
+    </nav>
 
-    <div class="live-feed">🎉 Ravi just won ₹500!</div>
-    <ul id="task-list" class="task-list"></ul>
-  </div>
+    <div class="live-feed">🎉 Ravi just won ₹500!</div>
+    <ul id="task-list" class="task-list"></ul>
+  </div>
 
-  <script>
-    const tasks = {
-      daily: Array.from({length: 6}, (_, i) => ({
-        title: `🎲 Task ${i + 1}`,
-        meta: `Earn ₹${12 + i}`,
-        reward: 12 + i,
-        color: 'var(--accent-gold)',
-        key: `daily_task_${i}`
-      })),
-      weekly: Array.from({length: 4}, (_, i) => ({
-        title: `🏆 Mission ${i + 1}`,
-        meta: 'Earn ₹15',
-        reward: 15,
-        color: 'var(--accent-blue)',
-        key: `weekly_task_${i}`
-      })),
-      monthly: []
-    };
+  <script>
+    const tasks = {
+      daily: Array.from({length: 6}, (_, i) => ({
+        title: `🎲 Task ${i + 1}`,
+        meta: `Earn ₹${12 + i}`,
+        reward: 12 + i,
+        color: 'var(--accent-gold)',
+        key: `daily_task_${i}`
+      })),
+      weekly: Array.from({length: 4}, (_, i) => ({
+        title: `🏆 Mission ${i + 1}`,
+        meta: 'Earn ₹15',
+        reward: 15,
+        color: 'var(--accent-blue)',
+        key: `weekly_task_${i}`
+      })),
+      monthly: []
+    };
 
-    function loginUser() {
-      const name = document.getElementById('loginUsername').value.trim();
-      const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value.trim();
-      if (!name || !email || !pass) return alert('Fill all fields');
-      const user = { name, email, id: Date.now(), vip: 0 };
-      const data = { user, balance: 0, tasksDone: 0, weeklyWin: 0, claimed: {}, avatar: '', processing: {} };
-      localStorage.setItem('casinoUser', JSON.stringify(data));
-      showDashboard();
-    }
+    function loginUser() {
+      const name = document.getElementById('loginUsername').value.trim();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value.trim();
+      if (!name || !email || !pass) return alert('Fill all fields');
+      const user = { name, email, id: Date.now(), vip: 0 };
+      const data = { user, balance: 0, tasksDone: 0, weeklyWin: 0, claimed: {}, avatar: '', processing: {} };
+      localStorage.setItem('casinoUser', JSON.stringify(data));
+      showDashboard();
+    }
 
-    function showDashboard() {
-      const saved = JSON.parse(localStorage.getItem('casinoUser'));
-      if (!saved) return;
-      document.getElementById('loginPage').classList.add('hidden');
-      document.getElementById('dashboardPage').classList.remove('hidden');
-      document.getElementById('displayUsername').textContent = saved.user.name;
-      document.getElementById('displayMeta').textContent = `ID: ${saved.user.id} | ${saved.user.email} | VIP${saved.user.vip}`;
-      if (saved.avatar) document.getElementById('userAvatar').src = saved.avatar;
-      updateKPI();
-      renderTasks('daily');
-    }
+    function showDashboard() {
+      const saved = JSON.parse(localStorage.getItem('casinoUser'));
+      if (!saved) return;
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('dashboardPage').classList.remove('hidden');
+      document.getElementById('displayUsername').textContent = saved.user.name;
+      document.getElementById('displayMeta').textContent = `ID: ${saved.user.id} | ${saved.user.email} | VIP${saved.user.vip}`;
+      if (saved.avatar) document.getElementById('userAvatar').src = saved.avatar;
+      updateKPI();
+      renderTasks('daily');
+    }
 
-    function updateKPI() {
-      const s = JSON.parse(localStorage.getItem('casinoUser'));
-      document.getElementById('balanceDisplay').textContent = `₹${s.balance}`;
-      document.getElementById('kpiTasks').textContent = s.tasksDone;
-      document.getElementById('kpiWeekly').textContent = `₹${s.weeklyWin}`;
-    }
+    function updateKPI() {
+      const s = JSON.parse(localStorage.getItem('casinoUser'));
+      document.getElementById('balanceDisplay').textContent = `₹${s.balance}`;
+      document.getElementById('kpiTasks').textContent = s.tasksDone;
+      document.getElementById('kpiWeekly').textContent = `₹${s.weeklyWin}`;
+    }
 
-    function renderTasks(tab) {
-      const list = document.getElementById('task-list');
-      list.innerHTML = '';
-      const saved = JSON.parse(localStorage.getItem('casinoUser'));
+    function renderTasks(tab) {
+      const list = document.getElementById('task-list');
+      list.innerHTML = '';
+      const saved = JSON.parse(localStorage.getItem('casinoUser'));
 
-      tasks[tab].forEach(t => {
-        const li = document.createElement('li');
-        li.className = 'task-card';
+      tasks[tab].forEach(t => {
+        const li = document.createElement('li');
+        li.className = 'task-card';
 
-        const btn = document.createElement('button');
-        btn.className = 'btn-claim';
-        btn.textContent = 'Claim';
-        btn.onclick = () => {
-          window.open('https://example.com', '_blank');
-        };
+        const btn = document.createElement('button');
+        btn.className = 'btn-claim';
 
-        li.innerHTML = `
-          <div class="accent" style="background:${t.color}"></div>
-          <div class="task-info">
-            <div class="task-title">${t.title}</div>
-            <div class="task-meta">${t.meta}</div>
-          </div>
-        `;
-        li.appendChild(btn);
-        list.appendChild(li);
-      });
-    }
+        const isClaimed = saved.claimed[t.key];
+        btn.textContent = isClaimed ? '✅ Claimed' : 'Claim';
+        btn.disabled = !!isClaimed;
 
-    document.getElementById('avatarUpload').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const saved = JSON.parse(localStorage.getItem('casinoUser'));
-        saved.avatar = event.target.result;
-        localStorage.setItem('casinoUser', JSON.stringify(saved));
-        document.getElementById('userAvatar').src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
+        btn.onclick = () => {
+          if (!saved.claimed[t.key]) {
+            saved.balance += t.reward;
+            saved.tasksDone += 1;
+            saved.weeklyWin += t.reward;
+            saved.claimed[t.key] = true;
+            localStorage.setItem('casinoUser', JSON.stringify(saved));
+            btn.textContent = '✅ Claimed';
+            btn.disabled = true;
+            updateKPI();
+          }
+        };
 
-    document.querySelector('.avatar-small').addEventListener('click', () => {
-      document.getElementById('avatarUpload').click();
-    });
+        li.innerHTML = `
+          <div class="accent" style="background:${t.color}"></div>
+          <div class="task-info">
+            <div class="task-title">${t.title}</div>
+            <div class="task-meta">${t.meta}</div>
+          </div>
+        `;
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+    }
 
-    document.querySelectorAll('nav.tabs button').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderTasks(btn.getAttribute('data-tab'));
-      };
-    });
+    document.getElementById('avatarUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const saved = JSON.parse(localStorage.getItem('casinoUser'));
+        saved.avatar = event.target.result;
+        localStorage.setItem('casinoUser', JSON.stringify(saved));
+        document.getElementById('userAvatar').src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
 
-    window.onload = showDashboard;
-  </script>
+    document.querySelector('.avatar-small').addEventListener('click', () => {
+      document.getElementById('avatarUpload').click();
+    });
+
+    document.querySelectorAll('nav.tabs button').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTasks(btn.getAttribute('data-tab'));
+      };
+    });
+
+    window.onload = showDashboard;
+  </script>
 </body>
 </html>
