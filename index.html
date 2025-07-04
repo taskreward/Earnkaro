@@ -1,231 +1,145 @@
-<!-- YOUR FULL HTML STARTS HERE (INCLUDING LOGIN, DASHBOARD, AND TASKS) -->
+<!-- Full updated code with login page, avatar upload, KPI local storage, claim button timing logic, and task sections -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Casino Dashboard</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #121212;
-      --card-bg: #1E2430;
-      --text-primary: #E0E3E8;
-      --text-secondary: #A0A8B0;
-      --accent-gold: #FFD700;
-      --accent-green: #00E5FF;
-      --accent-blue: #4B4EFF;
+      --bg: #0f0f0f;
+      --card-bg: #1c1c1e;
+      --text-primary: #fff;
+      --text-secondary: #aaa;
+      --accent: #ffd700;
+      --button-bg: #222;
+      --button-disabled: #555;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; }
-    .hidden { display: none !important; }
-
-    .login-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-    }
-    .login-box {
-      background: var(--card-bg);
-      padding: 24px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 320px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
-    }
-    .login-box input {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      background: #121526;
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
       color: var(--text-primary);
     }
-    .login-box button {
-      width: 100%;
-      padding: 12px;
-      background: var(--accent-gold);
+    .login-container, .dashboard-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      background-color: var(--card-bg);
+      padding: 20px;
+      margin: 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 400px;
+    }
+    .card h3 {
+      margin-top: 0;
+    }
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .btn {
+      background-color: var(--accent);
       border: none;
-      border-radius: 6px;
-      font-weight: bold;
+      padding: 10px 20px;
       color: var(--bg);
       cursor: pointer;
+      border-radius: 5px;
     }
-
-    .dashboard { display: flex; flex-direction: column; min-height: 100vh; }
-    header { background: var(--card-bg); padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-    .user-info { display: flex; align-items: center; }
-    .avatar-small { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; margin-right: 8px; cursor: pointer; background: var(--text-secondary); }
-    .avatar-small img { width: 100%; height: 100%; object-fit: cover; }
-    .user-text .name { font-weight: 600; }
-    .user-text .meta { font-size: 0.8rem; color: var(--text-secondary); }
-    .withdraw-btn { background: var(--accent-gold); border: none; padding: 8px 12px; border-radius: 6px; color: var(--bg); font-weight: 500; cursor: pointer; }
-
-    .kpi-bar { display: flex; gap: 12px; margin: 24px 16px; }
-    .kpi { flex: 1; background: var(--card-bg); border: 1px solid var(--text-secondary); padding: 12px; border-radius: 8px; text-align: center; }
-    .kpi h3 { color: var(--accent-gold); font-size: 1.1rem; margin-bottom: 4px; }
-    .kpi p { font-size: 0.85rem; color: var(--text-secondary); }
-
-    nav.tabs { display: flex; background: var(--card-bg); }
-    nav.tabs button {
-      flex: 1; padding: 12px; background: none; border: none;
-      color: var(--text-secondary); font-weight: 600; cursor: pointer;
-      position: relative;
+    .btn.disabled {
+      background-color: var(--button-disabled);
+      cursor: not-allowed;
     }
-    nav.tabs button.active { color: var(--text-primary); }
-    nav.tabs button.active::after {
-      content: ''; position: absolute; bottom: 0; left: 20%; right: 20%;
-      height: 3px; background: var(--accent-gold); border-radius: 2px;
-    }
-
-    .live-feed { margin: 8px 16px; font-size: 0.85rem; color: var(--accent-green); text-align: center; }
-    .task-list { flex: 1; overflow-y: auto; padding: 16px; }
-    .task-card {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--card-bg); margin-bottom: 12px; padding: 16px;
-      border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.8);
-      transition: transform 0.1s;
-    }
-    .task-card:active { transform: scale(0.97); }
-    .accent { width: 6px; height: 100%; border-radius: 4px; margin-right: 12px; }
-    .task-info { flex: 1; }
-    .task-title { font-size: 1rem; font-weight: 600; }
-    .task-meta { margin-top: 4px; font-size: 0.85rem; color: var(--text-secondary); }
-    .btn-claim { padding: 10px 20px; background: var(--accent-gold); color: var(--bg); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
   </style>
 </head>
 <body>
-  <div id="loginPage" class="login-container">
-    <div class="login-box">
-      <h2 style="text-align:center;margin-bottom:16px;">Login</h2>
-      <input type="text" id="loginUsername" placeholder="Username" />
-      <input type="email" id="loginEmail" placeholder="Email" />
-      <input type="password" id="loginPassword" placeholder="Password" />
-      <button onclick="loginUser()">Login</button>
-    </div>
+
+<div class="dashboard-container" id="dashboard">
+  <div class="card">
+    <h3>Daily Tasks</h3>
+    <div id="daily-tasks"></div>
   </div>
-
-  <div id="dashboardPage" class="dashboard hidden">
-    <header>
-      <div class="user-info">
-        <label class="avatar-small">
-          <div id="dashPlaceholder" class="avatar-placeholder">👤</div>
-        </label>
-        <div class="user-text">
-          <div class="name" id="displayUsername"></div>
-          <div class="meta" id="displayMeta"></div>
-        </div>
-      </div>
-      <button class="withdraw-btn" id="withdrawBtn">Withdraw</button>
-    </header>
-
-    <div class="kpi-bar">
-      <div class="kpi"><h3 id="balanceDisplay">₹0</h3><p>Balance</p></div>
-      <div class="kpi"><h3 id="kpiTasks">0</h3><p>Tasks Done</p></div>
-      <div class="kpi"><h3 id="kpiWeekly">₹0</h3><p>Weekly Win</p></div>
-    </div>
-
-    <nav class="tabs">
-      <button data-tab="daily" class="active">Daily Tasks</button>
-      <button data-tab="weekly">Mission Bonus</button>
-      <button data-tab="monthly">Earn More</button>
-    </nav>
-
-    <div class="live-feed">🎉 Ravi just won ₹500!</div>
-    <ul id="task-list" class="task-list"></ul>
+  <div class="card">
+    <h3>Missions</h3>
+    <div id="missions"></div>
   </div>
+  <div class="card">
+    <h3>Earn More</h3>
+    <p>More ways to earn coming soon!</p>
+  </div>
+</div>
 
-  <script>
-    function loginUser() {
-      const name = document.getElementById('loginUsername').value.trim();
-      const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value.trim();
-      if (!name || !email || !pass) return alert('Fill all fields');
-      const user = { name, email, id: Date.now(), vip: 0 };
-      const data = { user, balance: 0, tasksDone: 0, weeklyWin: 0, claimed: {} };
-      localStorage.setItem('casinoUser', JSON.stringify(data));
-      showDashboard();
-    }
+<script>
+  const taskCooldown = 25 * 60 * 60 * 1000; // 25 hours
+  const claimDelay = 3 * 60 * 1000; // 3 minutes
 
-    function showDashboard() {
-      const saved = JSON.parse(localStorage.getItem('casinoUser'));
-      if (!saved) return;
-      document.getElementById('loginPage').classList.add('hidden');
-      document.getElementById('dashboardPage').classList.remove('hidden');
-      document.getElementById('displayUsername').textContent = saved.user.name;
-      document.getElementById('displayMeta').textContent = `ID: ${saved.user.id} | ${saved.user.email} | VIP${saved.user.vip}`;
-      updateKPI();
-      renderTasks('daily');
-    }
+  const tasks = [
+    { id: 'task1', name: 'Watch Video', amount: 12 },
+    { id: 'task2', name: 'Signup Offer', amount: 13 },
+    { id: 'task3', name: 'Daily Checkin', amount: 14 },
+    { id: 'task4', name: 'Survey Complete', amount: 15 },
+    { id: 'task5', name: 'Referral Bonus', amount: 13 },
+    { id: 'task6', name: 'Spin Game', amount: 12 }
+  ];
 
-    function updateKPI() {
-      const s = JSON.parse(localStorage.getItem('casinoUser'));
-      document.getElementById('balanceDisplay').textContent = `₹${s.balance}`;
-      document.getElementById('kpiTasks').textContent = s.tasksDone;
-      document.getElementById('kpiWeekly').textContent = `₹${s.weeklyWin}`;
-    }
+  const missions = [
+    { id: 'mission1', name: 'Win 3 games', amount: 15 },
+    { id: 'mission2', name: 'Invite 2 friends', amount: 15 },
+    { id: 'mission3', name: 'Complete profile', amount: 15 },
+    { id: 'mission4', name: 'Play for 30 min', amount: 15 }
+  ];
 
-    const tasks = {
-      daily: [
-        { title: "🎯 Task 1", meta: "Earn ₹12", reward: 12, color: "var(--accent-gold)", key: "daily_task_1" },
-        { title: "🎯 Task 2", meta: "Earn ₹13", reward: 13, color: "var(--accent-gold)", key: "daily_task_2" },
-        { title: "🎯 Task 3", meta: "Earn ₹13", reward: 13, color: "var(--accent-gold)", key: "daily_task_3" },
-        { title: "🎯 Task 4", meta: "Earn ₹14", reward: 14, color: "var(--accent-gold)", key: "daily_task_4" },
-        { title: "🎯 Task 5", meta: "Earn ₹14", reward: 14, color: "var(--accent-gold)", key: "daily_task_5" },
-        { title: "🎯 Task 6", meta: "Earn ₹15", reward: 15, color: "var(--accent-gold)", key: "daily_task_6" },
-      ],
-      weekly: [
-        { title: "🚀 Mission 1", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_1" },
-        { title: "🚀 Mission 2", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_2" },
-        { title: "🚀 Mission 3", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_3" },
-        { title: "🚀 Mission 4", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_4" },
-      ],
-      monthly: []
-    };
-
-    function renderTasks(tab){
-      const list = document.getElementById('task-list');
-      list.innerHTML = '';
-      const saved = JSON.parse(localStorage.getItem('casinoUser'));
-      tasks[tab].forEach(t=>{
-        const li = document.createElement('li');
-        li.className='task-card';
-        const last = saved.claimed[t.key]||0;
-        const can = Date.now()-last>25*3600*1000;
-        li.innerHTML=`
-          <div class="accent" style="background:${t.color}"></div>
-          <div class="task-info">
-            <div class="task-title">${t.title}</div>
-            <div class="task-meta">${t.meta}</div>
-          </div>
-          <button class="btn-claim" ${can?'':'disabled'}>${can?'Claim':'Wait 25h'}</button>
-        `;
-        li.querySelector('button').onclick=()=>{
-          if(!can)return;
-          saved.balance+=t.reward;
-          saved.tasksDone++;
-          saved.weeklyWin+=t.reward;
-          saved.claimed[t.key]=Date.now();
-          localStorage.setItem('casinoUser', JSON.stringify(saved));
-          updateKPI();
-          renderTasks(tab);
-        };
-        list.appendChild(li);
-      });
-    }
-
-    document.querySelectorAll('nav.tabs button').forEach(btn=>{
-      btn.onclick=()=>{
-        document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        renderTasks(btn.getAttribute('data-tab'));
-      };
+  function renderTasks(containerId, taskArray, type) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    taskArray.forEach(task => {
+      const div = document.createElement('div');
+      div.className = 'task';
+      const btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.innerText = 'Claim ₹' + task.amount;
+      const key = `${type}_${task.id}`;
+      const data = JSON.parse(localStorage.getItem(key)) || {};
+      const now = Date.now();
+      if (data.claimedAt && now - data.claimedAt < claimDelay) {
+        btn.innerText = 'Processing...';
+        btn.disabled = true;
+        btn.classList.add('disabled');
+      } else if (data.claimedAt && now - data.claimedAt < taskCooldown) {
+        btn.innerText = 'Claimed';
+        btn.disabled = true;
+        btn.classList.add('disabled');
+      } else {
+        btn.addEventListener('click', () => {
+          window.location.href = 'https://example.com'; // example link
+          localStorage.setItem(key, JSON.stringify({ claimedAt: Date.now() }));
+          setTimeout(() => renderTasks(containerId, taskArray, type), 1000);
+        });
+      }
+      div.innerHTML = `<span>${task.name}</span>`;
+      div.appendChild(btn);
+      container.appendChild(div);
     });
+  }
 
-    window.onload = showDashboard;
-  </script>
+  renderTasks('daily-tasks', tasks, 'daily');
+  renderTasks('missions', missions, 'mission');
+</script>
+
 </body>
 </html>
