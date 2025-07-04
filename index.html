@@ -1,3 +1,4 @@
+<!-- YOUR FULL HTML STARTS HERE (INCLUDING LOGIN, DASHBOARD, AND TASKS) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -168,18 +169,19 @@
     }
 
     const tasks = {
-      daily: Array.from({length:6}, (_,i) => ({
-        title: `🎲 Task ${i+1}`,
-        meta: `Earn ₹${12+i*2}`,
-        reward: 12+i*2,
-        color: 'var(--accent-gold)',
-        key: `daily_task_${i}`
-      })),
+      daily: [
+        { title: "🎯 Task 1", meta: "Earn ₹12", reward: 12, color: "var(--accent-gold)", key: "daily_task_1" },
+        { title: "🎯 Task 2", meta: "Earn ₹13", reward: 13, color: "var(--accent-gold)", key: "daily_task_2" },
+        { title: "🎯 Task 3", meta: "Earn ₹13", reward: 13, color: "var(--accent-gold)", key: "daily_task_3" },
+        { title: "🎯 Task 4", meta: "Earn ₹14", reward: 14, color: "var(--accent-gold)", key: "daily_task_4" },
+        { title: "🎯 Task 5", meta: "Earn ₹14", reward: 14, color: "var(--accent-gold)", key: "daily_task_5" },
+        { title: "🎯 Task 6", meta: "Earn ₹15", reward: 15, color: "var(--accent-gold)", key: "daily_task_6" },
+      ],
       weekly: [
-        { title: "💼 Mission 1", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_1" },
+        { title: "🚀 Mission 1", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_1" },
         { title: "🚀 Mission 2", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_2" },
-        { title: "🔥 Mission 3", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_3" },
-        { title: "💎 Mission 4", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_4" },
+        { title: "🚀 Mission 3", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_3" },
+        { title: "🚀 Mission 4", meta: "Earn ₹15", reward: 15, color: "var(--accent-blue)", key: "weekly_mission_4" },
       ],
       monthly: []
     };
@@ -192,31 +194,24 @@
         const li = document.createElement('li');
         li.className='task-card';
         const last = saved.claimed[t.key]||0;
-        const diff = Date.now()-last;
-        const processing = diff < 180000 && diff > 0;
-        const can = diff > 180000;
+        const can = Date.now()-last>25*3600*1000;
         li.innerHTML=`
           <div class="accent" style="background:${t.color}"></div>
           <div class="task-info">
             <div class="task-title">${t.title}</div>
             <div class="task-meta">${t.meta}</div>
           </div>
-          <button class="btn-claim" ${can || !last ? '' : 'disabled'}>${can || !last ? 'Claim' : '⏳ Processing...'}</button>
+          <button class="btn-claim" ${can?'':'disabled'}>${can?'Claim':'Wait 25h'}</button>
         `;
         li.querySelector('button').onclick=()=>{
-          if(!can && last) return;
-          saved.claimed[t.key] = Date.now();
+          if(!can)return;
+          saved.balance+=t.reward;
+          saved.tasksDone++;
+          saved.weeklyWin+=t.reward;
+          saved.claimed[t.key]=Date.now();
           localStorage.setItem('casinoUser', JSON.stringify(saved));
+          updateKPI();
           renderTasks(tab);
-          setTimeout(() => {
-            const latest = JSON.parse(localStorage.getItem('casinoUser'));
-            latest.balance += t.reward;
-            latest.tasksDone++;
-            latest.weeklyWin += t.reward;
-            localStorage.setItem('casinoUser', JSON.stringify(latest));
-            updateKPI();
-            renderTasks(tab);
-          }, 180000); // 3 minutes
         };
         list.appendChild(li);
       });
