@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Casino Dashboard</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.min.js"></script>
   <style>
@@ -15,9 +15,44 @@
       --accent-green: #00E5FF;
       --accent-blue: #4B4EFF;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; }
     .hidden { display: none !important; }
+
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+    .login-box {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 320px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+    }
+    .login-box input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #121526;
+      color: var(--text-primary);
+    }
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent-gold);
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      color: var(--bg);
+      cursor: pointer;
+    }
 
     .dashboard { display: flex; flex-direction: column; min-height: 100vh; }
     header { background: var(--card-bg); padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.8); }
@@ -59,15 +94,26 @@
     .task-title { font-size: 1rem; font-weight: 600; }
     .task-meta { margin-top: 4px; font-size: 0.85rem; color: var(--text-secondary); }
     .btn-claim { padding: 10px 20px; background: var(--accent-gold); color: var(--bg); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
+    #avatarUpload { display: none; }
   </style>
 </head>
 <body>
-  <div id="dashboardPage" class="dashboard">
+  <div id="loginPage" class="login-container">
+    <div class="login-box">
+      <h2 style="text-align:center;margin-bottom:16px;">Login</h2>
+      <input type="text" id="loginUsername" placeholder="Username" />
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <button onclick="loginUser()">Login</button>
+    </div>
+  </div>
+
+  <div id="dashboardPage" class="dashboard hidden">
     <header>
       <div class="user-info">
-        <label class="avatar-small" id="avatarLabel">
-          <img id="avatarImg" src="" alt="Avatar" />
-          <input type="file" id="avatarInput" accept="image/*" style="display:none"/>
+        <label class="avatar-small">
+          <img id="userAvatar" src="" alt="Avatar"/>
+          <input type="file" id="avatarUpload" accept="image/*"/>
         </label>
         <div class="user-text">
           <div class="name" id="displayUsername"></div>
@@ -94,6 +140,48 @@
   </div>
 
   <script>
+    function loginUser() {
+      const name = document.getElementById('loginUsername').value.trim();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value.trim();
+      if (!name || !email || !pass) return alert('Fill all fields');
+      const user = { name, email, id: Date.now(), vip: 0 };
+      const data = { user, balance: 0, tasksDone: 0, weeklyWin: 0, claimed: {}, processing: {}, avatar: '' };
+      localStorage.setItem('casinoUser', JSON.stringify(data));
+      showDashboard();
+    }
+
+    function showDashboard() {
+      const saved = JSON.parse(localStorage.getItem('casinoUser'));
+      if (!saved) return;
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('dashboardPage').classList.remove('hidden');
+      document.getElementById('displayUsername').textContent = saved.user.name;
+      document.getElementById('displayMeta').textContent = `ID: ${saved.user.id} | ${saved.user.email} | VIP${saved.user.vip}`;
+      if (saved.avatar) document.getElementById('userAvatar').src = saved.avatar;
+      updateKPI();
+      renderTasks('daily');
+    }
+
+    document.getElementById('userAvatar').onclick = () => document.getElementById('avatarUpload').click();
+    document.getElementById('avatarUpload').onchange = function(e) {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const saved = JSON.parse(localStorage.getItem('casinoUser'));
+        saved.avatar = evt.target.result;
+        localStorage.setItem('casinoUser', JSON.stringify(saved));
+        document.getElementById('userAvatar').src = evt.target.result;
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    };
+
+    function updateKPI() {
+      const s = JSON.parse(localStorage.getItem('casinoUser'));
+      document.getElementById('balanceDisplay').textContent = `₹${s.balance}`;
+      document.getElementById('kpiTasks').textContent = s.tasksDone;
+      document.getElementById('kpiWeekly').textContent = `₹${s.weeklyWin}`;
+    }
+
     const tasks = {
       daily: Array.from({length:6}, (_,i) => ({
         title: `🎲 Task ${i+1}`,
@@ -106,121 +194,65 @@
       monthly: []
     };
 
-    function updateKPI() {
-      const s = JSON.parse(localStorage.getItem('casinoUser'));
-      document.getElementById('balanceDisplay').textContent = `₹${s.balance}`;
-      document.getElementById('kpiTasks').textContent = s.tasksDone;
-      document.getElementById('kpiWeekly').textContent = `₹${s.weeklyWin}`;
-    }
-
     function renderTasks(tab){
       const list = document.getElementById('task-list');
       list.innerHTML = '';
       const saved = JSON.parse(localStorage.getItem('casinoUser'));
-      tasks[tab].forEach(t=>{
+      const now = Date.now();
+      tasks[tab].forEach(t => {
         const li = document.createElement('li');
-        li.className='task-card';
-        const last = saved.claimed[t.key]||0;
-        const now = Date.now();
-        const pending = saved.pending?.[t.key];
-        const elapsed = now - (pending || 0);
-        const done = now - last < 24*3600*1000;
-
-        let status = '';
+        li.className = 'task-card';
+        const last = saved.claimed[t.key] || 0;
+        const proc = saved.processing[t.key] || 0;
+        const diff = now - proc;
+        const canClaim = diff >= 180000;
+        let status = 'Claim';
         let disabled = false;
 
-        if (pending && elapsed < 180000) {
+        if (proc && !canClaim) {
           status = 'Processing...';
           disabled = true;
-        } else if (done) {
+        } else if (proc && canClaim) {
+          // Apply reward
+          saved.balance += t.reward;
+          saved.tasksDone++;
+          saved.weeklyWin += t.reward;
+          saved.claimed[t.key] = now;
+          delete saved.processing[t.key];
+          localStorage.setItem('casinoUser', JSON.stringify(saved));
+        } else if (now - last < 25 * 3600 * 1000) {
           status = 'Wait 25h';
           disabled = true;
-        } else {
-          status = 'Claim';
         }
 
-        li.innerHTML=`
+        li.innerHTML = `
           <div class="accent" style="background:${t.color}"></div>
           <div class="task-info">
             <div class="task-title">${t.title}</div>
             <div class="task-meta">${t.meta}</div>
           </div>
-          <button class="btn-claim" ${disabled?'disabled':''}>${status}</button>
+          <button class="btn-claim" ${disabled ? 'disabled' : ''}>${status}</button>
         `;
-
-        li.querySelector('button').onclick = () => {
-          if (disabled) return;
-          window.open("https://example.com", "_blank");
-
-          saved.pending = saved.pending || {};
-          saved.pending[t.key] = Date.now();
+        const btn = li.querySelector('button');
+        btn.onclick = () => {
+          saved.processing[t.key] = now;
           localStorage.setItem('casinoUser', JSON.stringify(saved));
-          setTimeout(() => {
-            const fresh = JSON.parse(localStorage.getItem('casinoUser'));
-            fresh.balance += t.reward;
-            fresh.tasksDone += 1;
-            fresh.weeklyWin += t.reward;
-            fresh.claimed[t.key] = Date.now();
-            delete fresh.pending[t.key];
-            localStorage.setItem('casinoUser', JSON.stringify(fresh));
-            updateKPI();
-            renderTasks(tab);
-          }, 180000); // 3 minutes
+          window.open('https://example.com', '_blank');
           renderTasks(tab);
         };
-
         list.appendChild(li);
       });
     }
 
-    document.querySelectorAll('nav.tabs button').forEach(btn=>{
-      btn.onclick=()=>{
-        document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('nav.tabs button').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         renderTasks(btn.getAttribute('data-tab'));
       };
     });
 
-    function showDashboard() {
-      const saved = JSON.parse(localStorage.getItem('casinoUser'));
-      if (!saved) {
-        const user = { name: 'Htttt', email: 'ghhh', id: 1751603484731, vip: 0 };
-        const data = { user, balance: 0, tasksDone: 0, weeklyWin: 0, claimed: {}, pending: {} };
-        localStorage.setItem('casinoUser', JSON.stringify(data));
-      }
-
-      const updated = JSON.parse(localStorage.getItem('casinoUser'));
-      document.getElementById('displayUsername').textContent = updated.user.name;
-      document.getElementById('displayMeta').textContent = `ID: ${updated.user.id} | ${updated.user.email} | VIP${updated.user.vip}`;
-      updateKPI();
-      renderTasks('daily');
-    }
-
-    function loadAvatar() {
-      const src = localStorage.getItem('casinoAvatar');
-      if (src) document.getElementById('avatarImg').src = src;
-    }
-
-    document.getElementById('avatarLabel').onclick = () => {
-      document.getElementById('avatarInput').click();
-    };
-
-    document.getElementById('avatarInput').onchange = (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = event.target.result;
-        document.getElementById('avatarImg').src = img;
-        localStorage.setItem('casinoAvatar', img);
-      };
-      reader.readAsDataURL(file);
-    };
-
-    window.onload = () => {
-      showDashboard();
-      loadAvatar();
-    };
+    window.onload = showDashboard;
   </script>
 </body>
 </html>
