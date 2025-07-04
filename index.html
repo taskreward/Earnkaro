@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Casino Dashboard</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #121212;
@@ -20,55 +19,6 @@
     body { font-family:'Inter', sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; }
     .hidden { display: none !important; }
 
-    /* Premium Login Add-on */
-    .login-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: linear-gradient(145deg, #0d0d0d, #1a1a1a);
-      padding: 16px;
-    }
-    .login-box {
-      background: rgba(30, 36, 48, 0.9);
-      padding: 32px;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 360px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(12px);
-    }
-    .login-box h2 {
-      color: var(--accent-gold);
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .login-box input {
-      width: 100%;
-      margin: 10px 0;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.05);
-      color: var(--text-primary);
-    }
-    .login-box input:focus {
-      outline: 2px solid var(--accent-gold);
-    }
-    .login-box button {
-      width: 100%;
-      padding: 12px;
-      background: var(--accent-gold);
-      border: none;
-      border-radius: 8px;
-      color: var(--bg);
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 12px;
-    }
-
-    /* Dashboard Styles — YOUR ORIGINAL CODE BELOW */
     .dashboard { display: flex; flex-direction: column; min-height: 100vh; }
     header { background: var(--card-bg); padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.8); }
     .user-info { display: flex; align-items: center; }
@@ -112,23 +62,12 @@
   </style>
 </head>
 <body>
-  <!-- Premium Login Box Added (No changes to your logic) -->
-  <div id="loginPage" class="login-container">
-    <div class="login-box">
-      <h2>Login</h2>
-      <input type="text" id="loginUsername" placeholder="Username" />
-      <input type="email" id="loginEmail" placeholder="Email" />
-      <input type="password" id="loginPassword" placeholder="Password" />
-      <button onclick="loginUser()">Login</button>
-    </div>
-  </div>
-
-  <!-- Your Dashboard Code (Unchanged) -->
-  <div id="dashboardPage" class="dashboard hidden">
+  <div id="dashboardPage" class="dashboard">
     <header>
       <div class="user-info">
-        <label class="avatar-small">
-          <div id="dashPlaceholder" class="avatar-placeholder">👤</div>
+        <label class="avatar-small" id="avatarLabel">
+          <img id="avatarImg" src="" alt="Avatar" />
+          <input type="file" id="avatarInput" accept="image/*" style="display:none"/>
         </label>
         <div class="user-text">
           <div class="name" id="displayUsername"></div>
@@ -155,35 +94,6 @@
   </div>
 
   <script>
-    function loginUser() {
-      const name = document.getElementById('loginUsername').value.trim();
-      const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value.trim();
-      if (!name || !email || !pass) return alert('Fill all fields');
-      const user = { name, email, id: Date.now(), vip: 0 };
-      const data = { user, balance: 0, tasksDone: 0, weeklyWin: 0, claimed: {} };
-      localStorage.setItem('casinoUser', JSON.stringify(data));
-      showDashboard();
-    }
-
-    function showDashboard() {
-      const saved = JSON.parse(localStorage.getItem('casinoUser'));
-      if (!saved) return;
-      document.getElementById('loginPage').classList.add('hidden');
-      document.getElementById('dashboardPage').classList.remove('hidden');
-      document.getElementById('displayUsername').textContent = saved.user.name;
-      document.getElementById('displayMeta').textContent = `ID: ${saved.user.id} | ${saved.user.email} | VIP${saved.user.vip}`;
-      updateKPI();
-      renderTasks('daily');
-    }
-
-    function updateKPI() {
-      const s = JSON.parse(localStorage.getItem('casinoUser'));
-      document.getElementById('balanceDisplay').textContent = `₹${s.balance}`;
-      document.getElementById('kpiTasks').textContent = s.tasksDone;
-      document.getElementById('kpiWeekly').textContent = `₹${s.weeklyWin}`;
-    }
-
     const tasks = {
       daily: Array.from({length:6}, (_,i) => ({
         title: `🎲 Task ${i+1}`,
@@ -196,6 +106,13 @@
       monthly: []
     };
 
+    function updateKPI() {
+      const s = JSON.parse(localStorage.getItem('casinoUser'));
+      document.getElementById('balanceDisplay').textContent = `₹${s.balance}`;
+      document.getElementById('kpiTasks').textContent = s.tasksDone;
+      document.getElementById('kpiWeekly').textContent = `₹${s.weeklyWin}`;
+    }
+
     function renderTasks(tab){
       const list = document.getElementById('task-list');
       list.innerHTML = '';
@@ -204,25 +121,54 @@
         const li = document.createElement('li');
         li.className='task-card';
         const last = saved.claimed[t.key]||0;
-        const can = Date.now()-last>25*3600*1000;
+        const now = Date.now();
+        const pending = saved.pending?.[t.key];
+        const elapsed = now - (pending || 0);
+        const done = now - last < 24*3600*1000;
+
+        let status = '';
+        let disabled = false;
+
+        if (pending && elapsed < 180000) {
+          status = 'Processing...';
+          disabled = true;
+        } else if (done) {
+          status = 'Wait 25h';
+          disabled = true;
+        } else {
+          status = 'Claim';
+        }
+
         li.innerHTML=`
           <div class="accent" style="background:${t.color}"></div>
           <div class="task-info">
             <div class="task-title">${t.title}</div>
             <div class="task-meta">${t.meta}</div>
           </div>
-          <button class="btn-claim" ${can?'':'disabled'}>${can?'Claim':'Wait 25h'}</button>
+          <button class="btn-claim" ${disabled?'disabled':''}>${status}</button>
         `;
-        li.querySelector('button').onclick=()=>{
-          if(!can)return;
-          saved.balance+=t.reward;
-          saved.tasksDone++;
-          saved.weeklyWin+=t.reward;
-          saved.claimed[t.key]=Date.now();
+
+        li.querySelector('button').onclick = () => {
+          if (disabled) return;
+          window.open("https://example.com", "_blank");
+
+          saved.pending = saved.pending || {};
+          saved.pending[t.key] = Date.now();
           localStorage.setItem('casinoUser', JSON.stringify(saved));
-          updateKPI();
+          setTimeout(() => {
+            const fresh = JSON.parse(localStorage.getItem('casinoUser'));
+            fresh.balance += t.reward;
+            fresh.tasksDone += 1;
+            fresh.weeklyWin += t.reward;
+            fresh.claimed[t.key] = Date.now();
+            delete fresh.pending[t.key];
+            localStorage.setItem('casinoUser', JSON.stringify(fresh));
+            updateKPI();
+            renderTasks(tab);
+          }, 180000); // 3 minutes
           renderTasks(tab);
         };
+
         list.appendChild(li);
       });
     }
@@ -235,7 +181,46 @@
       };
     });
 
-    window.onload = showDashboard;
+    function showDashboard() {
+      const saved = JSON.parse(localStorage.getItem('casinoUser'));
+      if (!saved) {
+        const user = { name: 'Htttt', email: 'ghhh', id: 1751603484731, vip: 0 };
+        const data = { user, balance: 0, tasksDone: 0, weeklyWin: 0, claimed: {}, pending: {} };
+        localStorage.setItem('casinoUser', JSON.stringify(data));
+      }
+
+      const updated = JSON.parse(localStorage.getItem('casinoUser'));
+      document.getElementById('displayUsername').textContent = updated.user.name;
+      document.getElementById('displayMeta').textContent = `ID: ${updated.user.id} | ${updated.user.email} | VIP${updated.user.vip}`;
+      updateKPI();
+      renderTasks('daily');
+    }
+
+    function loadAvatar() {
+      const src = localStorage.getItem('casinoAvatar');
+      if (src) document.getElementById('avatarImg').src = src;
+    }
+
+    document.getElementById('avatarLabel').onclick = () => {
+      document.getElementById('avatarInput').click();
+    };
+
+    document.getElementById('avatarInput').onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = event.target.result;
+        document.getElementById('avatarImg').src = img;
+        localStorage.setItem('casinoAvatar', img);
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.onload = () => {
+      showDashboard();
+      loadAvatar();
+    };
   </script>
 </body>
 </html>
