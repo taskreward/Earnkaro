@@ -62,15 +62,20 @@
 
     /* sticky helper for CTA on mobile */
     .sticky-cta{position:sticky; bottom:16px; z-index:60}
+
+    /* modal custom */
+    .modal-backdrop.show {opacity:0.5;}
   </style>
 </head>
 <body>
   <div class="app-wrapper">
 
-    <!-- NAV (simple) -->
+    <!-- NAV (updated with logo) -->
     <nav class="d-flex align-items-center justify-content-between mb-3">
       <div class="d-flex align-items-center gap-3">
-        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;color:white;font-weight:700">SM</div>
+        <div>
+          <img src="logo.png" alt="SkillMint Logo" style="height:44px; width:auto; border-radius:6px">
+        </div>
         <div>
           <div style="font-weight:700">SkillMint</div>
           <small class="text-muted">Mint your skills. Grow your future.</small>
@@ -127,7 +132,7 @@
                     <input class="form-check-input" id="rememberMe" type="checkbox">
                     <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
                   </div>
-                  <a href="#" id="forgotLink" class="small text-muted">Forgot password?</a>
+                  <a href="#" id="forgotLink" class="small text-muted" data-bs-toggle="modal" data-bs-target="#forgotModal">Forgot password?</a>
                 </div>
 
                 <div class="d-grid">
@@ -232,25 +237,61 @@
 
         <div class="mt-4">
           <h5 style="font-weight:700">Need help?</h5>
-          <p class="text-muted small">Contact <a href="#" class="text-decoration-none">support@skillmint.example</a> or use the help center.</p>
+          <p class="text-muted small">Contact <a href="mailto:support@skillmint.example" class="text-decoration-none">support@skillmint.example</a> or use the help center.</p>
         </div>
       </section>
 
     </main>
 
-    <!-- footer -->
-    <footer class="mt-4 text-center">
-      <div class="muted small">© <span id="year"></span> SkillMint • <a href="#" class="text-decoration-none">Terms</a> • <a href="#" class="text-decoration-none">Privacy</a></div>
+    <!-- footer updated with realistic contact -->
+    <footer class="mt-4 text-center p-3 bg-white rounded-12 shadow-sm">
+      <div class="mb-2 muted small">
+        <strong>SkillMint</strong><br>
+        123 Learning Street, Knowledge City, India<br>
+        Phone: +91 9876543210 | Email: <a href="mailto:support@skillmint.example" class="text-decoration-none">support@skillmint.example</a>
+      </div>
+      <div class="mb-2">
+        <a href="#" class="text-decoration-none me-2">FAQ</a> •
+        <a href="#" class="text-decoration-none mx-2">Terms</a> •
+        <a href="#" class="text-decoration-none mx-2">Privacy</a> •
+        <a href="#" class="text-decoration-none ms-2">Blog</a>
+      </div>
+      <div class="muted small">© <span id="year"></span> SkillMint</div>
     </footer>
   </div>
 
   <!-- Bootstrap + icons -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+  <!-- Forgot Password Modal -->
+  <div class="modal fade" id="forgotModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="forgotModalLabel">Reset Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="fp-step1">
+            <label class="form-label">Enter your registered phone number:</label>
+            <input type="tel" id="fpPhone" class="form-control" placeholder="+91 9876543210">
+            <button id="fpSendOtp" class="btn btn-mint mt-2">Send OTP</button>
+          </div>
+          <div id="fp-step2" style="display:none">
+            <label class="form-label">Enter OTP:</label>
+            <input type="text" id="fpOtp" class="form-control" placeholder="123456">
+            <button id="fpVerifyOtp" class="btn btn-mint mt-2">Verify OTP</button>
+          </div>
+          <div id="fp-step3" style="display:none">
+            <p class="text-success">Password reset link sent to your email (demo).</p>
+            <button type="button" class="btn btn-ghost mt-2" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // -------------------------
-    // Demo single-file SPA logic
-    // -------------------------
     const state = {
       selector: {
         login: document.getElementById('view-login'),
@@ -267,110 +308,68 @@
     };
 
     function $(id){ return document.getElementById(id); }
-
-    // view control
     function showView(name){
       Object.values(state.selector).forEach(el=> el.style.display='none');
       if(name==='login') state.selector.login.style.display='';
       if(name==='signup') state.selector.signup.style.display='';
       if(name==='bundles') state.selector.bundles.style.display='';
-      // scroll to top a bit for mobile
       window.scrollTo({top:0, behavior:'smooth'});
       renderBundlesIfNeeded();
     }
 
-    // initial view
     const storedUser = JSON.parse(localStorage.getItem(state.userKey) || 'null');
-    if(storedUser && storedUser.email){
-      // logged in
-      showView('bundles');
-    } else {
-      showView('login');
-    }
-
-    // date in footer
+    if(storedUser && storedUser.email){ showView('bundles'); } else { showView('login'); }
     document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('goSignup').addEventListener('click', e=>{ e.preventDefault(); showView('signup'); });
+    document.getElementById('goLogin').addEventListener('click', e=>{ e.preventDefault(); showView('login'); });
 
-    // nav links
-    document.getElementById('goSignup').addEventListener('click', (e)=>{
-      e.preventDefault(); showView('signup');
-    });
-    document.getElementById('goLogin').addEventListener('click', (e)=>{
-      e.preventDefault(); showView('login');
-    });
-
-    // Signup logic
     document.getElementById('signupForm').addEventListener('submit', (e)=>{
       e.preventDefault();
       const user = {
-        username: document.getElementById('suUsername').value.trim(),
-        email: document.getElementById('suEmail').value.trim(),
-        password: document.getElementById('suPassword').value,
-        phone: document.getElementById('suPhone').value.trim(),
-        dob: document.getElementById('suDob').value,
-        state: document.getElementById('suState').value,
-        ref: document.getElementById('suRef').value.trim(),
+        username: $('#suUsername').value.trim(),
+        email: $('#suEmail').value.trim(),
+        password: $('#suPassword').value,
+        phone: $('#suPhone').value.trim(),
+        dob: $('#suDob').value,
+        state: $('#suState').value,
+        ref: $('#suRef').value.trim(),
       };
-      if(!user.email || !user.password || user.password.length < 8){
-        alert('Please provide valid email and password (min 8 chars).'); return;
-      }
-      // store demo
-      localStorage.setItem(state.userKey, JSON.stringify(user));
-      // simulate referral credit (add to user object)
+      if(!user.email || !user.password || user.password.length < 8){ alert('Please provide valid email and password (min 8 chars).'); return; }
       user.earn = { life:0, pending: (user.ref ? 300 : 0) };
       localStorage.setItem(state.userKey, JSON.stringify(user));
-      showView('bundles');
-      toast('Account created — welcome to SkillMint!');
+      showView('bundles'); toast('Account created — welcome to SkillMint!');
     });
 
-    // Apply referral simple behavior
     document.getElementById('applyRef').addEventListener('click', (e)=>{
-      const val = document.getElementById('suRef').value.trim();
+      const val = $('#suRef').value.trim();
       if(!val){ toast('Enter a referral code to apply'); return; }
-      // demo: apply code → give discount message
       toast('Referral code applied! ₹300 added as pending credit');
     });
 
-    // Login logic (demo)
     document.getElementById('btnLogin').addEventListener('click', ()=>{
-      const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value;
+      const email = $('#loginEmail').value.trim();
+      const pass = $('#loginPassword').value;
       if(!email || !pass){ toast('Enter email and password'); return; }
-      // Check user in localStorage demo
       const stored = JSON.parse(localStorage.getItem(state.userKey) || 'null');
       if(stored && stored.email === email){
-        // coarse password check
-        if(stored.password === pass){
-          toast('Login successful');
-          showView('bundles'); return;
-        } else {
-          toast('Wrong password (demo). If you signed up with another email use Signup.');
-          return;
-        }
+        if(stored.password === pass){ toast('Login successful'); showView('bundles'); return; }
+        else { toast('Wrong password (demo). If you signed up with another email use Signup.'); return; }
       } else {
-        // offer signup
         const go = confirm('No account found. Create a new one?');
         if(go) { showView('signup'); }
       }
     });
 
-    // forgot password link
-    document.getElementById('forgotLink').addEventListener('click', (e)=>{
-      e.preventDefault();
-      alert('Demo: Password reset not configured. Use Signup to create a demo account.');
-    });
-
     // logout
     document.getElementById('btnLogout').addEventListener('click', ()=>{
-      // keep demo data but navigate to login
       showView('login');
       toast('Logged out (demo).');
     });
 
-    // render bundles grid
+    // render bundles
     function renderBundlesIfNeeded(){
-      const grid = document.getElementById('bundlesGrid');
-      if(grid.children.length) return; // already rendered
+      const grid = $('#bundlesGrid');
+      if(grid.children.length) return;
       state.demoCourses.forEach(c=>{
         const col = document.createElement('div');
         col.className = 'col-12 col-md-6';
@@ -399,7 +398,6 @@
       });
     }
 
-    // enroll action (demo)
     function enrollBundle(id){
       const user = JSON.parse(localStorage.getItem(state.userKey) || 'null');
       if(!user){ toast('Please login or signup first'); showView('login'); return; }
@@ -410,9 +408,8 @@
       toast('Enrolled — check your dashboard (demo).');
     }
 
-    // tiny toast
     function toast(msg){
-      let el = document.getElementById('sm-toast');
+      let el = $('#sm-toast');
       if(!el){
         el = document.createElement('div');
         el.id = 'sm-toast';
@@ -433,11 +430,19 @@
       setTimeout(()=> el.style.opacity = '0', 2000);
     }
 
-    // small helper
-    function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+    function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-    // click outside to hide signup (not needed)
-    // End of script
+    // Forgot Password Modal Logic
+    $('#fpSendOtp').addEventListener('click', ()=>{
+      $('#fp-step1').style.display='none';
+      $('#fp-step2').style.display='';
+      toast('OTP sent to your phone (demo).');
+    });
+    $('#fpVerifyOtp').addEventListener('click', ()=>{
+      $('#fp-step2').style.display='none';
+      $('#fp-step3').style.display='';
+      toast('Password reset link sent (demo).');
+    });
   </script>
 </body>
 </html>
