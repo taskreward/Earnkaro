@@ -369,4 +369,195 @@
     // Theme toggle
     // ------------------------------
     const themeToggle = $('#themeToggle');
-    const savedTheme = localStorage.getItem('skillmint:the
+    const savedTheme = localStorage.getItem('skillmint:theme') || 'light';
+    if(savedTheme==='dark'){ document.documentElement.setAttribute('data-theme','dark'); themeToggle.checked = true; }
+    themeToggle.addEventListener('change', ()=>{
+      const mode = themeToggle.checked ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', mode === 'dark' ? 'dark' : '');
+      localStorage.setItem('skillmint:theme', mode);
+    });
+
+    // ------------------------------
+    // Routing (simple SPA switching)
+    // ------------------------------
+    function route(view, anchor){
+      const isDash = view === 'dashboard' || location.hash === '#dashboard';
+      $('#home').classList.toggle('hidden', isDash);
+      $('#dashboard').classList.toggle('hidden', !isDash);
+      if(isDash){ buildDashboard(); } else if(anchor){
+        requestAnimationFrame(()=>document.querySelector(anchor)?.scrollIntoView({behavior:'smooth'}));
+      }
+      history.replaceState({}, '', isDash ? '#dashboard' : '#home');
+    }
+    window.addEventListener('hashchange', ()=> route(location.hash === '#dashboard' ? 'dashboard':'home'));
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e)=>{
+      if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); $('#courses').scrollIntoView({behavior:'smooth'}); }
+      if(e.key.toLowerCase()==='g'){ window._gPressed=true; setTimeout(()=>window._gPressed=false, 650); }
+      if(window._gPressed && e.key.toLowerCase()==='d'){ route('dashboard'); }
+    });
+
+    // ------------------------------
+    // Course grid render
+    // ------------------------------
+    function renderCourses(){
+      const grid = $('#courseGrid');
+      grid.innerHTML = '';
+      COURSES.forEach(c=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div style="height:8px; background:${c.color}; border-radius:8px; margin:-8px -8px 10px"></div>
+          <span class="badge">${c.level} • ${c.hours}h</span>
+          <h4>${c.title}</h4>
+          <p class="muted">${c.tags.join(' • ')}</p>
+          <div class="row" style="justify-content:space-between">
+            <b>₹${c.price}</b>
+            <div class="row" style="gap:8px">
+              <button class="btn secondary" onclick="preview('${c.id}')">Preview</button>
+              <button class="btn primary" onclick="enroll('${c.id}')">Enroll</button>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      })
+    }
+
+    function preview(id){
+      const c = COURSES.find(x=>x.id===id);
+      alert(`${c.title}\n\nWhat you'll build:\n• Mini‑project each module\n• Portfolio artifact at the end`);
+    }
+
+    // ------------------------------
+    // Enrollment & local state
+    // ------------------------------
+    const store = {
+      get(){ try{ return JSON.parse(localStorage.getItem('skillmint:data')||'{}'); }catch(e){ return {}; } },
+      set(v){ localStorage.setItem('skillmint:data', JSON.stringify(v)); }
+    };
+
+    function enroll(id){
+      const data = store.get();
+      data.courses = data.courses || {};
+      if(data.courses[id]){ toast('Already enrolled'); return; }
+      data.courses[id] = { progress: 0, started: Date.now() };
+      store.set(data);
+      toast('Enrolled! Open Dashboard → My Courses');
+      updateStats();
+    }
+
+    // ------------------------------
+    // Dashboard logic
+    // ------------------------------
+    function switchTab(name){
+      $$('.tab').forEach(t=> t.classList.toggle('active', t.dataset.tab===name));
+      ['overview','courses','earn','profile'].forEach(id=> $('#tab-'+id).classList.toggle('hidden', id!==name));
+    }
+
+    function buildDashboard(){
+      const data = store.get();
+      // name
+      const name = data.name || 'Learner';
+      $('#helloName').textContent = name;
+      $('#nameInput').value = data.name || '';
+      $('#publicProfile').checked = !!data.public;
+
+      // streak (basic demo: percent of any activity days in last 30)
+      const days = (data.activity||[]).filter(d=> Date.now()-d < 1000*60*60*24*30).length;
+      $('#streakBar').style.width = Math.min(100, Math.round(days/20*100))+'%';
+
+      // stats
+      const my = Object.entries(data.courses||{});
+      $('#statCourses').textContent = my.length;
+      $('#statCerts').textContent   = my.filter(([,v])=> v.progress>=100).length;
+      const earn = data.earn||{life:0,pending:0};
+      $('#statEarn').textContent = '₹'+(earn.life||0);
+
+      // continue list
+      const cont = my.filter(([,v])=> v.progress>0 && v.progress<100)
+                     .slice(0,3)
+                     .map(([k,v])=>`• ${COURSES.find(c=>c.id===k)?.title} – ${v.progress}%`);
+      $('#continueList').innerHTML = cont.length? cont.join('<br>') : 'No active courses yet.';
+
+      // my courses render
+      const wrap = $('#myCourses');
+      wrap.innerHTML = '';
+      (my.length? my : []).forEach(([id,v])=>{
+        const c = COURSES.find(x=>x.id===id);
+        const el = document.createElement('div');
+        el.className='card';
+        el.innerHTML = `
+          <div class="row" style="justify-content:space-between">
+            <div>
+              <span class="badge">${c.level}</span>
+              <h4 style="margin:6px 0 6px">${c.title}</h4>
+              <div class="progress"><span style="width:${v.progress}%"></span></div>
+              <small class="muted">${v.progress}% complete</small>
+            </div>
+            <div class="row" style="gap:8px">
+              <button class="btn secondary" onclick="advance('${id}')">+10%</button>
+              <button class="btn" style="background:#ECFDF5; border-color:#BAE6D3" onclick="markCert('${id}')">Certify</button>
+            </div>
+          </div>`;
+        wrap.appendChild(el);
+      });
+
+      // referral link
+      const handle = (data.name||'learner').toLowerCase().replace(/\s+/g,'');
+      $('#refLink').value = location.href.replace('#dashboard','') + `?ref=${handle}`;
+
+      // earnings summary
+      $('#lifeEarn').textContent    = '₹'+(earn.life||0);
+      $('#pendingEarn').textContent = '₹'+(earn.pending||0);
+    }
+
+    function advance(id){
+      const data = store.get();
+      if(!data.courses?.[id]) return;
+      data.courses[id].progress = Math.min(100, (data.courses[id].progress||0)+10);
+      data.activity = [...(data.activity||[]), Date.now()];
+      store.set(data); buildDashboard();
+    }
+    function markCert(id){
+      const data = store.get();
+      if(!data.courses?.[id]) return; 
+      data.courses[id].progress = 100; store.set(data); buildDashboard();
+      toast('Certificate unlocked (demo)');
+    }
+
+    // Earnings / referrals
+    function copyRef(){ $('#refLink').select(); document.execCommand('copy'); toast('Referral link copied'); }
+    function calc(){
+      const n = Math.max(0, parseInt($('#calcCount').value||0,10));
+      const amt = n * COMMISSION; $('#calcOut').textContent = '₹'+amt.toLocaleString('en-IN');
+    }
+    function requestPayout(){
+      const data = store.get(); data.earn = data.earn||{life:0,pending:0};
+      if((data.earn.pending||0)<=0){ toast('No pending earnings'); return; }
+      data.earn.life = (data.earn.life||0) + data.earn.pending; data.earn.pending = 0; store.set(data); buildDashboard(); toast('Payout processed (demo)');
+    }
+
+    // Simulate a referral if URL contains ?ref=...
+    (function handleReferral(){
+      const q = new URLSearchParams(location.search); const ref = q.get('ref');
+      if(ref){ const data = store.get(); data.earn = data.earn||{life:0,pending:0}; data.earn.pending = (data.earn.pending||0) + COMMISSION; store.set(data); }
+    })();
+
+    // Profile
+    function saveName(){ const data = store.get(); data.name = $('#nameInput').value.trim() || 'Learner'; data.public = $('#publicProfile').checked; store.set(data); buildDashboard(); toast('Saved'); }
+    function exportData(){ const blob = new Blob([JSON.stringify(store.get(), null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='skillmint-data.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(url), 500); }
+    function resetAll(){ if(confirm('Reset all local data?')){ localStorage.removeItem('skillmint:data'); location.reload(); } }
+
+    // Purchase button (demo)
+    function purchase(plan){ toast(`Selected ${plan}. You can wire this to your payment flow.`); }
+
+    // Stats update for header quick glance
+    function updateStats(){ const data = store.get(); const my = Object.keys(data.courses||{}).length; $('#statCourses')?.(my); }
+
+    // Init
+    renderCourses();
+    document.getElementById('year').textContent = new Date().getFullYear();
+    route(location.hash==='#dashboard' ? 'dashboard' : 'home');
+  </script>
+</body>
+</html>
