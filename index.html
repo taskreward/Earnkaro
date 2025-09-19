@@ -28,7 +28,7 @@
     /* Global containers */
     .app-wrapper{max-width:920px; margin:0 auto; padding:18px;}
     .hero-illustration{background:#eaf7f2; border-radius:14px; padding:18px; display:flex; align-items:center; justify-content:center}
-    .hero-illustration img{max-width:100%; height:auto; border-radius:12px; object-fit:cover}
+    .hero-illustration img{max-width:100%; height:auto; border-radius:12px}
 
     /* Forms */
     .form-card{background:var(--card); border-radius:14px; padding:18px; box-shadow:0 8px 30px rgba(9,10,12,.06);}
@@ -62,23 +62,15 @@
 
     /* sticky helper for CTA on mobile */
     .sticky-cta{position:sticky; bottom:16px; z-index:60}
-
-    /* small toast fade */
-    #sm-toast { transition: opacity .25s ease; opacity:0; }
-    /* banner shown when signup flow requires choosing bundle first */
-    #signupFlowBanner { display:none; margin-bottom:12px; }
   </style>
 </head>
 <body>
   <div class="app-wrapper">
 
-    <!-- NAV (logo image - place logo.png next to this file) -->
+    <!-- NAV (simple) -->
     <nav class="d-flex align-items-center justify-content-between mb-3">
       <div class="d-flex align-items-center gap-3">
-        <div>
-          <!-- replace logo.png with your professional PNG file -->
-          <img src="logo.png" alt="SkillMint Logo" style="height:44px; width:auto; border-radius:8px; object-fit:contain;">
-        </div>
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;color:white;font-weight:700">SM</div>
         <div>
           <div style="font-weight:700">SkillMint</div>
           <small class="text-muted">Mint your skills. Grow your future.</small>
@@ -99,8 +91,20 @@
         <div class="hero-grid">
           <div>
             <div class="hero-illustration mb-3">
-              <!-- Replaced the SVG with a professional hero photo -->
-              <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=2a4b3b6bf1b9f3f0fae8d8b5b8f2e6b4" alt="Students learning" />
+              <!-- sample illustration (SVG or image) -->
+              <img src="data:image/svg+xml;utf8,
+                <svg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400' fill='none'>
+                  <rect width='800' height='400' rx='18' fill='%23eaf7f2'/>
+                  <g transform='translate(40,30)'>
+                    <rect x='320' y='8' width='360' height='260' rx='12' fill='%23fff'/>
+                    <rect x='356' y='22' width='300' height='14' rx='8' fill='%233EB489' opacity='.9'/>
+                    <rect x='362' y='56' width='220' height='12' rx='8' fill='%232CA58D' opacity='.6'/>
+                    <circle cx='420' cy='160' r='40' fill='%233EB489' opacity='.2'/>
+                    <rect x='20' y='20' width='260' height='220' rx='12' fill='%23fff' />
+                    <path d='M40 60h200v8H40zM40 86h200v8H40zM40 112h200v8H40z' fill='%232CA58D' opacity='.9'/>
+                    <text x='30' y='210' font-size='16' fill='%236C6C6C'>4k+ Students joined</text>
+                  </g>
+                </svg>" alt="illustration" />
             </div>
 
             <div class="form-card">
@@ -123,7 +127,7 @@
                     <input class="form-check-input" id="rememberMe" type="checkbox">
                     <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
                   </div>
-                  <a href="#" id="forgotLink" class="small text-muted" data-bs-toggle="modal" data-bs-target="#forgotModal">Forgot password?</a>
+                  <a href="#" id="forgotLink" class="small text-muted">Forgot password?</a>
                 </div>
 
                 <div class="d-grid">
@@ -222,90 +226,22 @@
           </div>
         </div>
 
-        <!-- Banner shown when user came here via Signup (pick bundle first) -->
-        <div id="signupFlowBanner" class="alert alert-info small">Pick the bundle you want — you'll complete signup after choosing it.</div>
-
         <div id="bundlesGrid" class="row g-3">
           <!-- cards injected by JS -->
         </div>
 
         <div class="mt-4">
           <h5 style="font-weight:700">Need help?</h5>
-          <p class="text-muted small">Contact <a href="mailto:support@skillmint.example" class="text-decoration-none">support@skillmint.example</a> or use the help center.</p>
+          <p class="text-muted small">Contact <a href="#" class="text-decoration-none">support@skillmint.example</a> or use the help center.</p>
         </div>
       </section>
 
     </main>
 
-    <!-- footer (expanded contact info) -->
+    <!-- footer -->
     <footer class="mt-4 text-center">
-      <div style="background:#fff;border-radius:12px;padding:18px;box-shadow:0 6px 20px rgba(9,10,12,.04);" class="mb-3">
-        <div class="row align-items-center">
-          <div class="col-md-6 text-md-start">
-            <strong>SkillMint</strong><br>
-            27 Knowledge Avenue, Block B, Knowledge City, New Delhi 110001<br>
-            Phone: <a href="tel:+919876543210" class="text-decoration-none">+91 98765 43210</a><br>
-            Email: <a href="mailto:support@skillmint.example" class="text-decoration-none">support@skillmint.example</a>
-          </div>
-          <div class="col-md-6 text-md-end mt-3 mt-md-0">
-            <a href="#" class="text-decoration-none me-2">FAQ</a> •
-            <a href="#" class="text-decoration-none mx-2">Terms</a> •
-            <a href="#" class="text-decoration-none mx-2">Privacy</a> •
-            <a href="#" class="text-decoration-none ms-2">Blog</a>
-            <div class="small text-muted mt-2">Mon–Fri: 9:00 AM – 6:00 PM IST</div>
-          </div>
-        </div>
-      </div>
-      <div class="muted small">© <span id="year"></span> SkillMint</div>
+      <div class="muted small">© <span id="year"></span> SkillMint • <a href="#" class="text-decoration-none">Terms</a> • <a href="#" class="text-decoration-none">Privacy</a></div>
     </footer>
-  </div>
-
-  <!-- Forgot Password Modal (kept basic demo modal) -->
-  <div class="modal fade" id="forgotModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header border-0">
-          <h5 class="modal-title" id="forgotModalLabel">Reset your password</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div id="fp-step1" class="fp-step active">
-            <p class="small text-muted">Enter the phone number associated with your account. We'll send a code (demo).</p>
-            <label class="form-label small">Phone number</label>
-            <input id="fpPhone" class="form-control" type="tel" placeholder="+91 98765 43210">
-            <div class="d-flex justify-content-end gap-2 mt-3">
-              <button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
-              <button id="fpSendOtp" class="btn btn-mint">Send code</button>
-            </div>
-          </div>
-
-          <div id="fp-step2" class="fp-step" style="display:none">
-            <p class="small text-muted">We sent a 6-digit code to your phone. Enter it below.</p>
-            <label class="form-label small">Enter code</label>
-            <input id="fpOtp" class="form-control" type="text" maxlength="6" placeholder="123456">
-            <div class="d-flex justify-content-between align-items-center mt-2">
-              <small id="resendSmall" class="text-muted">Didn't get it? <a href="#" id="fpResend">Resend</a></small>
-              <div class="d-flex gap-2">
-                <button id="fpBackToPhone" class="btn btn-ghost">Back</button>
-                <button id="fpVerifyOtp" class="btn btn-mint">Verify</button>
-              </div>
-            </div>
-          </div>
-
-          <div id="fp-step3" class="fp-step" style="display:none">
-            <div class="text-center">
-              <div style="font-size:28px; color:var(--mint)">✅</div>
-              <h6 class="mt-2">Reset link sent</h6>
-              <p class="small text-muted">A password reset link has been sent to the email address on file (demo).</p>
-              <div class="d-flex justify-content-center mt-3">
-                <button type="button" class="btn btn-mint" data-bs-dismiss="modal">Done</button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Bootstrap + icons -->
@@ -313,7 +249,7 @@
 
   <script>
     // -------------------------
-    // Demo single-file SPA logic with "choose bundle → signup" flow
+    // Demo single-file SPA logic
     // -------------------------
     const state = {
       selector: {
@@ -327,15 +263,111 @@
         { id:'marketing', title:'Online Marketing Mastery', rating:4.5, reviews:'493,28', price:5499, img:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3f6f54f4' },
         { id:'finance', title:'Finance Mastery', rating:4.1, reviews:'318,36', price:8999, img:'https://images.unsplash.com/photo-1526378722501-6b0a6b7b5efc?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=d7c7e0c3' },
         { id:'datasci', title:'Data Science', rating:4.4, reviews:'612,12', price:10999, img:'https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=427b3c3b' },
-      ],
-      // new flow flags
-      signupFlow: false,               // when true: user clicked Signup → must choose a bundle first
-      selectedBundleForSignup: null,   // store chosen bundle id during flow
+      ]
     };
 
     function $(id){ return document.getElementById(id); }
 
-    // render bundles grid (idempotent)
+    // view control
+    function showView(name){
+      Object.values(state.selector).forEach(el=> el.style.display='none');
+      if(name==='login') state.selector.login.style.display='';
+      if(name==='signup') state.selector.signup.style.display='';
+      if(name==='bundles') state.selector.bundles.style.display='';
+      // scroll to top a bit for mobile
+      window.scrollTo({top:0, behavior:'smooth'});
+      renderBundlesIfNeeded();
+    }
+
+    // initial view
+    const storedUser = JSON.parse(localStorage.getItem(state.userKey) || 'null');
+    if(storedUser && storedUser.email){
+      // logged in
+      showView('bundles');
+    } else {
+      showView('login');
+    }
+
+    // date in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // nav links
+    document.getElementById('goSignup').addEventListener('click', (e)=>{
+      e.preventDefault(); showView('signup');
+    });
+    document.getElementById('goLogin').addEventListener('click', (e)=>{
+      e.preventDefault(); showView('login');
+    });
+
+    // Signup logic
+    document.getElementById('signupForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const user = {
+        username: document.getElementById('suUsername').value.trim(),
+        email: document.getElementById('suEmail').value.trim(),
+        password: document.getElementById('suPassword').value,
+        phone: document.getElementById('suPhone').value.trim(),
+        dob: document.getElementById('suDob').value,
+        state: document.getElementById('suState').value,
+        ref: document.getElementById('suRef').value.trim(),
+      };
+      if(!user.email || !user.password || user.password.length < 8){
+        alert('Please provide valid email and password (min 8 chars).'); return;
+      }
+      // store demo
+      localStorage.setItem(state.userKey, JSON.stringify(user));
+      // simulate referral credit (add to user object)
+      user.earn = { life:0, pending: (user.ref ? 300 : 0) };
+      localStorage.setItem(state.userKey, JSON.stringify(user));
+      showView('bundles');
+      toast('Account created — welcome to SkillMint!');
+    });
+
+    // Apply referral simple behavior
+    document.getElementById('applyRef').addEventListener('click', (e)=>{
+      const val = document.getElementById('suRef').value.trim();
+      if(!val){ toast('Enter a referral code to apply'); return; }
+      // demo: apply code → give discount message
+      toast('Referral code applied! ₹300 added as pending credit');
+    });
+
+    // Login logic (demo)
+    document.getElementById('btnLogin').addEventListener('click', ()=>{
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value;
+      if(!email || !pass){ toast('Enter email and password'); return; }
+      // Check user in localStorage demo
+      const stored = JSON.parse(localStorage.getItem(state.userKey) || 'null');
+      if(stored && stored.email === email){
+        // coarse password check
+        if(stored.password === pass){
+          toast('Login successful');
+          showView('bundles'); return;
+        } else {
+          toast('Wrong password (demo). If you signed up with another email use Signup.');
+          return;
+        }
+      } else {
+        // offer signup
+        const go = confirm('No account found. Create a new one?');
+        if(go) { showView('signup'); }
+      }
+    });
+
+    // forgot password link
+    document.getElementById('forgotLink').addEventListener('click', (e)=>{
+      e.preventDefault();
+      alert('Demo: Password reset not configured. Use Signup to create a demo account.');
+    });
+
+    // logout
+    document.getElementById('btnLogout').addEventListener('click', ()=>{
+      // keep demo data but navigate to login
+      showView('login');
+      toast('Logged out (demo).');
+    });
+
+    // render bundles grid
     function renderBundlesIfNeeded(){
       const grid = document.getElementById('bundlesGrid');
       if(grid.children.length) return; // already rendered
@@ -367,144 +399,15 @@
       });
     }
 
-    // show view with signupFlow banner logic
-    function showView(name){
-      Object.values(state.selector).forEach(el=> el.style.display='none');
-      if(name==='login') state.selector.login.style.display='';
-      if(name==='signup') state.selector.signup.style.display='';
-      if(name==='bundles') { 
-        state.selector.bundles.style.display='';
-        renderBundlesIfNeeded();
-        // show banner only if signupFlow is active
-        const banner = document.getElementById('signupFlowBanner');
-        if(banner) banner.style.display = state.signupFlow ? '' : 'none';
-      }
-      window.scrollTo({top:0, behavior:'smooth'});
-    }
-
-    // initial view
-    const storedUser = JSON.parse(localStorage.getItem(state.userKey) || 'null');
-    if(storedUser && storedUser.email){ showView('bundles'); } else { showView('login'); }
-
-    // date in footer
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // nav links
-    document.getElementById('goSignup').addEventListener('click', (e)=>{
-      e.preventDefault();
-      // Start signup flow: show bundles first so user chooses a bundle then signs up
-      state.signupFlow = true;
-      state.selectedBundleForSignup = null;
-      showView('bundles');
-    });
-    document.getElementById('goLogin').addEventListener('click', (e)=>{
-      e.preventDefault();
-      // Cancel any signupFlow if user chooses to go to login
-      state.signupFlow = false;
-      state.selectedBundleForSignup = null;
-      showView('login');
-    });
-
-    // Signup logic (now supports auto-enroll when user came from choose-bundle flow)
-    document.getElementById('signupForm').addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const user = {
-        username: document.getElementById('suUsername').value.trim(),
-        email: document.getElementById('suEmail').value.trim(),
-        password: document.getElementById('suPassword').value,
-        phone: document.getElementById('suPhone').value.trim(),
-        dob: document.getElementById('suDob').value,
-        state: document.getElementById('suState').value,
-        ref: document.getElementById('suRef').value.trim(),
-      };
-      if(!user.email || !user.password || user.password.length < 8){
-        alert('Please provide valid email and password (min 8 chars).'); return;
-      }
-      // store demo user
-      user.earn = { life:0, pending: (user.ref ? 300 : 0) };
-      user.enrollments = user.enrollments || [];
-      // if user selected a bundle before signup, auto-enroll
-      if(state.selectedBundleForSignup){
-        user.enrollments.push(state.selectedBundleForSignup);
-        // clear flow flags
-        state.selectedBundleForSignup = null;
-        state.signupFlow = false;
-        toast('Account created — you have been enrolled in the selected bundle (demo).');
-      } else {
-        toast('Account created — welcome to SkillMint!');
-      }
-      localStorage.setItem(state.userKey, JSON.stringify(user));
-      showView('bundles');
-    });
-
-    // Apply referral simple behavior
-    document.getElementById('applyRef').addEventListener('click', (e)=>{
-      const val = document.getElementById('suRef').value.trim();
-      if(!val){ toast('Enter a referral code to apply'); return; }
-      toast('Referral code applied! ₹300 added as pending credit');
-    });
-
-    // Login logic (demo)
-    document.getElementById('btnLogin').addEventListener('click', ()=>{
-      const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value;
-      if(!email || !pass){ toast('Enter email and password'); return; }
-      const stored = JSON.parse(localStorage.getItem(state.userKey) || 'null');
-      if(stored && stored.email === email){
-        if(stored.password === pass){
-          toast('Login successful');
-          // cancel signupFlow if any
-          state.signupFlow = false;
-          state.selectedBundleForSignup = null;
-          showView('bundles');
-          return;
-        } else {
-          toast('Wrong password (demo). If you signed up with another email use Signup.');
-          return;
-        }
-      } else {
-        const go = confirm('No account found. Create a new one?');
-        if(go) {
-          // start choose-bundle-first signup flow
-          state.signupFlow = true;
-          state.selectedBundleForSignup = null;
-          showView('bundles');
-        }
-      }
-    });
-
-    // forgot password: keep demo alert or modal — we have a modal wired below
-    // logout
-    document.getElementById('btnLogout').addEventListener('click', ()=>{
-      showView('login');
-      toast('Logged out (demo).');
-    });
-
-    // enroll action (modified for signupFlow)
+    // enroll action (demo)
     function enrollBundle(id){
       const user = JSON.parse(localStorage.getItem(state.userKey) || 'null');
-      if(!user){
-        // if we are in the "signupFlow" (user clicked Signup first), then save selection and show signup form
-        if(state.signupFlow){
-          state.selectedBundleForSignup = id;
-          showView('signup');
-          toast('Please complete signup to enroll in the selected bundle.');
-          return;
-        } else {
-          toast('Please login or signup first');
-          showView('login');
-          return;
-        }
-      }
-      // user exists, enroll normally
+      if(!user){ toast('Please login or signup first'); showView('login'); return; }
       user.enrollments = user.enrollments || [];
       if(user.enrollments.includes(id)){ toast('Already enrolled in this bundle'); return; }
       user.enrollments.push(id);
       localStorage.setItem(state.userKey, JSON.stringify(user));
       toast('Enrolled — check your dashboard (demo).');
-      // if a signupFlow was active, clear it now
-      state.signupFlow = false;
-      state.selectedBundleForSignup = null;
     }
 
     // tiny toast
@@ -527,65 +430,14 @@
       }
       el.textContent = msg;
       el.style.opacity = '1';
-      clearTimeout(el._hideTimeout);
-      el._hideTimeout = setTimeout(()=> el.style.opacity = '0', 2200);
+      setTimeout(()=> el.style.opacity = '0', 2000);
     }
 
     // small helper
     function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
-    // render bundles at least once (in case we navigated to bundles)
-    renderBundlesIfNeeded();
-
-    // -------------------------
-    // Forgot Password Modal Flow (basic demo)
-    // -------------------------
-    const forgotModalEl = document.getElementById('forgotModal');
-    const bsForgotModal = new bootstrap.Modal(forgotModalEl, { backdrop: 'static', keyboard: false });
-
-    function showFpStep(stepId){
-      ['fp-step1','fp-step2','fp-step3'].forEach(id=>{
-        const el = document.getElementById(id);
-        if(!el) return;
-        if(id === stepId) { el.style.display = ''; } else { el.style.display = 'none'; }
-      });
-    }
-
-    // open modal when link clicked
-    document.getElementById('forgotLink').addEventListener('click', (e)=>{
-      // default bootstrap data-bs-* will handle modal open; we just reset steps
-      showFpStep('fp-step1');
-      $('#fpPhone').value = '';
-      $('#fpOtp').value = '';
-    });
-
-    document.getElementById('fpSendOtp').addEventListener('click', ()=>{
-      const phone = $('#fpPhone').value.trim();
-      if(!phone){ toast('Please enter a phone number.'); return; }
-      showFpStep('fp-step2');
-      toast('Code sent to ' + phone + ' (demo).');
-    });
-    document.getElementById('fpResend').addEventListener('click', (e)=>{
-      e.preventDefault();
-      const phone = $('#fpPhone').value.trim() || 'your number';
-      toast('Resent code to ' + phone + ' (demo).');
-    });
-    document.getElementById('fpBackToPhone').addEventListener('click', ()=>{
-      showFpStep('fp-step1');
-    });
-    document.getElementById('fpVerifyOtp').addEventListener('click', ()=>{
-      const otp = $('#fpOtp').value.trim();
-      if(!otp || otp.length < 4){ toast('Please enter the 6-digit code.'); return; }
-      showFpStep('fp-step3');
-      toast('Verification successful — reset link sent (demo).');
-    });
-
-    // ensure modal resets on close
-    forgotModalEl.addEventListener('hidden.bs.modal', ()=>{
-      showFpStep('fp-step1');
-      $('#fpPhone').value = '';
-      $('#fpOtp').value = '';
-    });
+    // click outside to hide signup (not needed)
+    // End of script
   </script>
 </body>
 </html>
