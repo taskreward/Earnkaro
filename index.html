@@ -63,18 +63,24 @@
     /* sticky helper for CTA on mobile */
     .sticky-cta{position:sticky; bottom:16px; z-index:60}
 
-    /* modal custom */
-    .modal-backdrop.show {opacity:0.5;}
+    /* forgot-password modal styles */
+    .fp-step { display: none; }
+    .fp-step.active { display: block; }
+    .fp-otp-input { letter-spacing: 6px; font-size: 18px; text-align:center; }
+    .footer-contact { background: #fff; border-radius:12px; padding:18px; box-shadow:0 6px 20px rgba(9,10,12,.04); }
+    /* small visual tweak for toasts */
+    #sm-toast { transition: opacity .25s ease; }
   </style>
 </head>
 <body>
   <div class="app-wrapper">
 
-    <!-- NAV (updated with logo) -->
+    <!-- NAV (logo replaced) -->
     <nav class="d-flex align-items-center justify-content-between mb-3">
       <div class="d-flex align-items-center gap-3">
+        <!-- Replace this logo.png with your real logo in same folder -->
         <div>
-          <img src="logo.png" alt="SkillMint Logo" style="height:44px; width:auto; border-radius:6px">
+          <img src="logo.png" alt="SkillMint Logo" style="height:44px; width:auto; border-radius:8px; object-fit:contain;">
         </div>
         <div>
           <div style="font-weight:700">SkillMint</div>
@@ -243,55 +249,87 @@
 
     </main>
 
-    <!-- footer updated with realistic contact -->
-    <footer class="mt-4 text-center p-3 bg-white rounded-12 shadow-sm">
-      <div class="mb-2 muted small">
-        <strong>SkillMint</strong><br>
-        123 Learning Street, Knowledge City, India<br>
-        Phone: +91 9876543210 | Email: <a href="mailto:support@skillmint.example" class="text-decoration-none">support@skillmint.example</a>
-      </div>
-      <div class="mb-2">
-        <a href="#" class="text-decoration-none me-2">FAQ</a> •
-        <a href="#" class="text-decoration-none mx-2">Terms</a> •
-        <a href="#" class="text-decoration-none mx-2">Privacy</a> •
-        <a href="#" class="text-decoration-none ms-2">Blog</a>
+    <!-- footer (expanded contact info) -->
+    <footer class="mt-4 text-center">
+      <div class="footer-contact mb-3">
+        <div class="row align-items-center">
+          <div class="col-md-6 text-md-start">
+            <strong>SkillMint</strong><br>
+            27 Knowledge Avenue, Block B, Knowledge City, New Delhi 110001<br>
+            Phone: <a href="tel:+919876543210" class="text-decoration-none">+91 98765 43210</a><br>
+            Email: <a href="mailto:support@skillmint.example" class="text-decoration-none">support@skillmint.example</a>
+          </div>
+          <div class="col-md-6 text-md-end mt-3 mt-md-0">
+            <a href="#" class="text-decoration-none me-2">FAQ</a> •
+            <a href="#" class="text-decoration-none mx-2">Terms</a> •
+            <a href="#" class="text-decoration-none mx-2">Privacy</a> •
+            <a href="#" class="text-decoration-none ms-2">Blog</a>
+            <div class="small text-muted mt-2">Mon–Fri: 9:00 AM – 6:00 PM IST</div>
+          </div>
+        </div>
       </div>
       <div class="muted small">© <span id="year"></span> SkillMint</div>
     </footer>
   </div>
 
-  <!-- Bootstrap + icons -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Forgot Password Modal -->
+  <!-- Forgot Password Modal (multi-step demo flow) -->
   <div class="modal fade" id="forgotModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-md modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="forgotModalLabel">Reset Password</h5>
+        <div class="modal-header border-0">
+          <h5 class="modal-title" id="forgotModalLabel">Reset your password</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div id="fp-step1">
-            <label class="form-label">Enter your registered phone number:</label>
-            <input type="tel" id="fpPhone" class="form-control" placeholder="+91 9876543210">
-            <button id="fpSendOtp" class="btn btn-mint mt-2">Send OTP</button>
+          <!-- step 1: enter phone -->
+          <div id="fp-step1" class="fp-step active">
+            <p class="small text-muted">Enter the phone number associated with your account. We'll send a code (demo).</p>
+            <label class="form-label small">Phone number</label>
+            <input id="fpPhone" class="form-control" type="tel" placeholder="+91 98765 43210">
+            <div class="d-flex justify-content-end gap-2 mt-3">
+              <button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
+              <button id="fpSendOtp" class="btn btn-mint">Send code</button>
+            </div>
           </div>
-          <div id="fp-step2" style="display:none">
-            <label class="form-label">Enter OTP:</label>
-            <input type="text" id="fpOtp" class="form-control" placeholder="123456">
-            <button id="fpVerifyOtp" class="btn btn-mint mt-2">Verify OTP</button>
+
+          <!-- step 2: enter OTP -->
+          <div id="fp-step2" class="fp-step">
+            <p class="small text-muted">We sent a 6-digit code to your phone. Enter it below.</p>
+            <label class="form-label small">Enter code</label>
+            <input id="fpOtp" class="form-control fp-otp-input" type="text" maxlength="6" placeholder="● ● ● ● ● ●">
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <small id="resendSmall" class="text-muted">Didn't get it? <a href="#" id="fpResend">Resend</a></small>
+              <div class="d-flex gap-2">
+                <button id="fpBackToPhone" class="btn btn-ghost">Back</button>
+                <button id="fpVerifyOtp" class="btn btn-mint">Verify</button>
+              </div>
+            </div>
           </div>
-          <div id="fp-step3" style="display:none">
-            <p class="text-success">Password reset link sent to your email (demo).</p>
-            <button type="button" class="btn btn-ghost mt-2" data-bs-dismiss="modal">Close</button>
+
+          <!-- step 3: confirmation -->
+          <div id="fp-step3" class="fp-step">
+            <div class="text-center">
+              <div style="font-size:28px; color:var(--mint)">✅</div>
+              <h6 class="mt-2">Reset link sent</h6>
+              <p class="small text-muted">A password reset link has been sent to the email address on file (demo). Follow the instructions to create a new password.</p>
+              <div class="d-flex justify-content-center mt-3">
+                <button type="button" class="btn btn-mint" data-bs-dismiss="modal">Done</button>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Bootstrap + icons -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
+    // -------------------------
+    // Demo single-file SPA logic (unchanged behavior aside from new features)
+    // -------------------------
     const state = {
       selector: {
         login: document.getElementById('view-login'),
@@ -308,53 +346,88 @@
     };
 
     function $(id){ return document.getElementById(id); }
+
+    // view control
     function showView(name){
       Object.values(state.selector).forEach(el=> el.style.display='none');
       if(name==='login') state.selector.login.style.display='';
       if(name==='signup') state.selector.signup.style.display='';
       if(name==='bundles') state.selector.bundles.style.display='';
+      // scroll to top a bit for mobile
       window.scrollTo({top:0, behavior:'smooth'});
       renderBundlesIfNeeded();
     }
 
+    // initial view
     const storedUser = JSON.parse(localStorage.getItem(state.userKey) || 'null');
-    if(storedUser && storedUser.email){ showView('bundles'); } else { showView('login'); }
-    document.getElementById('year').textContent = new Date().getFullYear();
-    document.getElementById('goSignup').addEventListener('click', e=>{ e.preventDefault(); showView('signup'); });
-    document.getElementById('goLogin').addEventListener('click', e=>{ e.preventDefault(); showView('login'); });
+    if(storedUser && storedUser.email){
+      // logged in
+      showView('bundles');
+    } else {
+      showView('login');
+    }
 
+    // date in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // nav links
+    document.getElementById('goSignup').addEventListener('click', (e)=>{
+      e.preventDefault(); showView('signup');
+    });
+    document.getElementById('goLogin').addEventListener('click', (e)=>{
+      e.preventDefault(); showView('login');
+    });
+
+    // Signup logic
     document.getElementById('signupForm').addEventListener('submit', (e)=>{
       e.preventDefault();
       const user = {
-        username: $('#suUsername').value.trim(),
-        email: $('#suEmail').value.trim(),
-        password: $('#suPassword').value,
-        phone: $('#suPhone').value.trim(),
-        dob: $('#suDob').value,
-        state: $('#suState').value,
-        ref: $('#suRef').value.trim(),
+        username: document.getElementById('suUsername').value.trim(),
+        email: document.getElementById('suEmail').value.trim(),
+        password: document.getElementById('suPassword').value,
+        phone: document.getElementById('suPhone').value.trim(),
+        dob: document.getElementById('suDob').value,
+        state: document.getElementById('suState').value,
+        ref: document.getElementById('suRef').value.trim(),
       };
-      if(!user.email || !user.password || user.password.length < 8){ alert('Please provide valid email and password (min 8 chars).'); return; }
+      if(!user.email || !user.password || user.password.length < 8){
+        alert('Please provide valid email and password (min 8 chars).'); return;
+      }
+      // store demo
+      localStorage.setItem(state.userKey, JSON.stringify(user));
+      // simulate referral credit (add to user object)
       user.earn = { life:0, pending: (user.ref ? 300 : 0) };
       localStorage.setItem(state.userKey, JSON.stringify(user));
-      showView('bundles'); toast('Account created — welcome to SkillMint!');
+      showView('bundles');
+      toast('Account created — welcome to SkillMint!');
     });
 
+    // Apply referral simple behavior
     document.getElementById('applyRef').addEventListener('click', (e)=>{
-      const val = $('#suRef').value.trim();
+      const val = document.getElementById('suRef').value.trim();
       if(!val){ toast('Enter a referral code to apply'); return; }
+      // demo: apply code → give discount message
       toast('Referral code applied! ₹300 added as pending credit');
     });
 
+    // Login logic (demo)
     document.getElementById('btnLogin').addEventListener('click', ()=>{
-      const email = $('#loginEmail').value.trim();
-      const pass = $('#loginPassword').value;
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value;
       if(!email || !pass){ toast('Enter email and password'); return; }
+      // Check user in localStorage demo
       const stored = JSON.parse(localStorage.getItem(state.userKey) || 'null');
       if(stored && stored.email === email){
-        if(stored.password === pass){ toast('Login successful'); showView('bundles'); return; }
-        else { toast('Wrong password (demo). If you signed up with another email use Signup.'); return; }
+        // coarse password check
+        if(stored.password === pass){
+          toast('Login successful');
+          showView('bundles'); return;
+        } else {
+          toast('Wrong password (demo). If you signed up with another email use Signup.');
+          return;
+        }
       } else {
+        // offer signup
         const go = confirm('No account found. Create a new one?');
         if(go) { showView('signup'); }
       }
@@ -362,14 +435,15 @@
 
     // logout
     document.getElementById('btnLogout').addEventListener('click', ()=>{
+      // keep demo data but navigate to login
       showView('login');
       toast('Logged out (demo).');
     });
 
-    // render bundles
+    // render bundles grid
     function renderBundlesIfNeeded(){
-      const grid = $('#bundlesGrid');
-      if(grid.children.length) return;
+      const grid = document.getElementById('bundlesGrid');
+      if(grid.children.length) return; // already rendered
       state.demoCourses.forEach(c=>{
         const col = document.createElement('div');
         col.className = 'col-12 col-md-6';
@@ -398,6 +472,7 @@
       });
     }
 
+    // enroll action (demo)
     function enrollBundle(id){
       const user = JSON.parse(localStorage.getItem(state.userKey) || 'null');
       if(!user){ toast('Please login or signup first'); showView('login'); return; }
@@ -408,8 +483,9 @@
       toast('Enrolled — check your dashboard (demo).');
     }
 
+    // tiny toast
     function toast(msg){
-      let el = $('#sm-toast');
+      let el = document.getElementById('sm-toast');
       if(!el){
         el = document.createElement('div');
         el.id = 'sm-toast';
@@ -417,32 +493,96 @@
         el.style.left='50%';
         el.style.transform='translateX(-50%)';
         el.style.bottom='22px';
-        el.style.zIndex='1000';
+        el.style.zIndex='1080';
         el.style.background='rgba(15,17,20,.95)';
         el.style.color='white';
         el.style.padding='10px 16px';
         el.style.borderRadius='10px';
         el.style.boxShadow='0 8px 28px rgba(2,6,23,.3)';
+        el.style.opacity='0';
         document.body.appendChild(el);
       }
       el.textContent = msg;
       el.style.opacity = '1';
-      setTimeout(()=> el.style.opacity = '0', 2000);
+      clearTimeout(el._hideTimeout);
+      el._hideTimeout = setTimeout(()=> el.style.opacity = '0', 2200);
     }
 
-    function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    // small helper
+    function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
-    // Forgot Password Modal Logic
-    $('#fpSendOtp').addEventListener('click', ()=>{
-      $('#fp-step1').style.display='none';
-      $('#fp-step2').style.display='';
-      toast('OTP sent to your phone (demo).');
+    // -------------------------
+    // Forgot Password Modal Flow (demo)
+    // -------------------------
+    const forgotModalEl = document.getElementById('forgotModal');
+    const bsForgotModal = new bootstrap.Modal(forgotModalEl, { backdrop: 'static', keyboard: false });
+
+    function showFpStep(step){
+      ['fp-step1','fp-step2','fp-step3'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        if(id === step) { el.classList.add('active'); } else { el.classList.remove('active'); }
+      });
+    }
+
+    // open modal when link clicked (data-bs attributes also handle it)
+    document.getElementById('forgotLink').addEventListener('click', (e)=>{
+      e.preventDefault();
+      // reset modal to step1
+      showFpStep('fp-step1');
+      // clear inputs
+      $('#fpPhone').value = '';
+      $('#fpOtp').value = '';
+      // show modal
+      bsForgotModal.show();
     });
-    $('#fpVerifyOtp').addEventListener('click', ()=>{
-      $('#fp-step2').style.display='none';
-      $('#fp-step3').style.display='';
-      toast('Password reset link sent (demo).');
+
+    // Step 1: Send OTP (demo)
+    document.getElementById('fpSendOtp').addEventListener('click', ()=>{
+      const phone = $('#fpPhone').value.trim();
+      if(!phone){
+        toast('Please enter a phone number.');
+        return;
+      }
+      // fake send — show step2
+      showFpStep('fp-step2');
+      toast('Code sent to ' + phone + ' (demo).');
+      // optionally focus OTP input after a tiny delay
+      setTimeout(()=> { try { $('#fpOtp').focus(); } catch(e){} }, 250);
     });
+
+    // Step 2: Resend
+    document.getElementById('fpResend').addEventListener('click', (e)=>{
+      e.preventDefault();
+      const phone = $('#fpPhone').value.trim() || 'your number';
+      toast('Resent code to ' + phone + ' (demo).');
+    });
+
+    // Step 2: Back to phone
+    document.getElementById('fpBackToPhone').addEventListener('click', ()=>{
+      showFpStep('fp-step1');
+    });
+
+    // Step 2: Verify OTP (demo)
+    document.getElementById('fpVerifyOtp').addEventListener('click', ()=>{
+      const otp = $('#fpOtp').value.trim();
+      if(!otp || otp.length < 4){
+        toast('Please enter the 6-digit code.');
+        return;
+      }
+      // fake verify
+      showFpStep('fp-step3');
+      toast('Verification successful — reset link sent (demo).');
+    });
+
+    // Close modal: reset steps (so next open starts from step1)
+    forgotModalEl.addEventListener('hidden.bs.modal', ()=>{
+      showFpStep('fp-step1');
+      $('#fpPhone').value = '';
+      $('#fpOtp').value = '';
+    });
+
+    // end forgot password modal flow
   </script>
 </body>
 </html>
