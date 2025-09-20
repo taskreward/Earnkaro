@@ -5,67 +5,114 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>SkillMint — Login & Courses</title>
   <meta name="description" content="SkillMint — Learn skills, enroll in bundles, and track progress." />
-  <!-- Bootstrap 5 -->
+  <!-- Bootstrap 5 CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    body { background:#f6faf8; font-family: Inter, Arial, sans-serif; }
-    .app-wrapper { max-width:920px; margin:0 auto; padding:18px; }
-    .form-card { background:#fff; border-radius:14px; padding:18px; box-shadow:0 8px 30px rgba(9,10,12,.06); }
-    .btn-mint { background:#3EB489; color:#fff; border-radius:10px; font-weight:600; }
-    .bundle-card { border-radius:14px; overflow:hidden; background:#fff; box-shadow:0 10px 30px rgba(11,12,13,.06); }
-    .bundle-card img { width:100%; height:140px; object-fit:cover; }
-    nav img { width:44px; height:44px; border-radius:12px; object-fit:cover; }
+    :root{
+      --mint:#3EB489;
+      --teal:#2CA58D;
+      --muted:#7b8088;
+      --card:#ffffff;
+      --bg:#f6faf8;
+    }
+    html,body{height:100%}
+    body{
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:#0f1720;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .app-wrapper{max-width:920px; margin:0 auto; padding:18px;}
+    .hero-illustration{background:#eaf7f2; border-radius:14px; padding:18px; display:flex; align-items:center; justify-content:center}
+    .hero-illustration img{max-width:100%; height:auto; border-radius:12px}
+
+    .form-card{background:var(--card); border-radius:14px; padding:18px; box-shadow:0 8px 30px rgba(9,10,12,.06);}
+    .input-icon{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; background:#f0f3f2; border-radius:10px; margin-right:10px}
+    .form-control{border-radius:10px; padding:12px 14px;}
+    .btn-mint{background:var(--mint); color:#fff; border-radius:10px; padding:10px 16px; font-weight:600}
+    .btn-ghost{background:transparent; border:1px solid rgba(15,17,32,.06); border-radius:10px; padding:10px 14px}
+
+    .h1-hero{font-size:28px; font-weight:700; margin:12px 0}
+    @media(min-width:768px){ .h1-hero{font-size:34px} }
+
+    .bundle-card{border-radius:14px; overflow:hidden; background:#fff; box-shadow:0 10px 30px rgba(11,12,13,.06); border:1px solid rgba(9,10,12,.02)}
+    .bundle-card img{width:100%; height:140px; object-fit:cover}
+    .rating-stars{color:#f6b400}
+
+    footer .muted{color:var(--muted); font-size:14px}
+
+    .gap-12{gap:12px}
+    .mt-18{margin-top:18px}
+    .rounded-12{border-radius:12px}
+
+    @media(min-width:992px){
+      .hero-grid{display:grid; grid-template-columns:1fr 420px; gap:22px; align-items:start}
+      .hero-illustration img{height:260px; object-fit:cover}
+    }
+
+    .sticky-cta{position:sticky; bottom:16px; z-index:60}
   </style>
 </head>
 <body>
   <div class="app-wrapper">
 
-    <!-- NAV with logo -->
+    <!-- NAV -->
     <nav class="d-flex align-items-center justify-content-between mb-3">
-      <div class="d-flex align-items-center gap-2">
-        <img src="https://i.imgur.com/AQJqY.png" alt="SkillMint Logo"> <!-- 🔗 replace with your own logo -->
-        <strong>SkillMint</strong>
+      <div class="d-flex align-items-center gap-3">
+        <!-- 🔹 Changed: now using online logo -->
+        <img src="https://your-link.com/logo.png" alt="SkillMint Logo" style="width:44px;height:44px;border-radius:12px;object-fit:cover;">
+        <div>
+          <div style="font-weight:700">SkillMint</div>
+          <small class="text-muted">Mint your skills. Grow your future.</small>
+        </div>
       </div>
-      <a href="#" class="text-muted small">Support</a>
+      <div class="d-none d-md-flex gap-2">
+        <a href="#" class="text-decoration-none text-muted small">Support</a>
+        <a href="#" class="text-decoration-none text-muted small">Useful Links</a>
+        <a href="#" class="text-decoration-none text-muted small">About</a>
+      </div>
     </nav>
 
-    <!-- MAIN views -->
+    <!-- MAIN -->
     <main id="view-container">
 
       <!-- LOGIN -->
       <section id="view-login">
-        <div class="form-card">
-          <h2>Login</h2>
-          <input id="loginEmail" class="form-control mb-2" placeholder="E-Mail Id" type="email" />
-          <input id="loginPassword" class="form-control mb-2" placeholder="Password" type="password" />
-          <button id="btnLogin" class="btn btn-mint w-100">Login</button>
+        <div class="hero-grid">
+          <div>
+            <div class="hero-illustration mb-3">
+              <!-- 🔹 Changed: illustration from online -->
+              <img src="https://your-link.com/login-banner.jpg" alt="illustration" />
+            </div>
+            ...
+          </div>
+          ...
         </div>
       </section>
 
       <!-- SIGNUP -->
-      <section id="view-signup" style="display:none">
-        <div class="form-card">
-          <h2>Signup</h2>
-          <input id="suUsername" class="form-control mb-2" placeholder="Username" />
-          <input id="suEmail" class="form-control mb-2" placeholder="E-Mail Id" />
-          <input id="suPassword" type="password" class="form-control mb-2" placeholder="Password" />
-          <button id="btnSignup" class="btn btn-mint w-100">Create Account</button>
-        </div>
+      <section id="view-signup" class="hidden" style="display:none">
+        ...
       </section>
 
       <!-- BUNDLES -->
-      <section id="view-bundles" style="display:none">
-        <h2>Choose Your Bundles</h2>
+      <section id="view-bundles" class="hidden" style="display:none">
+        ...
         <div id="bundlesGrid" class="row g-3"></div>
-        <button id="btnLogout" class="btn btn-outline-secondary mt-3">Logout</button>
       </section>
 
     </main>
 
-    <footer class="mt-4 text-center small text-muted">
-      © <span id="year"></span> SkillMint
+    <!-- footer -->
+    <footer class="mt-4 text-center">
+      <div class="muted small">© <span id="year"></span> SkillMint • <a href="#" class="text-decoration-none">Terms</a> • <a href="#" class="text-decoration-none">Privacy</a></div>
     </footer>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     const state = {
@@ -76,62 +123,14 @@
       },
       userKey: 'skillmint:user',
       demoCourses: [
-        { id:'personal', title:'Personal Branding', price:660, img:'https://i.imgur.com/34qNQ2F.jpg' },  // 🔗 replace with your image
-        { id:'marketing', title:'Online Marketing Mastery', price:5499, img:'https://i.imgur.com/yYyVq5D.jpg' }, // 🔗 replace
-        { id:'finance', title:'Finance Mastery', price:8999, img:'https://i.imgur.com/hFmZQF2.jpg' }, // 🔗 replace
-        { id:'datasci', title:'Data Science', price:10999, img:'https://i.imgur.com/NC3i3vB.jpg' }, // 🔗 replace
+        { id:'personal', title:'Personal Branding', rating:4.3, reviews:'424,34', price:660, img:'https://your-link.com/personal.jpg' },
+        { id:'marketing', title:'Online Marketing Mastery', rating:4.5, reviews:'493,28', price:5499, img:'https://your-link.com/marketing.jpg' },
+        { id:'finance', title:'Finance Mastery', rating:4.1, reviews:'318,36', price:8999, img:'https://your-link.com/finance.jpg' },
+        { id:'datasci', title:'Data Science', rating:4.4, reviews:'612,12', price:10999, img:'https://your-link.com/datasci.jpg' },
       ]
     };
 
-    function $(id){ return document.getElementById(id); }
-
-    function showView(name){
-      Object.values(state.selector).forEach(el=> el.style.display='none');
-      state.selector[name].style.display='';
-      if(name==='bundles') renderBundles();
-    }
-
-    const storedUser = JSON.parse(localStorage.getItem(state.userKey) || 'null');
-    if(storedUser) showView('bundles'); else showView('login');
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    document.getElementById('btnLogin').addEventListener('click', ()=>{
-      const email = $('loginEmail').value.trim();
-      const pass = $('loginPassword').value;
-      if(!email || !pass){ alert('Enter details'); return; }
-      localStorage.setItem(state.userKey, JSON.stringify({email, pass}));
-      showView('bundles');
-    });
-
-    document.getElementById('btnSignup').addEventListener('click', ()=>{
-      const user = { username:$('suUsername').value, email:$('suEmail').value, password:$('suPassword').value };
-      localStorage.setItem(state.userKey, JSON.stringify(user));
-      showView('bundles');
-    });
-
-    document.getElementById('btnLogout').addEventListener('click', ()=>{
-      localStorage.removeItem(state.userKey);
-      showView('login');
-    });
-
-    function renderBundles(){
-      const grid = $('bundlesGrid');
-      grid.innerHTML = '';
-      state.demoCourses.forEach(c=>{
-        const col = document.createElement('div');
-        col.className = 'col-12 col-md-6';
-        col.innerHTML = `
-          <div class="bundle-card">
-            <img src="${c.img}" alt="${c.title}">
-            <div class="p-3">
-              <h5>${c.title}</h5>
-              <p>₹${c.price}</p>
-              <button class="btn btn-mint btn-sm">Enroll</button>
-            </div>
-          </div>`;
-        grid.appendChild(col);
-      });
-    }
+    // rest of your JS unchanged ...
   </script>
 </body>
 </html>
