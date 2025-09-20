@@ -25,34 +25,43 @@
       -moz-osx-font-smoothing:grayscale;
     }
 
+    /* Global containers */
     .app-wrapper{max-width:920px; margin:0 auto; padding:18px;}
     .hero-illustration{background:#eaf7f2; border-radius:14px; padding:18px; display:flex; align-items:center; justify-content:center}
     .hero-illustration img{max-width:100%; height:auto; border-radius:12px}
 
+    /* Forms */
     .form-card{background:var(--card); border-radius:14px; padding:18px; box-shadow:0 8px 30px rgba(9,10,12,.06);}
     .input-icon{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; background:#f0f3f2; border-radius:10px; margin-right:10px}
     .form-control{border-radius:10px; padding:12px 14px;}
     .btn-mint{background:var(--mint); color:#fff; border-radius:10px; padding:10px 16px; font-weight:600}
     .btn-ghost{background:transparent; border:1px solid rgba(15,17,32,.06); border-radius:10px; padding:10px 14px}
 
+    /* Page headings */
     .h1-hero{font-size:28px; font-weight:700; margin:12px 0}
     @media(min-width:768px){ .h1-hero{font-size:34px} }
 
-    .bundle-card{border-radius:14px; overflow:hidden; background:#fff; box-shadow:0 10px 30px rgba(11,12,13,.06); border:1px solid rgba(9,10,12,.02)}
+    /* Bundles */
+    .bundle-card{border-radius:14px; overflow:hidden; background:#fff; box-shadow:0 10px 30px rgba(11,12,13,.06); border:1px solid rgba(9,10,12,.02); cursor:pointer;}
     .bundle-card img{width:100%; height:140px; object-fit:cover}
     .rating-stars{color:#f6b400}
+    .bundle-selected{border:2px solid var(--mint);}
 
+    /* footer */
     footer .muted{color:var(--muted); font-size:14px}
 
+    /* small helpers */
     .gap-12{gap:12px}
     .mt-18{margin-top:18px}
     .rounded-12{border-radius:12px}
 
+    /* mobile-first tweaks */
     @media(min-width:992px){
       .hero-grid{display:grid; grid-template-columns:1fr 420px; gap:22px; align-items:start}
       .hero-illustration img{height:260px; object-fit:cover}
     }
 
+    /* sticky helper for CTA on mobile */
     .sticky-cta{position:sticky; bottom:16px; z-index:60}
   </style>
 </head>
@@ -60,316 +69,329 @@
   <div class="app-wrapper">
 
     <!-- NAV (simple) -->
-    <nav class="d-flex align-items-center justify-content-between mb-3">
-      <div class="d-flex align-items-center gap-3">
-        <img src="https://iili.io/KYq1yTG.jpg" 
-             alt="SkillMint Logo" 
-             style="width:60px; height:60px; object-fit:cover; display:block;">
-        <div style="margin-left:12px;">
-          <div style="font-weight:400; font-size:28px; color:#2C3E50; letter-spacing:0.5px; font-family: 'Inter', sans-serif;">
-            SkillMint
-          </div>
-          <small class="text-muted" style="font-style:italic;">Mint your skills. Grow your future.</small>
-        </div>
+<nav class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center gap-3">
+    <img src="https://iili.io/KYq1yTG.jpg" 
+         alt="SkillMint Logo" 
+         style="width:60px; height:60px; object-fit:cover; display:block;">
+    <div style="margin-left:12px;">
+      <div style="font-weight:400; font-size:28px; color:#2C3E50; letter-spacing:0.5px; font-family: 'Inter', sans-serif;">
+        SkillMint
       </div>
-      <div class="d-none d-md-flex gap-2">
-        <a href="#" class="text-decoration-none text-muted small">Support</a>
-        <a href="#" class="text-decoration-none text-muted small">Useful Links</a>
-        <a href="#" class="text-decoration-none text-muted small">About</a>
-      </div>
-    </nav>
-
-    <main id="view-container">
-
-      <!-- LOGIN VIEW -->
-      <section id="view-login">
-        <div class="hero-grid">
-          <div>
-            <div style="width:100%; height:400px; overflow:hidden; border-radius:12px; margin-bottom:24px;">
-              <img src="https://iili.io/KY2w8VR.jpg" alt="4k Students" style="width:100%; height:100%; object-fit:cover; display:block;">
-            </div>
-
-            <div class="form-card">
-              <div class="mb-2 small text-muted">Welcome back</div>
-              <h1 class="h1-hero">Login into SkillMint</h1>
-              <p class="text-muted small">Enter your email and password to access your courses.</p>
-
-              <div class="mt-3">
-                <div class="mb-3 d-flex gap-2 align-items-center">
-                  <div class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#8b949d" d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1 .9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5L4 8V6l8 5 8-5v2z"/></svg></div>
-                  <input id="loginEmail" class="form-control" placeholder="E-Mail Id" type="email" />
-                </div>
-                <div class="mb-3 d-flex gap-2 align-items-center">
-                  <div class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#8b949d" d="M12 17a2 2 0 110-4 2 2 0 010 4zm6-7h-1V8a5 5 0 10-10 0v2H6c-1.1 0-2 .9-2 2v7c0 1.1 .9 2 2 2h12c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2z"/></svg></div>
-                  <input id="loginPassword" class="form-control" placeholder="Password" type="password" />
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div class="form-check">
-                    <input class="form-check-input" id="rememberMe" type="checkbox">
-                    <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
-                  </div>
-                  <a href="#" id="forgotLink" class="small text-muted">Forgot password?</a>
-                </div>
-
-                <div class="d-grid">
-                  <button id="btnLogin" class="btn btn-mint">Login</button>
-                </div>
-
-                <div class="text-center mt-3 small">
-                  Don't have an account? <a href="#" id="goSignup">Signup</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-3 text-center small muted">
-              <a href="#" class="text-muted me-2">Support</a> •
-              <a href="#" class="text-muted mx-2">Useful Links</a> •
-              <a href="#" class="text-muted ms-2">Contact</a>
-            </div>
-          </div>
-
-          <div class="d-none d-lg-block">
-            <div class="form-card p-3">
-              <h5 style="font-weight:700">Why SkillMint?</h5>
-              <ul class="small text-muted mt-2">
-                <li>Project-first learning</li>
-                <li>Mentor support & certificates</li>
-                <li>Referral program & payouts</li>
-              </ul>
-              <div class="mt-3">
-                <a href="#" class="btn btn-ghost w-100">How it works</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- BUNDLES VIEW (Shown before signup) -->
-      <section id="view-bundles" class="hidden" style="display:none">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h1 style="font-weight:800; font-size:26px">Choose Your Bundles</h1>
-            <div class="text-muted small">Perceived end knowledge — curated bundles for fast learning.</div>
-          </div>
-        </div>
-        <div id="bundlesGrid" class="row g-3"></div>
-        <div class="mt-4">
-          <h5 style="font-weight:700">Your Selected Package</h5>
-          <p class="text-muted small">Selected bundle price with offer: ₹<span id="selectedPrice">0</span></p>
-        </div>
-      </section>
-
-      <!-- SIGNUP VIEW -->
-      <section id="view-signup" class="hidden" style="display:none">
-        <div class="form-card">
-          <h2 style="font-weight:700">Enroll to SkillMint</h2>
-          <p class="text-muted small">Join thousands of learners — fill details and choose your bundle.</p>
-
-          <form id="signupForm" class="mt-3">
-            <div class="mb-3 d-flex gap-2">
-              <input id="suUsername" class="form-control" placeholder="Username" required />
-            </div>
-            <div class="mb-3 d-flex gap-2">
-              <input id="suEmail" type="email" class="form-control" placeholder="E-Mail Id" required />
-            </div>
-            <div class="mb-3 d-flex gap-2">
-              <input id="suPassword" type="password" class="form-control" placeholder="Password (min 8 chars)" minlength="8" required />
-            </div>
-            <div class="mb-3 d-flex gap-2">
-              <input id="suPhone" type="tel" class="form-control" placeholder="+91 | Phone" />
-            </div>
-            <div class="mb-3 d-flex gap-2">
-              <input id="suDob" type="date" class="form-control" placeholder="Date of Birth" />
-            </div>
-            <div class="mb-3 d-flex gap-2">
-              <select id="suState" class="form-control">
-                <option value="">Select State</option>
-                <option>Delhi</option>
-                <option>Maharashtra</option>
-                <option>Uttar Pradesh</option>
-                <option>Karnataka</option>
-                <option>Tamil Nadu</option>
-              </select>
-            </div>
-
-            <div class="mb-3 d-flex gap-2">
-              <input id="suRef" class="form-control" placeholder="Referral Code" />
-              <button id="applyRef" type="button" class="btn btn-primary">Apply</button>
-            </div>
-
-            <div class="form-check mb-3">
-              <input type="checkbox" class="form-check-input" id="termsCheck">
-              <label for="termsCheck" class="form-check-label small">I agree with Terms & Conditions & Refund Policy</label>
-            </div>
-
-            <div class="d-grid mt-2">
-              <button class="btn btn-mint" type="submit">Create account & continue</button>
-            </div>
-
-            <div class="text-center mt-3 small">
-              Already have an account? <a href="#" id="goLogin">Sign in here</a>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <!-- UTR Payment Entry -->
-      <section id="utr" style="display:none;">
-        <div class="form-card mx-auto" style="max-width:400px;">
-          <h3>Payment Voucher</h3>
-          <p>1. UTR/UPI Ref No is 12-digit number<br>
-             2. Make sure the UTR you input is correct<br>
-             3. Upload payment picture with UTR</p>
-          <div class="mb-3">
-            <input id="utrNumber" class="form-control" placeholder="UTR/UPI Ref No *" maxlength="12">
-          </div>
-          <div class="mb-3">
-            <input id="utrFile" type="file" class="form-control">
-          </div>
-          <button id="utrSubmit" class="btn btn-mint w-100">Submit Payment</button>
-          <div class="text-muted small mt-2">Time remaining: <span id="utrTimer">04:00</span></div>
-        </div>
-      </section>
-
-      <!-- Pay Popup -->
-      <div id="payPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; display:flex; align-items:center; justify-content:center;">
-        <div class="form-card" style="width:320px; text-align:center;">
-          <img src="https://iili.io/KYq1yTG.jpg" alt="SkillMint Logo" style="width:80px; height:80px; margin-bottom:12px;">
-          <h3>SkillMint Payment</h3>
-          <p>Selected Bundle Price: ₹<span id="payAmount">0</span></p>
-          <button id="payNow" class="btn btn-mint w-100 mt-3">Pay Now</button>
-          <button id="payCancel" class="btn btn-ghost w-100 mt-2">Cancel</button>
-        </div>
-      </div>
-
-    </main>
-
-    <footer class="mt-4 text-center">
-      <div class="muted small">© <span id="year"></span> SkillMint • <a href="#" class="text-decoration-none">Terms</a> • <a href="#" class="text-decoration-none">Privacy</a></div>
-    </footer>
+      <small class="text-muted" style="font-style:italic;">Mint your skills. Grow your future.</small>
+    </div>
   </div>
+  <div class="d-none d-md-flex gap-2">
+    <a href="#" class="text-decoration-none text-muted small">Support</a>
+    <a href="#" class="text-decoration-none text-muted small">Useful Links</a>
+    <a href="#" class="text-decoration-none text-muted small">About</a>
+  </div>
+</nav>
 
-  <!-- Bootstrap + icons -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- MAIN: views are switched by JS -->
+<main id="view-container">
 
-  <script>
-    const state = {
-      selector: {
-        login: document.getElementById('view-login'),
-        signup: document.getElementById('view-signup'),
-        bundles: document.getElementById('view-bundles'),
-        utr: document.getElementById('utr')
-      },
-      userKey: 'skillmint:user',
-      demoCourses: [
-        { id:'personal', title:'Personal Branding', rating:4.3, reviews:'424,34', price:660, img:'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2f4d6b1c' },
-        { id:'marketing', title:'Online Marketing Mastery', rating:4.5, reviews:'493,28', price:5499, img:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3f6f54f4' },
-        { id:'finance', title:'Finance Mastery', rating:4.1, reviews:'318,36', price:8999, img:'https://images.unsplash.com/photo-1526378722501-6b0a6b7b5efc?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=d7c7e0c3' },
-        { id:'datasci', title:'Data Science', rating:4.4, reviews:'612,12', price:10999, img:'https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=427b3c3b' },
-      ],
-      selectedBundle: null
-    };
+  <!-- LOGIN VIEW -->
+  <section id="view-login">
+    <div class="hero-grid">
+      <div>
+        <div style="width:100%; height:400px; overflow:hidden; border-radius:12px; margin-bottom:24px;">
+          <img src="https://iili.io/KY2w8VR.jpg" alt="4k Students" style="width:100%; height:100%; object-fit:cover; display:block;">
+        </div>
+        <div class="form-card">
+          <div class="mb-2 small text-muted">Welcome back</div>
+          <h1 class="h1-hero">Login into SkillMint</h1>
+          <p class="text-muted small">Enter your email and password to access your courses.</p>
 
-    function $(id){ return document.getElementById(id); }
+          <div class="mt-3">
+            <div class="mb-3 d-flex gap-2 align-items-center">
+              <div class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#8b949d" d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1 .9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5L4 8V6l8 5 8-5v2z"/></svg></div>
+              <input id="loginEmail" class="form-control" placeholder="E-Mail Id" type="email" />
+            </div>
+            <div class="mb-3 d-flex gap-2 align-items-center">
+              <div class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#8b949d" d="M12 17a2 2 0 110-4 2 2 0 010 4zm6-7h-1V8a5 5 0 10-10 0v2H6c-1.1 0-2 .9-2 2v7c0 1.1 .9 2 2 2h12c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2z"/></svg></div>
+              <input id="loginPassword" class="form-control" placeholder="Password" type="password" />
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="form-check">
+                <input class="form-check-input" id="rememberMe" type="checkbox">
+                <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
+              </div>
+              <a href="#" id="forgotLink" class="small text-muted">Forgot password?</a>
+            </div>
+            <div class="d-grid">
+              <button id="btnLogin" class="btn btn-mint">Login</button>
+            </div>
+            <div class="text-center mt-3 small">
+              Don't have an account? <a href="#" id="goSignup">Signup</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    function showView(name){
-      Object.values(state.selector).forEach(el=> el.style.display='none');
-      if(state.selector[name]) state.selector[name].style.display='';
-      window.scrollTo({top:0, behavior:'smooth'});
-    }
+  <!-- BUNDLE SELECTION VIEW -->
+  <section id="view-bundles-selection" style="display:none">
+    <h2 style="font-weight:700">Choose Your Bundles</h2>
+    <div class="row g-3 mt-3" id="bundlesGrid">
+      <!-- bundles injected by JS -->
+    </div>
+    <div class="mt-3">
+      <button id="proceedSignup" class="btn btn-mint">Proceed to Signup</button>
+    </div>
+  </section>
 
-    const storedUser = JSON.parse(localStorage.getItem(state.userKey) || 'null');
-    if(storedUser && storedUser.email){ showView('bundles'); } else { showView('login'); }
-    document.getElementById('year').textContent = new Date().getFullYear();
+  <!-- SIGNUP VIEW -->
+  <section id="view-signup" style="display:none">
+    <div class="form-card mt-3">
+      <h2 style="font-weight:700">Complete Signup</h2>
+      <form id="signupForm" class="mt-3">
+        <div class="mb-3"><input id="suUsername" class="form-control" placeholder="Username" required /></div>
+        <div class="mb-3"><input id="suEmail" type="email" class="form-control" placeholder="E-Mail Id" required /></div>
+        <div class="mb-3"><input id="suPassword" type="password" class="form-control" placeholder="Password (min 8 chars)" minlength="8" required /></div>
+        <div class="mb-3"><input id="suPhone" type="tel" class="form-control" placeholder="+91 | Phone" /></div>
+        <div class="mb-3"><input id="suDob" type="date" class="form-control" placeholder="Date of Birth" /></div>
+        <div class="mb-3">
+          <select id="suState" class="form-control">
+            <option value="">Select State</option>
+            <option>Delhi</option>
+            <option>Maharashtra</option>
+            <option>Uttar Pradesh</option>
+            <option>Karnataka</option>
+            <option>Tamil Nadu</option>
+          </select>
+        </div>
+        <div class="mb-3"><input id="suRef" class="form-control" placeholder="Referral Code" /></div>
+        <div class="mb-3">
+          <strong>Total Price:</strong> ₹<span id="selectedPrice">0</span>
+        </div>
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+          <label class="form-check-label" for="agreeTerms">I agree with Terms & Conditions & Refund Policy</label>
+        </div>
+        <div class="d-grid mt-2">
+          <button class="btn btn-mint" type="submit">Signup & Pay</button>
+        </div>
+        <div class="text-center mt-3 small">
+          Already have an account? <a href="#" id="goLogin2">Sign in here</a>
+        </div>
+      </form>
+    </div>
+  </section>
 
-    document.getElementById('goSignup').addEventListener('click', e=>{ e.preventDefault(); showView('bundles'); });
-    document.getElementById('goLogin').addEventListener('click', e=>{ e.preventDefault(); showView('login'); });
+  <!-- PAYMENT POPUP -->
+  <section id="view-payment" style="display:none">
+    <div class="form-card mt-3 text-center">
+      <img src="https://iili.io/KYq1yTG.jpg" alt="SkillMint" style="width:80px;height:80px;margin-bottom:12px;">
+      <h3>SkillMint Payment</h3>
+      <p>Total Amount: ₹<span id="payAmount">0</span></p>
+      <button id="payNow" class="btn btn-mint mt-2">Pay Now</button>
+    </div>
+  </section>
 
-    document.getElementById('btnLogin').addEventListener('click', ()=>{
-      const email = $('loginEmail').value.trim();
-      const pass = $('loginPassword').value;
-      if(!email || !pass){ toast('Enter email and password'); return; }
-      const stored = JSON.parse(localStorage.getItem(state.userKey) || 'null');
-      if(stored && stored.email === email && stored.password===pass){ toast('Login successful'); showView('bundles'); } 
-      else { toast('Invalid login'); }
-    });
+  <!-- UTR VERIFICATION VIEW -->
+  <section id="view-utr" style="display:none">
+    <div class="form-card mt-3">
+      <h3>Payment Voucher</h3>
+      <p>UTR/UPI Ref No is 12-digit number. Upload payment screenshot.</p>
+      <form id="utrForm">
+        <div class="mb-3"><input type="text" id="utrNumber" class="form-control" placeholder="UTR/UPI Ref No" required /></div>
+        <div class="mb-3"><input type="file" id="utrFile" class="form-control" accept="image/*" required /></div>
+        <div class="mb-3">Time remaining: <span id="utrTimer">04:00</span></div>
+        <div class="d-grid mt-2">
+          <button class="btn btn-mint" type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+  </section>
 
-    document.getElementById('signupForm').addEventListener('submit', e=>{
-      e.preventDefault();
-      if(!$('#termsCheck').checked){ toast('Agree to terms'); return; }
-      const user = {
-        username: $('suUsername').value.trim(),
-        email: $('suEmail').value.trim(),
-        password: $('suPassword').value,
-        phone: $('suPhone').value.trim(),
-        dob: $('suDob').value,
-        state: $('suState').value,
-        ref: $('suRef').value.trim(),
-        enrollments: [state.selectedBundle?.id || null]
-      };
-      localStorage.setItem(state.userKey, JSON.stringify(user));
-      toast('Account created — welcome to SkillMint!');
-      showPayPopup(state.selectedBundle.price);
-    });
+  <!-- DASHBOARD -->
+  <section id="view-dashboard" style="display:none">
+    <h2>Your Dashboard</h2>
+    <div id="dashboardBundles" class="row g-3 mt-3">
+      <!-- enrolled courses shown here -->
+    </div>
+  </section>
 
-    function renderBundlesIfNeeded(){
-      const grid = $('bundlesGrid');
-      if(grid.children.length) return;
-      state.demoCourses.forEach(c=>{
-        const col = document.createElement('div'); col.className='col-12 col-md-6';
-        col.innerHTML=`<div class="bundle-card"><img src="${c.img}" alt="${c.title}"><div class="p-3"><h5 style="font-weight:700">${c.title}</h5><div class="d-flex align-items-center gap-2 mt-2"><div class="rating-stars">★ ${c.rating}</div><div class="text-muted small">(${c.reviews})</div></div><div class="mt-3 d-flex justify-content-between align-items-center"><div><div style="font-size:20px; font-weight:800">₹${c.price}</div><div class="small text-muted">one-time</div></div><div><button class="btn btn-mint" onclick="selectBundle('${c.id}',${c.price})">Select</button></div></div></div></div>`;
-        grid.appendChild(col);
-      });
-    }
+</main>
 
-    function selectBundle(id, price){
-      state.selectedBundle = state.demoCourses.find(b=>b.id===id);
-      $('selectedPrice').textContent = price;
-      toast(`Selected ${state.selectedBundle.title}`);
-    }
+<footer class="mt-4 text-center">
+  <div class="muted small">© <span id="year"></span> SkillMint • <a href="#" class="text-decoration-none">Terms</a> • <a href="#" class="text-decoration-none">Privacy</a></div>
+</footer>
+</div>
 
-    renderBundlesIfNeeded();
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const state = {
+  selector: {
+    login: document.getElementById('view-login'),
+    bundlesSel: document.getElementById('view-bundles-selection'),
+    signup: document.getElementById('view-signup'),
+    payment: document.getElementById('view-payment'),
+    utr: document.getElementById('view-utr'),
+    dashboard: document.getElementById('view-dashboard'),
+  },
+  userKey: 'skillmint:user',
+  demoCourses: [
+    { id:'personal', title:'Personal Branding', rating:4.3, reviews:'424,34', price:660, img:'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2f4d6b1c' },
+    { id:'marketing', title:'Online Marketing Mastery', rating:4.5, reviews:'493,28', price:5499, img:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3f6f54f4' },
+    { id:'finance', title:'Finance Mastery', rating:4.1, reviews:'318,36', price:8999, img:'https://images.unsplash.com/photo-1526378722501-6b0a6b7b5efc?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=d7c7e0c3' },
+    { id:'datasci', title:'Data Science', rating:4.4, reviews:'612,12', price:10999, img:'https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=427b3c3b' },
+  ],
+  selectedBundles: []
+};
 
-    // ----------------- Pay & UTR Logic -----------------
-    function showPayPopup(amount){ $('payAmount').textContent=amount; $('payPopup').style.display='flex'; }
-    $('payCancel').addEventListener('click', ()=>{ $('payPopup').style.display='none'; });
+function $(id){ return document.getElementById(id); }
 
-    $('payNow').addEventListener('click', ()=>{
-      const amount = $('payAmount').textContent||0;
-      const upiLink = `upi://pay?pa=sahilzeerak123@okhdfcbank&pn=SkillMint&tn=Bundle Payment&am=${amount}&cu=INR`;
-      window.location.href = upiLink;
-      setTimeout(()=>{ $('payPopup').style.display='none'; showView('utr'); startUTRTimer(4*60); },3000);
-    });
+function showView(name){
+  Object.values(state.selector).forEach(el=> el.style.display='none');
+  if(name==='login') state.selector.login.style.display='';
+  if(name==='bundlesSel') state.selector.bundlesSel.style.display='';
+  if(name==='signup') state.selector.signup.style.display='';
+  if(name==='payment') state.selector.payment.style.display='';
+  if(name==='utr') state.selector.utr.style.display='';
+  if(name==='dashboard') state.selector.dashboard.style.display='';
+}
 
-    function startUTRTimer(seconds){
-      let remaining = seconds;
-      const timerEl = $('utrTimer');
-      const interval = setInterval(()=>{
-        const m = String(Math.floor(remaining/60)).padStart(2,'0');
-        const s = String(remaining%60).padStart(2,'0');
-        timerEl.textContent = `${m}:${s}`;
-        remaining--;
-        if(remaining<0){ clearInterval(interval); alert('Time over! Redirecting to dashboard.'); showView('bundles'); }
-      },1000);
-    }
+// Footer year
+$('year').textContent = new Date().getFullYear();
 
-    $('utrSubmit').addEventListener('click', ()=>{
-      const utr = $('utrNumber').value.trim();
-      const file = $('utrFile').files[0];
-      if(!utr || utr.length!==12){ toast('Enter a valid 12-digit UTR'); return; }
-      if(!file){ toast('Upload payment screenshot'); return; }
-      const user = JSON.parse(localStorage.getItem(state.userKey)||'null');
-      user.payment = {utr,fileName:file.name}; localStorage.setItem(state.userKey, JSON.stringify(user));
-      toast('Payment info received. Redirecting to dashboard...');
-      setTimeout(()=> showView('bundles'),2000);
-    });
+// LOGIN
+$('goSignup').addEventListener('click', e=>{e.preventDefault(); showView('bundlesSel');});
+$('goLogin2').addEventListener('click', e=>{e.preventDefault(); showView('login');});
+$('btnLogin').addEventListener('click', ()=>{
+  const email = $('loginEmail').value.trim();
+  const pass = $('loginPassword').value;
+  const stored = JSON.parse(localStorage.getItem(state.userKey)||'null');
+  if(stored && stored.email===email && stored.password===pass){ showView('dashboard'); toast('Login successful'); }
+  else toast('Wrong email/password');
+});
 
-    function toast(msg){
-      let el = document.getElementById('sm-toast');
-      if(!el){ el = document.createElement('div'); el.id='sm-toast'; el.style.position='fixed'; el.style.left='50%'; el.style.transform='translateX(-50%)'; el.style.bottom='22px'; el.style.zIndex='1000'; el.style.background='rgba(15,17,20,.95)'; el.style.color='white'; el.style.padding='10px 16px'; el.style.borderRadius='10px'; el.style.boxShadow='0 8px 28px rgba(2,6,23,.3)'; document.body.appendChild(el);}
-      el.textContent=msg; el.style.opacity='1'; setTimeout(()=>el.style.opacity='0',2000);
-    }
-  </script>
+// BUNDLE SELECTION
+const bundlesGrid = $('bundlesGrid');
+state.demoCourses.forEach(c=>{
+  const col = document.createElement('div');
+  col.className='col-12 col-md-6';
+  col.innerHTML=`<div class="bundle-card" data-id="${c.id}">
+      <img src="${c.img}" alt="${c.title}">
+      <div class="p-3">
+        <h5 style="font-weight:700">${c.title}</h5>
+        <div class="mt-2">₹${c.price}</div>
+      </div>
+  </div>`;
+  bundlesGrid.appendChild(col);
+  col.querySelector('.bundle-card').addEventListener('click', (e)=>{
+    const bid=c.id;
+    const idx = state.selectedBundles.indexOf(bid);
+    if(idx>-1){ state.selectedBundles.splice(idx,1); col.querySelector('.bundle-card').classList.remove('bundle-selected'); }
+    else{ state.selectedBundles.push(bid); col.querySelector('.bundle-card').classList.add('bundle-selected'); }
+    updateSelectedPrice();
+  });
+});
+
+function updateSelectedPrice(){
+  let sum = 0;
+  state.selectedBundles.forEach(id=>{
+    const c = state.demoCourses.find(x=>x.id===id);
+    if(c) sum+=c.price;
+  });
+  $('selectedPrice').textContent=sum;
+  $('payAmount').textContent=sum;
+}
+
+// Proceed to Signup
+$('proceedSignup').addEventListener('click', ()=>{
+  if(state.selectedBundles.length===0){ toast('Select at least one bundle'); return; }
+  showView('signup');
+});
+
+// SIGNUP FORM
+$('signupForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const user={
+    username:$('suUsername').value.trim(),
+    email:$('suEmail').value.trim(),
+    password:$('suPassword').value,
+    phone:$('suPhone').value.trim(),
+    dob:$('suDob').value,
+    state:$('suState').value,
+    ref:$('suRef').value.trim(),
+    bundles: state.selectedBundles,
+  };
+  if(!user.email||!user.password){ toast('Email & password required'); return; }
+  localStorage.setItem(state.userKey, JSON.stringify(user));
+  showView('payment');
+});
+
+// PAY NOW BUTTON
+$('payNow').addEventListener('click', ()=>{
+  toast('Redirecting to UPI app demo...');
+  setTimeout(()=>{ showView('utr'); startUTRTimer(4*60); }, 1000);
+});
+
+// UTR FORM
+$('utrForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const utr=$('utrNumber').value.trim();
+  const file=$('utrFile').files[0];
+  if(!utr||utr.length!==12){ toast('Enter valid 12-digit UTR'); return; }
+  if(!file){ toast('Upload payment screenshot'); return; }
+  const user=JSON.parse(localStorage.getItem(state.userKey)||'null');
+  user.enrolledBundles=user.bundles;
+  localStorage.setItem(state.userKey, JSON.stringify(user));
+  showView('dashboard');
+  renderDashboard();
+  toast('Enrollment confirmed! Welcome!');
+});
+
+// UTR TIMER
+function startUTRTimer(seconds){
+  const timerEl=$('utrTimer');
+  let s=seconds;
+  const interval=setInterval(()=>{
+    let m=Math.floor(s/60); let sec=s%60;
+    timerEl.textContent=`${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    if(s--<=0){ clearInterval(interval); toast('Time over!'); }
+  },1000);
+}
+
+// DASHBOARD
+function renderDashboard(){
+  const user=JSON.parse(localStorage.getItem(state.userKey)||'null');
+  const dash=$('dashboardBundles');
+  dash.innerHTML='';
+  if(!user || !user.enrolledBundles) return;
+  user.enrolledBundles.forEach(id=>{
+    const c = state.demoCourses.find(x=>x.id===id);
+    if(!c) return;
+    const col=document.createElement('div');
+    col.className='col-12 col-md-6';
+    col.innerHTML=`<div class="bundle-card">
+      <img src="${c.img}" alt="${c.title}">
+      <div class="p-3">
+        <h5>${c.title}</h5>
+        <div>₹${c.price}</div>
+      </div>
+    </div>`;
+    dash.appendChild(col);
+  });
+}
+
+// tiny toast
+function toast(msg){
+  let el = document.getElementById('sm-toast');
+  if(!el){
+    el=document.createElement('div'); el.id='sm-toast';
+    el.style.position='fixed'; el.style.left='50%'; el.style.transform='translateX(-50%)';
+    el.style.bottom='22px'; el.style.zIndex='1000'; el.style.background='rgba(15,17,20,.95)';
+    el.style.color='white'; el.style.padding='10px 16px'; el.style.borderRadius='10px';
+    el.style.boxShadow='0 8px 28px rgba(2,6,23,.3)';
+    document.body.appendChild(el);
+  }
+  el.textContent=msg; el.style.opacity='1';
+  setTimeout(()=>el.style.opacity='0',2000);
+}
+</script>
 </body>
 </html>
