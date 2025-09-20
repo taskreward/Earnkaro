@@ -25,45 +25,52 @@
       -moz-osx-font-smoothing:grayscale;
     }
 
+    /* Global containers */
     .app-wrapper{max-width:920px; margin:0 auto; padding:18px;}
     .hero-illustration{background:#eaf7f2; border-radius:14px; padding:18px; display:flex; align-items:center; justify-content:center}
     .hero-illustration img{max-width:100%; height:auto; border-radius:12px}
 
+    /* Forms */
     .form-card{background:var(--card); border-radius:14px; padding:18px; box-shadow:0 8px 30px rgba(9,10,12,.06);}
     .input-icon{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; background:#f0f3f2; border-radius:10px; margin-right:10px}
     .form-control{border-radius:10px; padding:12px 14px;}
     .btn-mint{background:var(--mint); color:#fff; border-radius:10px; padding:10px 16px; font-weight:600}
     .btn-ghost{background:transparent; border:1px solid rgba(15,17,32,.06); border-radius:10px; padding:10px 14px}
 
+    /* Page headings */
     .h1-hero{font-size:28px; font-weight:700; margin:12px 0}
     @media(min-width:768px){ .h1-hero{font-size:34px} }
 
+    /* Bundles */
     .bundle-card{border-radius:14px; overflow:hidden; background:#fff; box-shadow:0 10px 30px rgba(11,12,13,.06); border:1px solid rgba(9,10,12,.02)}
     .bundle-card img{width:100%; height:140px; object-fit:cover}
     .rating-stars{color:#f6b400}
 
+    /* footer */
     footer .muted{color:var(--muted); font-size:14px}
 
+    /* small helpers */
     .gap-12{gap:12px}
     .mt-18{margin-top:18px}
     .rounded-12{border-radius:12px}
 
+    /* mobile-first tweaks */
     @media(min-width:992px){
       .hero-grid{display:grid; grid-template-columns:1fr 420px; gap:22px; align-items:start}
       .hero-illustration img{height:260px; object-fit:cover}
     }
 
+    /* sticky helper for CTA on mobile */
     .sticky-cta{position:sticky; bottom:16px; z-index:60}
   </style>
 </head>
 <body>
   <div class="app-wrapper">
 
-    <!-- NAV -->
+    <!-- NAV (simple) -->
     <nav class="d-flex align-items-center justify-content-between mb-3">
       <div class="d-flex align-items-center gap-3">
-        <!-- 🔹 Changed: now using online logo -->
-        <img src="https://your-link.com/logo.png" alt="SkillMint Logo" style="width:44px;height:44px;border-radius:12px;object-fit:cover;">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;color:white;font-weight:700">SM</div>
         <div>
           <div style="font-weight:700">SkillMint</div>
           <small class="text-muted">Mint your skills. Grow your future.</small>
@@ -76,32 +83,157 @@
       </div>
     </nav>
 
-    <!-- MAIN -->
+    <!-- MAIN: views are switched by JS (login / signup / bundles) -->
     <main id="view-container">
 
-      <!-- LOGIN -->
+      <!-- ============ LOGIN VIEW (default) ============ -->
       <section id="view-login">
         <div class="hero-grid">
           <div>
             <div class="hero-illustration mb-3">
-              <!-- 🔹 Changed: illustration from online -->
-              <img src="https://your-link.com/login-banner.jpg" alt="illustration" />
+              <!-- sample illustration (SVG or image) -->
+              <img src="data:image/svg+xml;utf8,
+                <svg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400' fill='none'>
+                  <rect width='800' height='400' rx='18' fill='%23eaf7f2'/>
+                  <g transform='translate(40,30)'>
+                    <rect x='320' y='8' width='360' height='260' rx='12' fill='%23fff'/>
+                    <rect x='356' y='22' width='300' height='14' rx='8' fill='%233EB489' opacity='.9'/>
+                    <rect x='362' y='56' width='220' height='12' rx='8' fill='%232CA58D' opacity='.6'/>
+                    <circle cx='420' cy='160' r='40' fill='%233EB489' opacity='.2'/>
+                    <rect x='20' y='20' width='260' height='220' rx='12' fill='%23fff' />
+                    <path d='M40 60h200v8H40zM40 86h200v8H40zM40 112h200v8H40z' fill='%232CA58D' opacity='.9'/>
+                    <text x='30' y='210' font-size='16' fill='%236C6C6C'>4k+ Students joined</text>
+                  </g>
+                </svg>" alt="illustration" />
             </div>
-            ...
+
+            <div class="form-card">
+              <div class="mb-2 small text-muted">Welcome back</div>
+              <h1 class="h1-hero">Login into SkillMint</h1>
+              <p class="text-muted small">Enter your email and password to access your courses.</p>
+
+              <div class="mt-3">
+                <div class="mb-3 d-flex gap-2 align-items-center">
+                  <div class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#8b949d" d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1 .9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5L4 8V6l8 5 8-5v2z"/></svg></div>
+                  <input id="loginEmail" class="form-control" placeholder="E-Mail Id" type="email" />
+                </div>
+                <div class="mb-3 d-flex gap-2 align-items-center">
+                  <div class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#8b949d" d="M12 17a2 2 0 110-4 2 2 0 010 4zm6-7h-1V8a5 5 0 10-10 0v2H6c-1.1 0-2 .9-2 2v7c0 1.1 .9 2 2 2h12c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2z"/></svg></div>
+                  <input id="loginPassword" class="form-control" placeholder="Password" type="password" />
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input" id="rememberMe" type="checkbox">
+                    <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
+                  </div>
+                  <a href="#" id="forgotLink" class="small text-muted">Forgot password?</a>
+                </div>
+
+                <div class="d-grid">
+                  <button id="btnLogin" class="btn btn-mint">Login</button>
+                </div>
+
+                <div class="text-center mt-3 small">
+                  Don't have an account? <a href="#" id="goSignup">Signup</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- support / links -->
+            <div class="mt-3 text-center small muted">
+              <a href="#" class="text-muted me-2">Support</a> •
+              <a href="#" class="text-muted mx-2">Useful Links</a> •
+              <a href="#" class="text-muted ms-2">Contact</a>
+            </div>
           </div>
-          ...
+
+          <!-- right column on desktop: mini highlights -->
+          <div class="d-none d-lg-block">
+            <div class="form-card p-3">
+              <h5 style="font-weight:700">Why SkillMint?</h5>
+              <ul class="small text-muted mt-2">
+                <li>Project-first learning</li>
+                <li>Mentor support & certificates</li>
+                <li>Referral program & payouts</li>
+              </ul>
+              <div class="mt-3">
+                <a href="#" class="btn btn-ghost w-100">How it works</a>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- SIGNUP -->
+      <!-- ============ SIGNUP VIEW ============ -->
       <section id="view-signup" class="hidden" style="display:none">
-        ...
+        <div class="form-card">
+          <h2 style="font-weight:700">Enroll to SkillMint</h2>
+          <p class="text-muted small">Join thousands of learners — fill details and choose your bundle.</p>
+
+          <form id="signupForm" class="mt-3">
+            <div class="mb-3 d-flex gap-2">
+              <input id="suUsername" class="form-control" placeholder="Username" required />
+            </div>
+            <div class="mb-3 d-flex gap-2">
+              <input id="suEmail" type="email" class="form-control" placeholder="E-Mail Id" required />
+            </div>
+            <div class="mb-3 d-flex gap-2">
+              <input id="suPassword" type="password" class="form-control" placeholder="Password (min 8 chars)" minlength="8" required />
+            </div>
+            <div class="mb-3 d-flex gap-2">
+              <input id="suPhone" type="tel" class="form-control" placeholder="+91 | Phone" />
+            </div>
+            <div class="mb-3 d-flex gap-2">
+              <input id="suDob" type="date" class="form-control" placeholder="Date of Birth" />
+            </div>
+            <div class="mb-3 d-flex gap-2">
+              <select id="suState" class="form-control">
+                <option value="">Select State</option>
+                <option>Delhi</option>
+                <option>Maharashtra</option>
+                <option>Uttar Pradesh</option>
+                <option>Karnataka</option>
+                <option>Tamil Nadu</option>
+              </select>
+            </div>
+
+            <div class="mb-3 d-flex gap-2">
+              <input id="suRef" class="form-control" placeholder="Referral Code" />
+              <button id="applyRef" type="button" class="btn btn-primary">Apply</button>
+            </div>
+
+            <div class="d-grid mt-2">
+              <button class="btn btn-mint" type="submit">Create account & continue</button>
+            </div>
+
+            <div class="text-center mt-3 small">
+              Already have an account? <a href="#" id="goLogin">Sign in here</a>
+            </div>
+          </form>
+        </div>
       </section>
 
-      <!-- BUNDLES -->
+      <!-- ============ BUNDLES / COURSES VIEW ============ -->
       <section id="view-bundles" class="hidden" style="display:none">
-        ...
-        <div id="bundlesGrid" class="row g-3"></div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h1 style="font-weight:800; font-size:26px">Choose Your Bundles</h1>
+            <div class="text-muted small">Perceived end knowledge — curated bundles for fast learning.</div>
+          </div>
+          <div>
+            <button id="btnLogout" class="btn btn-ghost">Logout</button>
+          </div>
+        </div>
+
+        <div id="bundlesGrid" class="row g-3">
+          <!-- cards injected by JS -->
+        </div>
+
+        <div class="mt-4">
+          <h5 style="font-weight:700">Need help?</h5>
+          <p class="text-muted small">Contact <a href="#" class="text-decoration-none">support@skillmint.example</a> or use the help center.</p>
+        </div>
       </section>
 
     </main>
@@ -112,9 +244,13 @@
     </footer>
   </div>
 
+  <!-- Bootstrap + icons -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
+    // -------------------------
+    // Demo single-file SPA logic
+    // -------------------------
     const state = {
       selector: {
         login: document.getElementById('view-login'),
@@ -123,14 +259,185 @@
       },
       userKey: 'skillmint:user',
       demoCourses: [
-        { id:'personal', title:'Personal Branding', rating:4.3, reviews:'424,34', price:660, img:'https://your-link.com/personal.jpg' },
-        { id:'marketing', title:'Online Marketing Mastery', rating:4.5, reviews:'493,28', price:5499, img:'https://your-link.com/marketing.jpg' },
-        { id:'finance', title:'Finance Mastery', rating:4.1, reviews:'318,36', price:8999, img:'https://your-link.com/finance.jpg' },
-        { id:'datasci', title:'Data Science', rating:4.4, reviews:'612,12', price:10999, img:'https://your-link.com/datasci.jpg' },
+        { id:'personal', title:'Personal Branding', rating:4.3, reviews:'424,34', price:660, img:'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2f4d6b1c' },
+        { id:'marketing', title:'Online Marketing Mastery', rating:4.5, reviews:'493,28', price:5499, img:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3f6f54f4' },
+        { id:'finance', title:'Finance Mastery', rating:4.1, reviews:'318,36', price:8999, img:'https://images.unsplash.com/photo-1526378722501-6b0a6b7b5efc?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=d7c7e0c3' },
+        { id:'datasci', title:'Data Science', rating:4.4, reviews:'612,12', price:10999, img:'https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=427b3c3b' },
       ]
     };
 
-    // rest of your JS unchanged ...
+    function $(id){ return document.getElementById(id); }
+
+    // view control
+    function showView(name){
+      Object.values(state.selector).forEach(el=> el.style.display='none');
+      if(name==='login') state.selector.login.style.display='';
+      if(name==='signup') state.selector.signup.style.display='';
+      if(name==='bundles') state.selector.bundles.style.display='';
+      // scroll to top a bit for mobile
+      window.scrollTo({top:0, behavior:'smooth'});
+      renderBundlesIfNeeded();
+    }
+
+    // initial view
+    const storedUser = JSON.parse(localStorage.getItem(state.userKey) || 'null');
+    if(storedUser && storedUser.email){
+      // logged in
+      showView('bundles');
+    } else {
+      showView('login');
+    }
+
+    // date in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // nav links
+    document.getElementById('goSignup').addEventListener('click', (e)=>{
+      e.preventDefault(); showView('signup');
+    });
+    document.getElementById('goLogin').addEventListener('click', (e)=>{
+      e.preventDefault(); showView('login');
+    });
+
+    // Signup logic
+    document.getElementById('signupForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const user = {
+        username: document.getElementById('suUsername').value.trim(),
+        email: document.getElementById('suEmail').value.trim(),
+        password: document.getElementById('suPassword').value,
+        phone: document.getElementById('suPhone').value.trim(),
+        dob: document.getElementById('suDob').value,
+        state: document.getElementById('suState').value,
+        ref: document.getElementById('suRef').value.trim(),
+      };
+      if(!user.email || !user.password || user.password.length < 8){
+        alert('Please provide valid email and password (min 8 chars).'); return;
+      }
+      // store demo
+      localStorage.setItem(state.userKey, JSON.stringify(user));
+      // simulate referral credit (add to user object)
+      user.earn = { life:0, pending: (user.ref ? 300 : 0) };
+      localStorage.setItem(state.userKey, JSON.stringify(user));
+      showView('bundles');
+      toast('Account created — welcome to SkillMint!');
+    });
+
+    // Apply referral simple behavior
+    document.getElementById('applyRef').addEventListener('click', (e)=>{
+      const val = document.getElementById('suRef').value.trim();
+      if(!val){ toast('Enter a referral code to apply'); return; }
+      // demo: apply code → give discount message
+      toast('Referral code applied! ₹300 added as pending credit');
+    });
+
+    // Login logic (demo)
+    document.getElementById('btnLogin').addEventListener('click', ()=>{
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value;
+      if(!email || !pass){ toast('Enter email and password'); return; }
+      // Check user in localStorage demo
+      const stored = JSON.parse(localStorage.getItem(state.userKey) || 'null');
+      if(stored && stored.email === email){
+        // coarse password check
+        if(stored.password === pass){
+          toast('Login successful');
+          showView('bundles'); return;
+        } else {
+          toast('Wrong password (demo). If you signed up with another email use Signup.');
+          return;
+        }
+      } else {
+        // offer signup
+        const go = confirm('No account found. Create a new one?');
+        if(go) { showView('signup'); }
+      }
+    });
+
+    // forgot password link
+    document.getElementById('forgotLink').addEventListener('click', (e)=>{
+      e.preventDefault();
+      alert('Demo: Password reset not configured. Use Signup to create a demo account.');
+    });
+
+    // logout
+    document.getElementById('btnLogout').addEventListener('click', ()=>{
+      // keep demo data but navigate to login
+      showView('login');
+      toast('Logged out (demo).');
+    });
+
+    // render bundles grid
+    function renderBundlesIfNeeded(){
+      const grid = document.getElementById('bundlesGrid');
+      if(grid.children.length) return; // already rendered
+      state.demoCourses.forEach(c=>{
+        const col = document.createElement('div');
+        col.className = 'col-12 col-md-6';
+        col.innerHTML = `
+          <div class="bundle-card">
+            <img src="${c.img}" alt="${escapeHtml(c.title)}">
+            <div class="p-3">
+              <h5 style="font-weight:700">${escapeHtml(c.title)}</h5>
+              <div class="d-flex align-items-center gap-2 mt-2">
+                <div class="rating-stars">★ ${c.rating}</div>
+                <div class="text-muted small">(${c.reviews})</div>
+              </div>
+              <div class="mt-3 d-flex justify-content-between align-items-center">
+                <div>
+                  <div style="font-size:20px; font-weight:800">₹${c.price}</div>
+                  <div class="small text-muted">one-time</div>
+                </div>
+                <div>
+                  <button class="btn btn-mint" data-id="${c.id}" onclick="enrollBundle('${c.id}')">Enroll</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(col);
+      });
+    }
+
+    // enroll action (demo)
+    function enrollBundle(id){
+      const user = JSON.parse(localStorage.getItem(state.userKey) || 'null');
+      if(!user){ toast('Please login or signup first'); showView('login'); return; }
+      user.enrollments = user.enrollments || [];
+      if(user.enrollments.includes(id)){ toast('Already enrolled in this bundle'); return; }
+      user.enrollments.push(id);
+      localStorage.setItem(state.userKey, JSON.stringify(user));
+      toast('Enrolled — check your dashboard (demo).');
+    }
+
+    // tiny toast
+    function toast(msg){
+      let el = document.getElementById('sm-toast');
+      if(!el){
+        el = document.createElement('div');
+        el.id = 'sm-toast';
+        el.style.position='fixed';
+        el.style.left='50%';
+        el.style.transform='translateX(-50%)';
+        el.style.bottom='22px';
+        el.style.zIndex='1000';
+        el.style.background='rgba(15,17,20,.95)';
+        el.style.color='white';
+        el.style.padding='10px 16px';
+        el.style.borderRadius='10px';
+        el.style.boxShadow='0 8px 28px rgba(2,6,23,.3)';
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
+      el.style.opacity = '1';
+      setTimeout(()=> el.style.opacity = '0', 2000);
+    }
+
+    // small helper
+    function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+    // click outside to hide signup (not needed)
+    // End of script
   </script>
 </body>
 </html>
