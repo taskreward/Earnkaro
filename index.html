@@ -93,21 +93,22 @@
       <section id="view-login">
         <div class="hero-grid">
           <div>
-            <!-- Hero Section with full-width, bigger image -->
-<div class="hero-illustration mb-3" style="border-radius:12px; overflow:hidden; height:300px; width:100%;">
+            <!-- Hero Section with full-width, prominent banner -->
+<div style="width:100%; height:400px; overflow:hidden; border-radius:12px; margin-bottom:24px;">
   <img src="https://iili.io/KY2w8VR.jpg" 
        alt="4k Students" 
        style="width:100%; height:100%; object-fit:cover; display:block;">
 </div>
 
-<!-- Optional CSS for responsive banner -->
+<!-- Optional CSS for mobile responsiveness -->
 <style>
   @media (max-width: 768px){
-    .hero-illustration {
-      height:220px; /* smaller on mobile */
+    div[style*="width:100%"][style*="height:400px"] {
+      height:260px; /* adjust height on mobile */
     }
   }
 </style>
+
 
             <div class="form-card">
               <div class="mb-2 small text-muted">Welcome back</div>
