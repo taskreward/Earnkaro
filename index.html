@@ -62,22 +62,41 @@
 
     /* sticky helper for CTA on mobile */
     .sticky-cta{position:sticky; bottom:16px; z-index:60}
+
+    /* upgraded login hero */
+    #view-login .hero-banner {
+      width:100vw; height:450px; overflow:hidden; position:relative;
+    }
+    #view-login .hero-banner img {
+      width:100%; height:100%; object-fit:cover; display:block;
+    }
+    #view-login .login-card-wrapper {position:relative; top:-80px; max-width:480px;}
+    @media (max-width: 768px){
+      #view-login .hero-banner {height:300px;}
+      #view-login .login-card-wrapper {top:-60px; max-width:90%; margin:0 auto;}
+    }
   </style>
 </head>
 <body>
   <div class="app-wrapper">
 
-    <!-- NAV (simple) -->
-    <nav class="d-flex align-items-center justify-content-between mb-3">
+    <!-- NAV (upgraded) -->
+    <nav class="d-flex align-items-center justify-content-between mb-3 px-4">
       <div class="d-flex align-items-center gap-3">
-        <!-- NEW 3D logo image -->
-    <img src="YOUR_LOGO_LINK_HERE" 
-         alt="SkillMint Logo" 
-         style="width:50px; height:50px; border-radius:50%; object-fit:cover; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
-
-        
+        <!-- Logo image -->
+        <img src="YOUR_LOGO_LINK_HERE" alt="SkillMint Logo" style="height:50px; object-fit:contain; display:block;">
+        <!-- SkillMint text with 3D gradient -->
         <div>
-          <div style="font-weight:700">SkillMint</div>
+          <div style="
+            font-weight:900;
+            font-size:24px;
+            background: linear-gradient(135deg, #3EB489, #2CA58D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2), 2px 2px 4px rgba(0,0,0,0.1);
+          ">
+            SkillMint
+          </div>
           <small class="text-muted">Mint your skills. Grow your future.</small>
         </div>
       </div>
@@ -88,73 +107,61 @@
       </div>
     </nav>
 
-    <!-- MAIN: views are switched by JS (login / signup / bundles) -->
+    <!-- MAIN -->
     <main id="view-container">
 
-      <!-- ============ LOGIN VIEW (default) ============ -->
+      <!-- LOGIN VIEW -->
       <section id="view-login">
-        <div class="hero-grid">
-          <div>
-            <!-- Hero Section with full-width, prominent banner -->
-<div style="width:100%; height:400px; overflow:hidden; border-radius:12px; margin-bottom:24px;">
-  <img src="https://iili.io/KY2w8VR.jpg" 
-       alt="4k Students" 
-       style="width:100%; height:100%; object-fit:cover; display:block;">
-</div>
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+          <img src="https://iili.io/KY2w8VR.jpg" alt="4k Students">
+        </div>
 
-<!-- Optional CSS for mobile responsiveness -->
-<style>
-  @media (max-width: 768px){
-    div[style*="width:100%"][style*="height:400px"] {
-      height:260px; /* adjust height on mobile */
-    }
-  }
-</style>
+        <!-- Login Form Card overlapping banner -->
+        <div class="login-card-wrapper">
+          <div class="form-card shadow-lg p-4">
+            <div class="mb-2 small text-muted">Welcome back</div>
+            <h1 class="h1-hero">Login into SkillMint</h1>
+            <p class="text-muted small">Enter your email and password to access your courses.</p>
 
-
-            <div class="form-card">
-              <div class="mb-2 small text-muted">Welcome back</div>
-              <h1 class="h1-hero">Login into SkillMint</h1>
-              <p class="text-muted small">Enter your email and password to access your courses.</p>
-
-              <div class="mt-3">
-                <div class="mb-3 d-flex gap-2 align-items-center">
-                  <div class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#8b949d" d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1 .9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5L4 8V6l8 5 8-5v2z"/></svg></div>
-                  <input id="loginEmail" class="form-control" placeholder="E-Mail Id" type="email" />
+            <div class="mt-3">
+              <div class="mb-3 d-flex gap-2 align-items-center">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <path fill="#8b949d" d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1 .9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5L4 8V6l8 5 8-5v2z"/>
+                  </svg>
                 </div>
-                <div class="mb-3 d-flex gap-2 align-items-center">
-                  <div class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#8b949d" d="M12 17a2 2 0 110-4 2 2 0 010 4zm6-7h-1V8a5 5 0 10-10 0v2H6c-1.1 0-2 .9-2 2v7c0 1.1 .9 2 2 2h12c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2z"/></svg></div>
-                  <input id="loginPassword" class="form-control" placeholder="Password" type="password" />
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div class="form-check">
-                    <input class="form-check-input" id="rememberMe" type="checkbox">
-                    <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
-                  </div>
-                  <a href="#" id="forgotLink" class="small text-muted">Forgot password?</a>
-                </div>
-
-                <div class="d-grid">
-                  <button id="btnLogin" class="btn btn-mint">Login</button>
-                </div>
-
-                <div class="text-center mt-3 small">
-                  Don't have an account? <a href="#" id="goSignup">Signup</a>
-                </div>
+                <input id="loginEmail" class="form-control" placeholder="E-Mail Id" type="email" />
               </div>
-            </div>
+              <div class="mb-3 d-flex gap-2 align-items-center">
+                <div class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <path fill="#8b949d" d="M12 17a2 2 0 110-4 2 2 0 010 4zm6-7h-1V8a5 5 0 10-10 0v2H6c-1.1 0-2 .9-2 2v7c0 1.1 .9 2 2 2h12c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2z"/>
+                  </svg>
+                </div>
+                <input id="loginPassword" class="form-control" placeholder="Password" type="password" />
+              </div>
 
-            <!-- support / links -->
-            <div class="mt-3 text-center small muted">
-              <a href="#" class="text-muted me-2">Support</a> •
-              <a href="#" class="text-muted mx-2">Useful Links</a> •
-              <a href="#" class="text-muted ms-2">Contact</a>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" id="rememberMe" type="checkbox">
+                  <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
+                </div>
+                <a href="#" id="forgotLink" class="small text-muted">Forgot password?</a>
+              </div>
+
+              <div class="d-grid">
+                <button id="btnLogin" class="btn btn-mint">Login</button>
+              </div>
+
+              <div class="text-center mt-3 small">
+                Don't have an account? <a href="#" id="goSignup">Signup</a>
+              </div>
             </div>
           </div>
 
-          <!-- right column on desktop: mini highlights -->
-          <div class="d-none d-lg-block">
+          <!-- Right-side highlights on desktop -->
+          <div class="d-none d-lg-block mt-4">
             <div class="form-card p-3">
               <h5 style="font-weight:700">Why SkillMint?</h5>
               <ul class="small text-muted mt-2">
@@ -170,7 +177,7 @@
         </div>
       </section>
 
-      <!-- ============ SIGNUP VIEW ============ -->
+      <!-- SIGNUP VIEW -->
       <section id="view-signup" class="hidden" style="display:none">
         <div class="form-card">
           <h2 style="font-weight:700">Enroll to SkillMint</h2>
@@ -219,7 +226,7 @@
         </div>
       </section>
 
-      <!-- ============ BUNDLES / COURSES VIEW ============ -->
+      <!-- BUNDLES / COURSES VIEW -->
       <section id="view-bundles" class="hidden" style="display:none">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <div>
@@ -254,7 +261,7 @@
 
   <script>
     // -------------------------
-    // Demo single-file SPA logic
+    // SPA logic remains unchanged
     // -------------------------
     const state = {
       selector: {
@@ -273,38 +280,20 @@
 
     function $(id){ return document.getElementById(id); }
 
-    // view control
     function showView(name){
       Object.values(state.selector).forEach(el=> el.style.display='none');
       if(name==='login') state.selector.login.style.display='';
       if(name==='signup') state.selector.signup.style.display='';
       if(name==='bundles') state.selector.bundles.style.display='';
-      // scroll to top a bit for mobile
       window.scrollTo({top:0, behavior:'smooth'});
       renderBundlesIfNeeded();
     }
 
-    // initial view
     const storedUser = JSON.parse(localStorage.getItem(state.userKey) || 'null');
-    if(storedUser && storedUser.email){
-      // logged in
-      showView('bundles');
-    } else {
-      showView('login');
-    }
-
-    // date in footer
+    if(storedUser && storedUser.email){ showView('bundles'); } else { showView('login'); }
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // nav links
-    document.getElementById('goSignup').addEventListener('click', (e)=>{
-      e.preventDefault(); showView('signup');
-    });
-    document.getElementById('goLogin').addEventListener('click', (e)=>{
-      e.preventDefault(); showView('login');
-    });
-
-    // Signup logic
+    document.getElementById('goSignup').addEventListener('click', (e)=>{ e.preventDefault(); showView('signup'); });
+    document.getElementById('goLogin').addEventListener('click', (e)=>{ e.preventDefault(); showView('login'); });
     document.getElementById('signupForm').addEventListener('submit', (e)=>{
       e.preventDefault();
       const user = {
@@ -316,66 +305,36 @@
         state: document.getElementById('suState').value,
         ref: document.getElementById('suRef').value.trim(),
       };
-      if(!user.email || !user.password || user.password.length < 8){
-        alert('Please provide valid email and password (min 8 chars).'); return;
-      }
-      // store demo
+      if(!user.email || !user.password || user.password.length < 8){ alert('Please provide valid email and password (min 8 chars).'); return; }
       localStorage.setItem(state.userKey, JSON.stringify(user));
-      // simulate referral credit (add to user object)
       user.earn = { life:0, pending: (user.ref ? 300 : 0) };
       localStorage.setItem(state.userKey, JSON.stringify(user));
       showView('bundles');
       toast('Account created — welcome to SkillMint!');
     });
-
-    // Apply referral simple behavior
     document.getElementById('applyRef').addEventListener('click', (e)=>{
       const val = document.getElementById('suRef').value.trim();
       if(!val){ toast('Enter a referral code to apply'); return; }
-      // demo: apply code → give discount message
       toast('Referral code applied! ₹300 added as pending credit');
     });
-
-    // Login logic (demo)
     document.getElementById('btnLogin').addEventListener('click', ()=>{
       const email = document.getElementById('loginEmail').value.trim();
       const pass = document.getElementById('loginPassword').value;
       if(!email || !pass){ toast('Enter email and password'); return; }
-      // Check user in localStorage demo
       const stored = JSON.parse(localStorage.getItem(state.userKey) || 'null');
       if(stored && stored.email === email){
-        // coarse password check
-        if(stored.password === pass){
-          toast('Login successful');
-          showView('bundles'); return;
-        } else {
-          toast('Wrong password (demo). If you signed up with another email use Signup.');
-          return;
-        }
+        if(stored.password === pass){ toast('Login successful'); showView('bundles'); return; }
+        else { toast('Wrong password (demo). If you signed up with another email use Signup.'); return; }
       } else {
-        // offer signup
-        const go = confirm('No account found. Create a new one?');
-        if(go) { showView('signup'); }
+        const go = confirm('No account found. Create a new one?'); if(go){ showView('signup'); }
       }
     });
+    document.getElementById('forgotLink').addEventListener('click', (e)=>{ e.preventDefault(); alert('Demo: Password reset not configured. Use Signup to create a demo account.'); });
+    document.getElementById('btnLogout').addEventListener('click', ()=>{ showView('login'); toast('Logged out (demo).'); });
 
-    // forgot password link
-    document.getElementById('forgotLink').addEventListener('click', (e)=>{
-      e.preventDefault();
-      alert('Demo: Password reset not configured. Use Signup to create a demo account.');
-    });
-
-    // logout
-    document.getElementById('btnLogout').addEventListener('click', ()=>{
-      // keep demo data but navigate to login
-      showView('login');
-      toast('Logged out (demo).');
-    });
-
-    // render bundles grid
     function renderBundlesIfNeeded(){
       const grid = document.getElementById('bundlesGrid');
-      if(grid.children.length) return; // already rendered
+      if(grid.children.length) return;
       state.demoCourses.forEach(c=>{
         const col = document.createElement('div');
         col.className = 'col-12 col-md-6';
@@ -404,7 +363,6 @@
       });
     }
 
-    // enroll action (demo)
     function enrollBundle(id){
       const user = JSON.parse(localStorage.getItem(state.userKey) || 'null');
       if(!user){ toast('Please login or signup first'); showView('login'); return; }
@@ -415,7 +373,6 @@
       toast('Enrolled — check your dashboard (demo).');
     }
 
-    // tiny toast
     function toast(msg){
       let el = document.getElementById('sm-toast');
       if(!el){
@@ -438,11 +395,7 @@
       setTimeout(()=> el.style.opacity = '0', 2000);
     }
 
-    // small helper
     function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-
-    // click outside to hide signup (not needed)
-    // End of script
   </script>
 </body>
 </html>
