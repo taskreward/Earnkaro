@@ -75,18 +75,10 @@
          alt="SkillMint Logo" 
          style="width:60px; height:60px; object-fit:cover; display:block;">
     <div style="margin-left:12px;">
-      <!-- New SkillMint Header -->
-<nav class="navbar bg-white shadow-sm p-3">
-  <div class="container d-flex align-items-center">
-    <!-- Logo (replace "your-logo.png" with your real logo file path) -->
-    <img src="your-logo.png" alt="SkillMint Logo" style="height:40px; margin-right:10px;">
-    
-    <!-- Brand Name -->
-    <h1 class="m-0" style="font-size:24px; font-weight:600; font-family: 'Inter', sans-serif; color:#2C3E50;">
-      <span style="color:#007bff;">Skill</span>Mint
-    </h1>
-  </div>
-</nav>
+      <div style="font-weight:400; font-size:28px; color:#2C3E50; letter-spacing:0.5px; font-family: 'Inter', sans-serif;">
+        SkillMint
+      </div>
+      <small class="text-muted" style="font-style:italic;">Mint your skills. Grow your future.</small>
     </div>
   </div>
   <div class="d-none d-md-flex gap-2">
@@ -281,13 +273,13 @@ const bundlesGrid = $('bundlesGrid');
 state.demoCourses.forEach(c=>{
   const col = document.createElement('div');
   col.className='col-12 col-md-6';
-  col.innerHTML=`<div class="bundle-card" data-id="${c.id}">
+  col.innerHTML=<div class="bundle-card" data-id="${c.id}">
       <img src="${c.img}" alt="${c.title}">
       <div class="p-3">
         <h5 style="font-weight:700">${c.title}</h5>
         <div class="mt-2">₹${c.price}</div>
       </div>
-  </div>`;
+  </div>;
   bundlesGrid.appendChild(col);
   col.querySelector('.bundle-card').addEventListener('click', (e)=>{
     const bid=c.id;
@@ -359,7 +351,7 @@ function startUTRTimer(seconds){
   let s=seconds;
   const interval=setInterval(()=>{
     let m=Math.floor(s/60); let sec=s%60;
-    timerEl.textContent=`${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    timerEl.textContent=${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')};
     if(s--<=0){ clearInterval(interval); toast('Time over!'); }
   },1000);
 }
@@ -375,13 +367,13 @@ function renderDashboard(){
     if(!c) return;
     const col=document.createElement('div');
     col.className='col-12 col-md-6';
-    col.innerHTML=`<div class="bundle-card">
+    col.innerHTML=<div class="bundle-card">
       <img src="${c.img}" alt="${c.title}">
       <div class="p-3">
         <h5>${c.title}</h5>
         <div>₹${c.price}</div>
       </div>
-    </div>`;
+    </div>;
     dash.appendChild(col);
   });
 }
